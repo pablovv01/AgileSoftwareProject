@@ -24,15 +24,18 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-### Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
 ### Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
-## Important information
+## Packages added
+
+I have added two packages to this project:
+
+- Angular Material: This package will let us use some Material components in Angular. See this page in order to get information about the components: [Material Angular](https://material.angular.io/)
+- Firebase: This is a package that let us communicate with the firebase project.
+
+## Additional information
 
 - Please delete ``text.txt`` files from the folders when you have created a file.
 - Do no hesitate to contact me if you have a proposal, a doubt or a complain.
