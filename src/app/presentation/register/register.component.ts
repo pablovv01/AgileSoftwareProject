@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
@@ -51,15 +51,24 @@ export class RegisterComponent {
       createUserWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
           console.log("Usuario registered:", userCredential);
-          this.snackBar.open('User registered successfully', 'Cerrar', {
-            duration: 3000, 
-            verticalPosition: 'bottom', 
-            horizontalPosition: 'center'
-          });
+          sendEmailVerification(userCredential.user).then(() => {
+            this.snackBar.open('Verification email sent successfully. Please check your inbox in order to activate your account. If it is not found check the SPAM folder', 'Close', {
+              duration: 3000, 
+              verticalPosition: 'bottom', 
+              horizontalPosition: 'center'
+            });
+          }).catch((error) => {
+            this.snackBar.open('Error sending verification email. Please try again', 'Close', {
+              duration: 3000, 
+              verticalPosition: 'bottom', 
+              horizontalPosition: 'center'
+            });
+            console.error('Error sending verification email:', error);
+          });          
         })
         .catch(error => {
           console.error("Error en el registro:", error);
-          this.snackBar.open('There has been an error: '+error, 'Cerrar', {
+          this.snackBar.open(error, 'Close', {
             duration: 3000, 
             verticalPosition: 'bottom', 
             horizontalPosition: 'center'
