@@ -1,0 +1,23 @@
+<div class="registro-container">
+    <mat-card>
+      <h2>Registro</h2>
+      <form [formGroup]="registroForm" (ngSubmit)="onRegister()">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" />
+          <mat-error *ngIf="registroForm.get('email')?.hasError('required')">Email es obligatorio</mat-error>
+          <mat-error *ngIf="registroForm.get('email')?.hasError('email')">Email no es válido</mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input matInput formControlName="password" type="password" />
+          <mat-error *ngIf="registroForm.get('password')?.hasError('required')">Contraseña es obligatoria</mat-error>
+          <mat-error *ngIf="registroForm.get('password')?.hasError('minlength')">La contraseña debe tener al menos 6 caracteres</mat-error>
+        </mat-form-field>
+  
+        <button mat-raised-button color="primary" type="submit" [disabled]="registroForm.invalid">Registrarse</button>
+      </form>
+    </mat-card>
+  </div>
+  
