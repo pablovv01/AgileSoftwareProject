@@ -1,0 +1,171 @@
+/* Container to center the add idea form */
+.idea-form-container {
+    max-width: 800px;
+    margin: 100px auto;
+    padding: 30px;
+    background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    transition: all 0.3s ease;
+  }
+  
+  /* Form title */
+  h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  /* Form field styling */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* Form group (input label and input field) styling */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Label styling */
+  label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 5px;
+  }
+  
+  /* Input fields styling */
+  input, textarea, select {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s ease-in-out;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+  
+  /* Input and textarea focus effect */
+  input:focus, textarea:focus, select:focus {
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+  }
+  
+  /* Textarea specific styling */
+  textarea {
+    height: 150px;
+    resize: vertical;
+  }
+  
+  /* Button styling */
+  button {
+    padding: 16px 30px; /* Larger padding for button */
+    background-color: #ff8c00;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
+    width: 100%; /* Full-width button */
+  }
+  
+  /* Button hover effect */
+  button:hover {
+    background-color: #ff6500;
+    transform: scale(1.05);
+  }
+  
+  /* Button focus effect */
+  button:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+  }
+  
+  /* Optional: Add a hover effect on the input fields */
+  input:hover, textarea:hover, select:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+  }
+  
+  /* Optional: Animation effect when the page loads */
+  .idea-form-container {
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+/* Container for the tags */
+.tags-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 10px; /* Optional: for better visibility */
+  }
+  
+  /* Styling for individual tags */
+  .tag {
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    white-space: nowrap;
+  }
+  
+  /* Hover effect */
+  .tag:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  /* Active tag style (when selected) */
+  .tag.active {
+    background-color: #ff8c00;
+    transform: scale(1.05);
+  }
+  
+  /* Optional: Add smooth scrolling for the horizontal scroll */
+  .tags-container {
+    scroll-behavior: smooth;
+  }
+
+  /* Fade in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Media query for responsiveness */
+  @media (max-width: 480px) {
+    .idea-form-container {
+      width: 90%;
+      padding: 20px;
+    }
+  
+    h2 {
+      font-size: 24px;
+    }
+  
+    button {
+      font-size: 16px;
+      padding: 10px 15px;
+    }
+  
+    input, textarea, select {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
