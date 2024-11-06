@@ -1,105 +1,103 @@
-/* Login container to center the login form */
+/* Main container */
 .login-container {
   display: flex;
-  justify-content: center; /* Horizontally center */
-  align-items: center;     /* Vertically center */
-  height: 100vh;           /* Full viewport height */
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Gradient background */
-  margin: 0; /* Remove default margin */
-}
-/* Logo styling inside the login box */
-.login-logo {
-  max-width: 250px; /* Adjust the width as needed */
-  height: auto; /* Maintain aspect ratio */
-  margin-bottom: 20px; /* Space between the logo and the form title */
-}
-
-/* Form styling to make it look like a card */
-form {
-  width: 100%;
-  max-width: 400px; /* Set form width with a max-width */
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
 }
 
-/* Title style for the login form */
-h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #3f51b5;
-  text-align: center;
+/* Registration card */
+mat-card {
+  width: 100%;
+  max-width: 400px;
+  height: 90vh;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+mat-card-header {
+  display: flex;
+  color: #0072BA;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
-/* Input field style */
-.form-group {
-  margin-bottom: 16px;
-  width: 100%;
-}
-
-label {
-  font-size: 14px;
+mat-card-title {
+  font-size: 2rem;
   font-weight: 500;
-  margin-bottom: 5px;
-  color: #3f51b5;
 }
 
-input {
+/* Logo container */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+/* Logo styling */
+.logo {
+  width: 200px;
+  height: auto;
+}
+
+/* Input field styling */
+.full-width,
+mat-form-field {
+  margin-bottom: 16px;
+}
+
+mat-form-field {
   width: 100%;
-  padding: 8px;  /* Reduced padding */
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  font-size: 14px; /* Reduced font size */
-  outline: none;
-  transition: border-color 0.3s ease;
-  background-color: #ffffff;
-  color: #333;
 }
 
-input:focus {
-  border-color: #3f51b5;
-  box-shadow: 0 0 5px rgba(63, 81, 181, 0.3);
+mat-form-field.fxFlex-50 {
+  width: calc(50% - 8px);
+}
+
+mat-icon {
+  color: #0072BA;
+}
+
+/* Custom error styling */
+mat-error {
+  font-size: 0.85rem;
+  color: #e53935;
 }
 
 /* Button styling */
+.button-container {
+  text-align: center;
+  margin-top: 30px;
+}
+
 button {
   width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
   padding: 12px;
-  background-color: #3f51b5;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 20px; /* Space between button and input fields */
 }
 
-button:hover {
-  background-color: #303f9f;
-}
-
-/* Link for users without an account */
+/* Enlace para registrarse */
 .register-link {
   text-align: center;
-  margin-top: 20px; /* Add space between button and link */
-  font-size: 14px;
-  color: #555;
-}
+  margin-top: 20px;
 
-.register-link a {
-  color: #3f51b5;
-  text-decoration: none;
-  font-weight: 500;
-}
+  p {
+    font-size: 0.9rem;
+    color: #333;
 
-.register-link a:hover {
-  color: #303f9f;
+    a {
+      color: #0072BA;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  }
 }
