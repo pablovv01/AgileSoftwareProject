@@ -1,159 +1,105 @@
-/* Container to center the login form */
+/* Login container to center the login form */
 .login-container {
-  max-width: 400px;
-  margin: 100px auto;
-  padding: 30px;
-  background: linear-gradient(to bottom right, #6a11cb, #2575fc);
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  color: #fff;
-  font-family: 'Arial', sans-serif;
-  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center; /* Horizontally center */
+  align-items: center;     /* Vertically center */
+  height: 100vh;           /* Full viewport height */
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2); /* Gradient background */
+  margin: 0; /* Remove default margin */
+}
+/* Logo styling inside the login box */
+.login-logo {
+  max-width: 250px; /* Adjust the width as needed */
+  height: auto; /* Maintain aspect ratio */
+  margin-bottom: 20px; /* Space between the logo and the form title */
 }
 
-/* University logo styling */
-.logo-container {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.university-logo {
-  width: 120px; /* Set the size of the logo */
-  height: auto;
-  margin-bottom: 20px;
-}
-
-/* Login form title */
-h2 {
-  text-align: center;
-  font-size: 28px;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
-/* Form field styling */
+/* Form styling to make it look like a card */
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* Form group (input label and input field) styling */
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Label styling */
-label {
-  font-size: 16px;
-  font-weight: 500;
-  color: #fff;
-  margin-bottom: 5px;
-}
-
-/* Input fields styling */
-input {
-  padding: 12px;
+  width: 100%;
+  max-width: 400px; /* Set form width with a max-width */
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
-  border: none;
-  font-size: 16px;
-  outline: none;
-  transition: 0.3s ease-in-out;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Input focus effect */
+/* Title style for the login form */
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #3f51b5;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Input field style */
+.form-group {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #3f51b5;
+}
+
+input {
+  width: 100%;
+  padding: 8px;  /* Reduced padding */
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 14px; /* Reduced font size */
+  outline: none;
+  transition: border-color 0.3s ease;
+  background-color: #ffffff;
+  color: #333;
+}
+
 input:focus {
-  background-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+  border-color: #3f51b5;
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.3);
 }
 
 /* Button styling */
 button {
-  padding: 16px 30px; /* Increase padding to make the button larger */
-  background-color: #ff8c00;
+  width: 100%;
+  padding: 12px;
+  background-color: #3f51b5;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 20px; /* Increase font size */
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
-  display: block; /* Ensure it’s displayed as a block element */
-  margin: 0 auto; /* Center the button horizontally */
-  width: 100%; /* Make the button take the full width of the form */
+  transition: background-color 0.3s ease;
+  margin-top: 20px; /* Space between button and input fields */
 }
 
-/* Button hover effect */
 button:hover {
-  background-color: #ff6500;
-  transform: scale(1.05);
+  background-color: #303f9f;
 }
 
-/* Button focus effect */
-button:focus {
-  outline: none;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-}
-
-/* Optional: Add a little hover animation on the input fields */
-input:hover {
-  background-color: rgba(255, 255, 255, 0.25);
-}
-
-/* Optional: Animation effect when the page loads */
-.login-container {
-  animation: fadeIn 1s ease-in-out;
-}
-
-/* Fade in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Media query for responsiveness */
-@media (max-width: 480px) {
-  .login-container {
-    width: 90%;
-    padding: 20px;
-  }
-
-  h2 {
-    font-size: 24px;
-  }
-
-  button {
-    font-size: 16px;
-    padding: 10px 15px;
-  }
-
-  input {
-    font-size: 14px;
-    padding: 10px;
-  }
-}
-
-/* Styling for the "register" link */
+/* Link for users without an account */
 .register-link {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 20px; /* Add space between button and link */
   font-size: 14px;
-  color: #fff;
+  color: #555;
 }
 
 .register-link a {
-  color: #ff8c00;
+  color: #3f51b5;
   text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s ease;
+  font-weight: 500;
 }
 
 .register-link a:hover {
-  color: #ff6500;
+  color: #303f9f;
 }
