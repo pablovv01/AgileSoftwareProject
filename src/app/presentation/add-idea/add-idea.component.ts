@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'add-idea',
+  selector: 'app-add-idea',
   standalone: true,
   imports: [],
   templateUrl: './add-idea.component.html',

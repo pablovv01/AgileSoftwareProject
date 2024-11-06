@@ -9,5 +9,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css'
 })
 
-export class AppComponent {  
+export class AppComponent {
+  title = 'AgileSoftwareProject';
 }

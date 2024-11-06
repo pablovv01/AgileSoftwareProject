@@ -13,82 +13,20 @@
       </div>
   
       <div class="form-group">
-        <label for="tags">Tags</label>
-        <div class="tags-container" id="tags-container">
-            <!-- Update with new tags as needed -->
-            <div class = "tag">Innovation</div>
-            <div class = "tag">Technology</div>
-            <div class = "tag">Healthcare</div>
-            <div class = "tag">Education</div>
-            <div class = "tag">Science</div>
-            <div class = "tag">Business</div>
-            <div class = "tag">Art</div>
-        </div>
+        <label for="tags">Select Tags</label>
+        <select id="tags" name="tags" class="form-control">
+            <option value="">-- Select a Tag --</option>
+            <option value="Technology">Technology</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Education">Education</option>
+            <option value="Sustainability">Sustainability</option>
+            <option value="Business">Business</option>
+            <option value="Art">Art</option>
+            <option value="Science">Science</option>
+            <option value="Sports">Sports</option>
+        </select>
       </div>
   
-      <button type="submit" class="btn btn-primary">Post Idea</button>
+      <button type="button" class="btn btn-primary">Post Idea</button>
     </form>
-  </div>
-  
-  <script>
-    document.getElementById('ideaForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-  
-      // Get form values
-      const title = document.getElementById('title').value;
-      const description = document.getElementById('description').value;
-      const tag = document.getElementById('tags').value;
-  
-      // Validate the form (check if title and description are filled)
-      if (!title || !description) {
-        alert('Title and description are required.');
-        return;
-      }
-  
-      // If valid, handle the form submission (for example, log the data or send to a server)
-      console.log('Idea Submitted:', { title, description, tag });
-  
-      // Optionally, reset the form after submission
-    //   document.getElementById('ideaForm').reset();
-    });
-  </script>
-
-<script>
-    // List of available tags
-    const availableTags = ['Innovation', 'Technology', 'Healthcare', 'Education', 'Science', 'Business', 'Art'];
-  
-    // Store selected tags
-    const selectedTags = [];
-  
-    // Reference to the container where tags will be added
-    const tagsContainer = document.getElementById('tags-container');
-  
-    // Function to create the tags and append them to the container
-    function createTags() {
-      availableTags.forEach(tag => {
-        const tagElement = document.createElement('div');
-        tagElement.classList.add('tag');
-        tagElement.innerText = tag;
-        tagElement.addEventListener('click', () => toggleTag(tagElement, tag));
-        tagsContainer.appendChild(tagElement);
-      });
-    }
-  
-    // Function to toggle a tag's active state (select/deselect)
-    function toggleTag(tagElement, tag) {
-      if (selectedTags.includes(tag)) {
-        // Remove tag from selected tags
-        selectedTags.splice(selectedTags.indexOf(tag), 1);
-        tagElement.classList.remove('active');
-      } else {
-        // Add tag to selected tags
-        selectedTags.push(tag);
-        tagElement.classList.add('active');
-      }
-  
-      console.log('Selected Tags:', selectedTags); // For debugging purposes
-    }
-  
-    // Call the function to create the tags when the page loads
-    window.onload = createTags;
-  </script>
+</div>  
