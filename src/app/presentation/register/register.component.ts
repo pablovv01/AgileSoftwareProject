@@ -129,7 +129,7 @@ export class RegisterComponent {
         })
         .catch(error => {
           console.error("Error en el registro:", error);
-          this.snackBar.open(error, 'Close', {
+          this.snackBar.open(error.message, 'Close', {
             duration: 3000, 
             verticalPosition: 'bottom', 
             horizontalPosition: 'center'
