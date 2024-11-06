@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import { LayoutModule } from '@angular/cdk/layout';
+import { Router } from '@angular/router';
 
 
 
@@ -59,7 +60,7 @@ export class RegisterComponent {
     'Instituto de Ciencias de la Educación ICE'
 ];
 
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar) {
+  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router) {
     this.registrationForm = this.fb.group({
       name: ["", [Validators.required]],
       surname: ["", [Validators.required]],
@@ -114,6 +115,8 @@ export class RegisterComponent {
               duration: 3000, 
               verticalPosition: 'bottom', 
               horizontalPosition: 'center'
+            }).afterDismissed().subscribe(() => {
+              this.router.navigate(['/login']);
             });
           }).catch((error) => {
             this.snackBar.open('Error sending verification email. Please try again', 'Close', {
