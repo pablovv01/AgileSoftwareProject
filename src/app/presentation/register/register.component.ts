@@ -77,9 +77,9 @@ export class RegisterComponent {
   onTypeChange(type: string): void {
     const centerControl = this.registrationForm.get('center');
     const degreeControl = this.registrationForm.get('degree');
-    const companyControl = this.registrationForm.get('degree');
-    const positionControl = this.registrationForm.get('degree');
-    const descriptionControl = this.registrationForm.get('degree');
+    const companyControl = this.registrationForm.get('company');
+    const positionControl = this.registrationForm.get('position');
+    const descriptionControl = this.registrationForm.get('description');
 
 
     if (type === 'student') {
