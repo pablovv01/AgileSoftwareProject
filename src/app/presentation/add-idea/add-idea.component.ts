@@ -1,41 +1,53 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';  
-import { Router } from '@angular/router'; 
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input'; 
-import { CommonModule } from '@angular/common';  // Import CommonModule
-import { getDatabase, ref, push, set } from 'firebase/database';  
+import { MatInputModule } from '@angular/material/input';
+import { CommonModule } from '@angular/common';
+import { getDatabase, ref, push, set } from 'firebase/database';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../common/confirmation-dialog/confirmation-dialog.component';
+
 
 @Component({
   selector: 'app-add-idea',
   standalone: true,
   imports: [
-    FormsModule, 
-    MatCardModule, 
-    MatFormFieldModule, 
-    MatSelectModule, 
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatSelectModule,
     MatInputModule,
-    CommonModule 
+    CommonModule,
+    MatSnackBarModule,
+    MatDialogModule
   ],
   templateUrl: './add-idea.component.html',
   styleUrls: ['./add-idea.component.css']
 })
 export class addIdeaComponent {
-  isConfirmationVisible = false;  // Whether the confirmation modal is visible
-  isFormSubmitted = false;  // To track if form is submitted
   formData: any = {};  // Holds the form data before submission
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   onSubmit(form: any) {
-    // Prevent form submission until confirmation
-    if (this.isConfirmationVisible) return;
-    
     // Store the form data before confirmation
     this.formData = form.value;
-    this.isConfirmationVisible = true;
+
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.confirmSubmit();
+      }
+    });
+
+    
   }
 
   confirmSubmit() {
@@ -60,20 +72,21 @@ export class addIdeaComponent {
     set(newIdeaRef, newIdea)
       .then(() => {
         console.log('Idea added successfully!');
-        this.isFormSubmitted = true;  // Mark the form as submitted
-        setTimeout(() => {
-          this.router.navigate(['/home']);  // Navigate back to landing page whenever it is implemented by andres.
-        }, 2000);
+        this.snackBar.open('Your idea has been submitted successfully!', 'Close', {
+          duration: 3000,
+          verticalPosition: 'bottom',
+          horizontalPosition: 'center'
+        }).afterDismissed().subscribe(() => {
+          this.router.navigate(['/home']); // Navigate back to landing page whenever it is implemented by andres.
+        });
       })
       .catch((error) => {
         console.error('Error adding idea: ', error);
+        this.snackBar.open('There has been an error adding your idea. Please try again later', 'Close', {
+          duration: 3000,
+          verticalPosition: 'bottom',
+          horizontalPosition: 'center'
+        })
       });
-
-    this.isConfirmationVisible = false;  // Hide confirmation modal
-  }
-
-  cancelSubmit() {
-    // Reset form and cancel submission
-    this.isConfirmationVisible = false;
   }
 }
