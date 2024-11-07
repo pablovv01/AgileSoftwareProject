@@ -1,171 +1,124 @@
-/* Container to center the add idea form */
+/* Main container for form */
 .idea-form-container {
-    max-width: 800px;
-    margin: 100px auto;
-    padding: 30px;
-    background: linear-gradient(to bottom right, #6a11cb, #2575fc);
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    color: #fff;
-    font-family: 'Arial', sans-serif;
-    transition: all 0.3s ease;
-  }
-  
-  /* Form title */
-  h2 {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-  
-  /* Form field styling */
-  form {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  /* Form group (input label and input field) styling */
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Label styling */
-  label {
-    font-size: 16px;
-    font-weight: 500;
-    color: white;
-    margin-bottom: 5px;
-  }
-  
-  /* Input fields styling */
-  input, textarea, select {
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    font-size: 16px;
-    outline: none;
-    transition: 0.3s ease-in-out;
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-  }
-  
-  /* Input and textarea focus effect */
-  input:focus, textarea:focus, select:focus {
-    background-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
-  }
-  
-  /* Textarea specific styling */
-  textarea {
-    height: 150px;
-    resize: vertical;
-  }
-  
-  /* Button styling */
-  button {
-    padding: 16px 30px; /* Larger padding for button */
-    background-color: #ff8c00;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: block;
-    margin: 0 auto;
-    width: 100%; /* Full-width button */
-  }
-  
-  /* Button hover effect */
-  button:hover {
-    background-color: #ff6500;
-    transform: scale(1.05);
-  }
-  
-  /* Button focus effect */
-  button:focus {
-    outline: none;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-  }
-  
-  /* Optional: Add a hover effect on the input fields */
-  input:hover, textarea:hover, select:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-  }
-  
-  /* Optional: Animation effect when the page loads */
-  .idea-form-container {
-    animation: fadeIn 1s ease-in-out;
-  }
-  
-/* Container for the tags */
-.tags-container {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 10px;
-    padding-bottom: 10px; /* Optional: for better visibility */
-  }
-  
-  /* Styling for individual tags */
-  .tag {
-    padding: 10px 20px;
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    white-space: nowrap;
-  }
-  
-  /* Hover effect */
-  .tag:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-  
-  /* Active tag style (when selected) */
-  .tag.active {
-    background-color: #ff8c00;
-    transform: scale(1.05);
-  }
-  
-  /* Optional: Add smooth scrolling for the horizontal scroll */
-  .tags-container {
-    scroll-behavior: smooth;
-  }
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    box-sizing: border-box;  /* Ensures padding is accounted for in element dimensions */
+}
 
-  /* Fade in animation */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  /* Media query for responsiveness */
-  @media (max-width: 480px) {
-    .idea-form-container {
-      width: 90%;
-      padding: 20px;
-    }
-  
-    h2 {
-      font-size: 24px;
-    }
-  
-    button {
-      font-size: 16px;
-      padding: 10px 15px;
-    }
-  
-    input, textarea, select {
-      font-size: 14px;
-      padding: 10px;
-    }
-  }
+/* Card styling for idea form */
+.idea-card {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-sizing: border-box;  /* Ensures padding is accounted for in element dimensions */
+}
+
+/* Header styling */
+.header-container {
+    display: flex;
+    color: #0072BA;
+    justify-content: center;
+    margin-bottom: 30px;  /* Increased margin to prevent clipping */
+    padding-bottom: 10px;  /* Adds space below the header */
+}
+
+mat-card-title {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+/* Section title styling */
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #0072BA;
+    margin-top: 25px;  /* Increased top margin for spacing */
+    margin-bottom: 40px;  /* Increased bottom margin to create more gap with input */
+    text-transform: uppercase;
+    border-bottom: 3px solid #0072BA;
+    padding-bottom: 0px;
+}
+
+/* Full-width form field styling */
+.full-width {
+    width: 100%;
+    margin-bottom: 24px;  /* Increased bottom margin between form fields */
+}
+
+/* Custom styling for mat-select visibility */
+.mat-select {
+    display: block !important;
+    width: 100%;
+}
+
+/* Button styling */
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px;
+}
+
+/* Styling for input fields */
+.large-input-title {
+    width: 100%;  /* Adjusted to 100% width to prevent clipping */
+    height: 25px;  /* Reduced height to make it smaller */
+    font-size: 1rem;
+    padding: 8px;  /* Adjusted padding for smaller height */
+    margin-top: 10px;  /* Small margin for spacing */
+}
+
+.large-input-description {
+    width: 100%;  /* Adjusted to 100% width to prevent clipping */
+    font-size: 1rem;
+    height: 150px;  /* Set to a higher value to allow more space for text */
+    padding: 10px;  /* Added padding for a more comfortable text area */
+    resize: vertical;  /* Allows user to resize if needed */
+    vertical-align: top;  /* Ensures the text aligns at the top of the box */
+    overflow-y: auto;  /* Adds scroll if content exceeds box height */
+    box-sizing: border-box; /* Ensures padding is included in element's height */
+}
+
+/* Styling for tags select */
+.mat-select {
+    width: 100%;  /* Ensures full width */
+    margin-top: 0px;  /* Increased margin-top to add space between the label and dropdown */
+}
+
+.mat-select-trigger {
+    font-size: 1rem;
+}
+
+.mat-option-text {
+    font-size: 1rem;
+}
+
+/* General form field adjustments */
+.mat-form-field .mat-input-element {
+    font-size: 1rem;
+    padding: 8px;
+}
+
+/* Adjust the form field container width to be full */
+.mat-form-field {
+    width: 100%;  /* Ensures the form fields are full-width */
+}
+
+/* Increases space between title and input field */
+.form-group {
+    margin-bottom: -20px;  /* Increased margin for more space between sections */
+}

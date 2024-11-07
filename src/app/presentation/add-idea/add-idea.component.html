@@ -1,32 +1,43 @@
 <div class="idea-form-container">
-    <h2>Add Your Idea</h2>
+    <mat-card class="idea-card">
+      <mat-card-header class="header-container">
+        <mat-card-title>Add Your Idea</mat-card-title>
+      </mat-card-header>
+      <form #ideaForm="ngForm" (ngSubmit)="onSubmit(ideaForm)">
+        <div class="form-group">
+          <label for="title" class="section-title">Title of the Idea</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <input matInput type="text" id="title" name="title" ngModel required placeholder="Enter the title of your idea">
+          </mat-form-field>
+        </div>
   
-    <form #ideaForm="ngForm" (ngSubmit)="onSubmit(ideaForm)">
-      <div class="form-group">
-        <label for="title">Title of the Idea</label>
-        <input type="text" id="title" name="title" ngModel required class="form-control" placeholder="Enter the title of your idea">
-      </div>
+        <div class="form-group">
+          <label for="description" class="section-title">Description</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <textarea matInput id="description" name="description" ngModel required placeholder="Describe your idea" class="large-input-description"></textarea>
+          </mat-form-field>
+        </div>
   
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea id="description" name="description" ngModel required class="form-control" placeholder="Describe your idea"></textarea>
-      </div>
+        <div class="form-group">
+          <label for="tags" class="section-title">Select Tags</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-select id="tags" name="tags" ngModel>
+              <mat-option value="">-- Select a Tag --</mat-option>
+              <mat-option value="Technology">Technology</mat-option>
+              <mat-option value="Healthcare">Healthcare</mat-option>
+              <mat-option value="Education">Education</mat-option>
+              <mat-option value="Sustainability">Sustainability</mat-option>
+              <mat-option value="Business">Business</mat-option>
+              <mat-option value="Art">Art</mat-option>
+              <mat-option value="Science">Science</mat-option>
+              <mat-option value="Sports">Sports</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
   
-      <div class="form-group">
-        <label for="tags">Select Tags</label>
-        <select id="tags" name="tags" ngModel class="form-control">
-            <option value="">-- Select a Tag --</option>
-            <option value="Technology">Technology</option>
-            <option value="Healthcare">Healthcare</option>
-            <option value="Education">Education</option>
-            <option value="Sustainability">Sustainability</option>
-            <option value="Business">Business</option>
-            <option value="Art">Art</option>
-            <option value="Science">Science</option>
-            <option value="Sports">Sports</option>
-        </select>
-      </div>
-  
-      <button type="submit" class="btn btn-primary">Post Idea</button>
-    </form>
-</div>
+        <div class="button-container">
+          <button mat-raised-button color="primary" type="submit">Post Idea</button>
+        </div>
+      </form>
+    </mat-card>
+  </div>

@@ -5,7 +5,6 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { firebaseConfig } from './app/config/firebase-config';
 
-
 bootstrapApplication(AppComponent, appConfig)
   .catch((err) => console.error(err)
 );
