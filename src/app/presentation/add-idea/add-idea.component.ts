@@ -1,57 +1,79 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';  // Import FormsModule here
-import { Router } from '@angular/router'; // To navigate after post submission
+import { FormsModule } from '@angular/forms';  
+import { Router } from '@angular/router'; 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input'; // Import MatInputModule
-import { getDatabase, ref, push, set } from 'firebase/database';  // Firebase Realtime Database imports
+import { MatInputModule } from '@angular/material/input'; 
+import { CommonModule } from '@angular/common';  // Import CommonModule
+import { getDatabase, ref, push, set } from 'firebase/database';  
 
 @Component({
   selector: 'app-add-idea',
-  standalone: true,  // Make it a standalone component
-  imports: [FormsModule,
-            MatCardModule,
-            MatFormFieldModule,
-            MatSelectModule,
-            MatInputModule
+  standalone: true,
+  imports: [
+    FormsModule, 
+    MatCardModule, 
+    MatFormFieldModule, 
+    MatSelectModule, 
+    MatInputModule,
+    CommonModule  // Include CommonModule to access ngIf and ngClass
   ],
-    // Import FormsModule for template-driven forms
   templateUrl: './add-idea.component.html',
   styleUrls: ['./add-idea.component.css']
 })
 export class addIdeaComponent {
+  isConfirmationVisible = false;  // Whether the confirmation modal is visible
+  isFormSubmitted = false;  // To track if form is submitted
+  formData: any = {};  // Holds the form data before submission
 
   constructor(private router: Router) {}
 
   onSubmit(form: any) {
-    console.log('Form Submitted!', form.value);
+    // Prevent form submission until confirmation
+    if (this.isConfirmationVisible) return;
+    
+    // Store the form data before confirmation
+    this.formData = form.value;
+    this.isConfirmationVisible = true;
+  }
 
-    const { title, description, tags } = form.value;
+  confirmSubmit() {
+    // Proceed with form submission
+    console.log('Form Submitted!', this.formData);
+
+    const { title, description, tags } = this.formData;
 
     const newIdea = {
       title,
       description,
       tags,
       createdAt: new Date().toISOString(),
-      userId: "user-uid-placeholder" // Replace with actual user ID if available
+      userId: "user-uid-placeholder"  // Replace with actual user ID
     };
 
     // Initialize the Realtime Database
     const db = getDatabase();
-
-    // Create a reference to the "ideas" node in the database and push a new key
     const ideasRef = ref(db, 'ideas');
     const newIdeaRef = push(ideasRef);  // Generate a new unique key for the idea
 
-    // Use `set` to add the new idea at the new key
     set(newIdeaRef, newIdea)
       .then(() => {
         console.log('Idea added successfully!');
-        this.router.navigate(['/ideas']);
+        this.isFormSubmitted = true;  // Mark the form as submitted
+        setTimeout(() => {
+          this.router.navigate(['/bruh']);  // Navigate back to landing page.
+        }, 2000);
       })
       .catch((error) => {
         console.error('Error adding idea: ', error);
       });
+
+    this.isConfirmationVisible = false;  // Hide confirmation modal
+  }
+
+  cancelSubmit() {
+    // Reset form and cancel submission
+    this.isConfirmationVisible = false;
   }
 }
