@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from './app/config/firebase-config';
+import { getDatabase } from 'firebase/database';
 
 
 bootstrapApplication(AppComponent, appConfig)
@@ -13,4 +14,5 @@ bootstrapApplication(AppComponent, appConfig)
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const database = getDatabase(app);
 const auth = getAuth(app);

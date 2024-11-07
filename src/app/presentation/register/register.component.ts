@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateCurrentUser, updateProfile } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 
 import { MatCardModule } from '@angular/material/card';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
@@ -106,11 +107,23 @@ export class RegisterComponent {
   onRegister() {
     const auth = getAuth();
     if (this.registrationForm.valid) {
-      const { email, password } = this.registrationForm.value;
+      const {name, surname, email, password, type, center, degree, company, position, description} = this.registrationForm.value;
       createUserWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
           console.log("Usuario registered:", userCredential);
           sendEmailVerification(userCredential.user).then(() => {
+            //Add display name to Firebase Auth
+            const db = getDatabase()
+            set(ref(db, 'users/' + userCredential.user.uid), {
+              name: name,
+              surname: surname,
+              type: type,
+              center: center,
+              degree: degree,
+              company: company,
+              position: position,
+              description: description
+            });
             this.snackBar.open('Verification email sent successfully. Please check your inbox in order to activate your account. If it is not found check the SPAM folder', 'Close', {
               duration: 3000, 
               verticalPosition: 'bottom', 
