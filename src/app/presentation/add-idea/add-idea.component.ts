@@ -17,7 +17,7 @@ import { getDatabase, ref, push, set } from 'firebase/database';
     MatFormFieldModule, 
     MatSelectModule, 
     MatInputModule,
-    CommonModule  // Include CommonModule to access ngIf and ngClass
+    CommonModule 
   ],
   templateUrl: './add-idea.component.html',
   styleUrls: ['./add-idea.component.css']
@@ -49,20 +49,20 @@ export class addIdeaComponent {
       description,
       tags,
       createdAt: new Date().toISOString(),
-      userId: "user-uid-placeholder"  // Replace with actual user ID
+      userId: "user-uid-placeholder"  // Replace with actual user ID when we implement authentication from the other git branch.
     };
 
     // Initialize the Realtime Database
     const db = getDatabase();
     const ideasRef = ref(db, 'ideas');
-    const newIdeaRef = push(ideasRef);  // Generate a new unique key for the idea
+    const newIdeaRef = push(ideasRef);  // Generate a new unique key for the idea to be added and stuff
 
     set(newIdeaRef, newIdea)
       .then(() => {
         console.log('Idea added successfully!');
         this.isFormSubmitted = true;  // Mark the form as submitted
         setTimeout(() => {
-          this.router.navigate(['/bruh']);  // Navigate back to landing page.
+          this.router.navigate(['/bruh']);  // Navigate back to landing page whenever it is implemented by andres.
         }, 2000);
       })
       .catch((error) => {
