@@ -7,7 +7,6 @@ import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from './app/config/firebase-config';
 import { getDatabase } from 'firebase/database';
 
-
 bootstrapApplication(AppComponent, appConfig)
   .catch((err) => console.error(err)
   );
