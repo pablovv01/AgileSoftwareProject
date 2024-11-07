@@ -62,7 +62,7 @@ export class addIdeaComponent {
         console.log('Idea added successfully!');
         this.isFormSubmitted = true;  // Mark the form as submitted
         setTimeout(() => {
-          this.router.navigate(['/bruh']);  // Navigate back to landing page whenever it is implemented by andres.
+          this.router.navigate(['/home']);  // Navigate back to landing page whenever it is implemented by andres.
         }, 2000);
       })
       .catch((error) => {
