@@ -39,15 +39,17 @@ export class addIdeaComponent {
     // Store the form data before confirmation
     this.formData = form.value;
 
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent);
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm Submission',
+        message:'Are you sure you want to submit your idea?'
+      }})
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'confirm') {
         this.confirmSubmit();
       }
     });
-
-    
   }
 
   confirmSubmit() {
@@ -61,7 +63,7 @@ export class addIdeaComponent {
       description,
       tags,
       createdAt: new Date().toISOString(),
-      userId: "user-uid-placeholder"  // Replace with actual user ID when we implement authentication from the other git branch.
+      userId: sessionStorage.getItem('userId')!  // Replace with actual user ID when we implement authentication from the other git branch.
     };
 
     // Initialize the Realtime Database
