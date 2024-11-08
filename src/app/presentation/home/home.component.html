@@ -1,4 +1,3 @@
-
 <h1 class="title">My Ideas Board</h1>
 <div class="underline"></div>
 <div class="addIdea-button-container">
@@ -11,8 +10,15 @@
             @for (idea of userIdeas; track idea) {
             <mat-list-item color="primary" [activated]="idea.isActive">
                 <a matListItemTitle (click)="goToEditIdea(idea.title)">{{ idea.title }}</a>
-                <button mat-icon-button (click)="goToEditIdea(idea.title)"  matListItemMeta>
+                
+                <!-- Edit Button -->
+                <button mat-icon-button (click)="goToEditIdea(idea.title)" matListItemMeta>
                     <mat-icon>edit</mat-icon>
+                </button>
+                
+                <!-- Delete Button -->
+                <button mat-icon-button color="warn" (click)="deleteIdea(idea.id)" matListItemMeta>
+                    <mat-icon>delete</mat-icon>
                 </button>
             </mat-list-item>
             }

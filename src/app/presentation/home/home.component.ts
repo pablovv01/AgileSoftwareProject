@@ -4,7 +4,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
-import { getDatabase, ref, push, set, update, query, get, orderByChild, equalTo } from 'firebase/database';
+import { get, getDatabase, ref, remove } from 'firebase/database';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../common/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -16,18 +18,20 @@ import { getDatabase, ref, push, set, update, query, get, orderByChild, equalTo 
     MatCardModule
   ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
   userId = sessionStorage.getItem('userId')!;
   userIdeas: any[] = [];
+
   ideas = [
     { title: 'Home', isActive: true },
     { title: 'About Us', isActive: false },
     { title: 'Services', isActive: false },
     { title: 'Contact', isActive: false }
   ];
-  constructor(private router: Router){}
+
+  constructor(private router: Router, private dialog: MatDialog) {}
 
   ngOnInit() {
     this.loadUserIdeas();
@@ -35,7 +39,7 @@ export class HomeComponent {
 
   async loadUserIdeas() {
     try {
-      console.log(this.userId)
+      console.log(this.userId);
       this.userIdeas = await this.getUserIdeas(this.userId);
       console.log('User Ideas:', this.userIdeas);
     } catch (error) {
@@ -43,59 +47,70 @@ export class HomeComponent {
     }
   }
 
-  goToAddPost(){
+  deleteIdea(ideaId: any) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm Deletion',
+        message: 'Are you sure you want to delete this idea?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'confirm') {
+        this.deleteIdeaFromBBDD(ideaId);
+      }
+    });
+  }
+
+  async deleteIdeaFromBBDD(ideaId: string) {
+    try {
+      const db = getDatabase();
+      const ideaRef = ref(db, `ideas/${ideaId}`);
+      await remove(ideaRef);
+      console.log(`Idea with ID ${ideaId} deleted successfully.`);
+      
+      // Update the local userIdeas array to reflect the deletion
+      this.userIdeas = this.userIdeas.filter(idea => idea.id !== ideaId);
+      
+    } catch (error) {
+      console.error('Error deleting idea:', error);
+    }
+  }
+
+  goToAddPost() {
     this.router.navigate(['/add-idea']);
   }
 
-  goToEditIdea(ideaId:any){
+  goToEditIdea(ideaId: any) {
     this.router.navigate(['/edit-idea', ideaId]);
   }
 
   async getUserIdeas(userId: string): Promise<any[]> {
     try {
-      // Get bbdd reference
       const db = getDatabase();
-  
-      // Build reference
       const ideasRef = ref(db, 'ideas');
-      console.log("ideas ref")
-      console.log(ideasRef)
-  
-      const userIdeasQuery = query(ideasRef);
-  
-      // Do consult
-      const snapshot = await get(userIdeasQuery);
-  
+      const snapshot = await get(ideasRef);
+
       if (snapshot.exists()) {
-        console.log("entra")
-        // Filter and map user id ideas
-        // Get ideas from snapshot
         const userIdeas = snapshot.val();
-        console.log(userIdeas)
         const ideasList = Object.keys(userIdeas).map(key => {
           const idea = userIdeas[key];
+          if (idea.userId === userId) {
+            return { id: key, ...idea };
+          } else {
+            return null;
+          }
+        }).filter(idea => idea !== null);
 
-        // Verificar si el userId de la idea coincide con el userId actual
-        if (idea.userId === userId) {
-          return { id: key, ...idea };  // Add ID and all data to the idea
-        } else {
-          return null; 
-        }
-      }).filter(idea => idea !== null);  // Filter nulls
-    
-      console.log(ideasList);
-      
-      sessionStorage.setItem('ideas', JSON.stringify(ideasList)); //Save the user ideas list in session storage
-      
-      return ideasList;
-        
+        sessionStorage.setItem('ideas', JSON.stringify(ideasList));
+        return ideasList;
       } else {
         console.log('No ideas found for this user.');
-        return []; 
+        return [];
       }
     } catch (error) {
       console.error('Error fetching user ideas:', error);
-      return []; 
+      return [];
     }
   }
 }
