@@ -4,7 +4,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
-import { getDatabase, ref, push, set, update, query, get, orderByChild, equalTo } from 'firebase/database';
+import { getDatabase, ref, push, set, update, query, get, orderByChild, equalTo, remove } from 'firebase/database';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-home',
@@ -40,6 +41,26 @@ export class HomeComponent {
       console.log('User Ideas:', this.userIdeas);
     } catch (error) {
       console.error('Error loading user ideas:', error);
+    }
+  }
+
+  deleteIdea(ideaId: any){
+    console.log("Deleting idea...", ideaId);
+    // this.deleteIdeaFromBBDD(ideaId);
+  }    
+
+  async deleteIdeaFromBBDD(ideaId: string) {
+    try {
+      const db = getDatabase();
+      const ideaRef = ref(db, `ideas/${ideaId}`); // Reference the idea by ID
+      await remove(ideaRef); // Delete the idea from the database
+      console.log(`Idea with ID ${ideaId} deleted successfully.`);
+      
+      // Update the local userIdeas array to reflect the deletion
+      this.userIdeas = this.userIdeas.filter(idea => idea.id !== ideaId);
+      
+    } catch (error) {
+      console.error('Error deleting idea:', error);
     }
   }
 
