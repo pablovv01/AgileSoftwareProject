@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
 import { MatCardModule } from '@angular/material/card';
 import { MatFormField, MatLabel, MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -50,6 +48,8 @@ export class LoginComponent {
         .then((userCredential) => {
           if (userCredential.user.emailVerified) {
             this.router.navigate(['/home']);
+            sessionStorage.setItem('userId', userCredential.user.uid); //Store User ID in session storage
+            //console.log(userCredential.user)
           } else {
             this.snackBar.open('Please, validate your email before signing in', 'Close', {
               duration: 3000,

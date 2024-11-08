@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogActions, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-confirmation-dialog',
@@ -10,7 +10,8 @@ import { MatDialogActions, MatDialogModule, MatDialogRef } from '@angular/materi
   imports:[MatDialogModule, MatDialogActions, MatButtonModule]
 })
 export class ConfirmationDialogComponent {
-  constructor(public dialogRef: MatDialogRef<ConfirmationDialogComponent>) {}
+  constructor(public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { title: string; message: string }) {}
 
   onConfirm(): void {
     this.dialogRef.close('confirm');
