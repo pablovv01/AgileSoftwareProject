@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { EditIdeaComponent } from './edit-idea.component';
+
+describe('EditIdeaComponent', () => {
+  let component: EditIdeaComponent;
+  let fixture: ComponentFixture<EditIdeaComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [EditIdeaComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(EditIdeaComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

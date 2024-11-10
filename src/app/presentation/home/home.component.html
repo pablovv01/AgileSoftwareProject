@@ -1,0 +1,27 @@
+<h1 class="title">My Ideas Board</h1>
+<div class="underline"></div>
+<div class="addIdea-button-container">
+    <button mat-raised-button color="primary" type="button" (click)="goToAddPost()">Add post</button>
+</div>
+
+<div class="idea-form-container">
+    <mat-card class="idea-card">
+        <mat-nav-list>
+            @for (idea of userIdeas; track idea) {
+            <mat-list-item color="primary" [activated]="idea.isActive">
+                <a matListItemTitle (click)="goToEditIdea(idea.title)">{{ idea.title }}</a>
+                
+                <!-- Edit Button -->
+                <button mat-icon-button (click)="goToEditIdea(idea.title)" matListItemMeta>
+                    <mat-icon>edit</mat-icon>
+                </button>
+                
+                <!-- Delete Button -->
+                <button mat-icon-button color="warn" (click)="deleteIdea(idea.id)" matListItemMeta>
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-list-item>
+            }
+        </mat-nav-list>
+    </mat-card>
+</div>

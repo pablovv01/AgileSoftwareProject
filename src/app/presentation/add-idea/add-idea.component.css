@@ -1,0 +1,172 @@
+/* Main container for form */
+.idea-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    box-sizing: border-box;  
+}
+
+/* Card styling for idea form */
+.idea-card {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-sizing: border-box; 
+}
+
+/* Header styling */
+.header-container {
+    display: flex;
+    color: #0072BA;
+    justify-content: center;
+    margin-bottom: 30px;  
+    padding-bottom: 10px;  
+}
+
+mat-card-title {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+/* Section title styling */
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #0072BA;
+    margin-top: 25px; 
+    margin-bottom: 40px;  
+    text-transform: uppercase;
+    border-bottom: 3px solid #0072BA;
+    padding-bottom: 0px;
+}
+
+/* Full-width form field styling */
+.full-width {
+    width: 100%;
+    margin-bottom: 24px;  
+}
+
+/* Custom styling for mat-select visibility */
+.mat-select {
+    display: block !important;
+    width: 100%;
+}
+
+/* Button styling */
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px;
+}
+
+/* Styling for input fields */
+.large-input-title {
+    width: 100%;  
+    height: 25px;  
+    font-size: 1rem;
+    padding: 8px;  
+    margin-top: 5px;  
+}
+
+.large-input-description {
+    width: 100%;  
+    font-size: 1rem;
+    margin-top: -5px;
+    height: 150px;  
+    padding: 0;  
+    resize: vertical;  
+    vertical-align: top;  
+    overflow-y: auto;  
+    box-sizing: border-box; 
+}
+
+/* Styling for tags select */
+.mat-select {
+    width: 100%;  
+    margin-top: 0px;  
+}
+
+.mat-select-trigger {
+    font-size: 1rem;
+}
+
+.mat-option-text {
+    font-size: 1rem;
+}
+
+/* General form field adjustments */
+.mat-form-field .mat-input-element {
+    font-size: 1rem;
+    padding: 8px;
+}
+
+/* Adjust the form field container width to be full */
+.mat-form-field {
+    width: 100%;  
+}
+
+/* Increases space between title and input field */
+.form-group {
+    margin-bottom: -20px;  
+}
+
+/* Confirmation Modal Styling */
+.confirmation-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+}
+
+/* Success Notification Styling */
+.success-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+    text-align: center;
+}
+
+.yes-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.no-button {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

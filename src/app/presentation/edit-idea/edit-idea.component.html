@@ -1,0 +1,47 @@
+<div class="idea-form-container">
+    <mat-card class="idea-card">
+      <mat-card-header class="header-container">
+        <mat-card-title>Edit Your Idea</mat-card-title>
+      </mat-card-header>
+      <form #ideaForm="ngForm" (ngSubmit)="onSubmit(ideaForm)">
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title of the idea</mat-label>
+            <input matInput type="text" id="title" name="title" ngModel required placeholder="Enter the title of your idea" [(ngModel)]="idea.title">
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput id="description" name="description" ngModel required placeholder="Describe your idea" class="large-input-description" [(ngModel)]="idea.description"></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Select Tags</mat-label>
+            <mat-select id="tags" name="tags" ngModel required [(ngModel)]="idea.tags">
+              <mat-option value="Technology">Technology</mat-option>
+              <mat-option value="Healthcare">Healthcare</mat-option>
+              <mat-option value="Education">Education</mat-option>
+              <mat-option value="Sustainability">Sustainability</mat-option>
+              <mat-option value="Business">Business</mat-option>
+              <mat-option value="Art">Art</mat-option>
+              <mat-option value="Science">Science</mat-option>
+              <mat-option value="Sports">Sports</mat-option>
+              <mat-option value="Architecture">Architecture</mat-option>
+              <mat-option value="Aviation">Aviation</mat-option>
+              <mat-option value="Industry">Industry</mat-option>
+              <mat-option value="Nature">Nature</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="button-container">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!ideaForm.valid">Save changes</button>
+          <button mat-raised-button color="warn" type="button" (click)="discardChanges()">Discard changes</button>
+        </div>
+      </form>
+    </mat-card>
+</div>
