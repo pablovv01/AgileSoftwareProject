@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateCurrentUser, updateProfile } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
-
 import { MatCardModule } from '@angular/material/card';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,8 +9,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import { LayoutModule } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
-
-
+import { Centers } from '../../core/entities/centers';
+import { RegisterUseCase } from '../../core/usecases/register.usecase';
+import { User } from '../../core/entities/user';
 
 @Component({
   selector: 'app-register',
@@ -35,33 +32,16 @@ import { Router } from '@angular/router';
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-
 export class RegisterComponent {
   registrationForm: FormGroup;
+  centers = Object.values(Centers);
 
-  centers = [
-    'Centro Superior de Diseño de Moda de Madrid',
-    'Escuela Politécnica de Enseñanza Superior',
-    'Escuela Técnica Superior de Arquitectura',
-    'Escuela Técnica Superior de Ciencias de la Actividad Física y del Deporte (INEF)',
-    'Escuela Técnica Superior de Edificación',
-    'Escuela Técnica Superior de Ingeniería Agronómica, Alimentaria y de Biosistemas',
-    'Escuela Técnica Superior de Ingeniería Aeronáutica y del Espacio',
-    'Escuela Técnica Superior de Ingeniería de Montes, Forestal y del Medio Natural',
-    'Escuela Técnica Superior de Ingeniería de Sistemas Informáticos',
-    'Escuela Técnica Superior de Ingeniería y Diseño Industrial',
-    'Escuela Técnica Superior de Ingeniería y Sistemas de Telecomunicación',
-    'Escuela Técnica Superior de Ingenierios Navales',
-    'Escuela Técnica Superior de Ingenieros de Caminos, Canales y Puertos',
-    'Escuela Técnica Superior de Ingenieros de Minas y Energía',
-    'Escuela Técnica Superior de Ingenieros de Telecomunicación',
-    'Escuela Técnica Superior de Ingenieros en Topografía, Geodesia y Cartografía',
-    'Escuela Técnica Superior de Ingenieros Industriales',
-    'Escuela Técnica Superior de Ingenieros Informáticos',
-    'Instituto de Ciencias de la Educación ICE'
-];
-
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private registerUseCase: RegisterUseCase
+  ) {
     this.registrationForm = this.fb.group({
       name: ["", [Validators.required]],
       surname: ["", [Validators.required]],
@@ -82,7 +62,6 @@ export class RegisterComponent {
     const companyControl = this.registrationForm.get('company');
     const positionControl = this.registrationForm.get('position');
     const descriptionControl = this.registrationForm.get('description');
-
 
     if (type === 'student') {
       centerControl?.setValidators(Validators.required);
@@ -105,46 +84,25 @@ export class RegisterComponent {
   }
 
   onRegister() {
-    const auth = getAuth();
     if (this.registrationForm.valid) {
       const {name, surname, email, password, type, center, degree, company, position, description} = this.registrationForm.value;
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredential => {
-          console.log("Usuario registered:", userCredential);
-          sendEmailVerification(userCredential.user).then(() => {
-            //Add display name to Firebase Auth
-            const db = getDatabase()
-            set(ref(db, 'users/' + userCredential.user.uid), {
-              name: name,
-              surname: surname,
-              type: type,
-              center: center,
-              degree: degree,
-              company: company,
-              position: position,
-              description: description
-            });
-            this.snackBar.open('Verification email sent successfully. Please check your inbox in order to activate your account. If it is not found check the SPAM folder', 'Close', {
-              duration: 3000, 
-              verticalPosition: 'bottom', 
-              horizontalPosition: 'center'
-            }).afterDismissed().subscribe(() => {
-              this.router.navigate(['/login']);
-            });
-          }).catch((error) => {
-            this.snackBar.open('Error sending verification email. Please try again', 'Close', {
-              duration: 3000, 
-              verticalPosition: 'bottom', 
-              horizontalPosition: 'center'
-            });
-            console.error('Error sending verification email:', error);
-          });          
+      const user = new User(name, surname, email, type, center, degree, company, position, description);
+
+      this.registerUseCase.registerUser(user, password)
+        .then(() => {
+          this.snackBar.open('Verification email sent successfully. Please check your inbox.', 'Close', {
+            duration: 3000,
+            verticalPosition: 'bottom',
+            horizontalPosition: 'center'
+          }).afterDismissed().subscribe(() => {
+            this.router.navigate(['/login']);
+          });
         })
         .catch(error => {
           console.error("Error en el registro:", error);
           this.snackBar.open(error.message, 'Close', {
-            duration: 3000, 
-            verticalPosition: 'bottom', 
+            duration: 3000,
+            verticalPosition: 'bottom',
             horizontalPosition: 'center'
           });
         });
