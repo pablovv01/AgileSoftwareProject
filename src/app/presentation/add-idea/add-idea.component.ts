@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../common/confirmation-dialog/confirmation-dialog.component';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -38,15 +39,17 @@ export class addIdeaComponent {
   onSubmit(form: any) {
     // Store the form data before confirmation
     this.formData = form.value;
-
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: {
-        title: 'Confirm Submission',
-        message:'Are you sure you want to submit your idea?'
-      }})
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'confirm') {
+    Swal.fire({
+      title: 'Add post',
+      text: 'Are you sure you want to submit your idea?',
+      icon: 'warning',
+      showCancelButton: true,  // Muestra el botón de "No"
+      confirmButtonText: 'Yes',  // Botón de "Yes"
+      cancelButtonText: 'No',    // Botón de "No"
+      reverseButtons: true,      // Cambia la posición de los botones (No a la izquierda y Yes a la derecha)
+      allowOutsideClick: false
+    }).then((result) => {
+      if (result.isConfirmed) {
         this.confirmSubmit();
       }
     });
@@ -74,21 +77,28 @@ export class addIdeaComponent {
     set(newIdeaRef, newIdea)
       .then(() => {
         console.log('Idea added successfully!');
-        this.snackBar.open('Your idea has been submitted successfully!', 'Close', {
-          duration: 3000,
-          verticalPosition: 'bottom',
-          horizontalPosition: 'center'
-        }).afterDismissed().subscribe(() => {
-          this.router.navigate(['/home']); // Navigate back to landing page whenever it is implemented by andres.
+        Swal.fire({
+          title: 'Add post',
+          text: 'Your idea has been submitted successfully!',
+          icon: 'success',
+          confirmButtonText: 'Ok',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Navigate login after click on ok.
+            this.router.navigate(['/home']);
+          }
         });
       })
       .catch((error) => {
         console.error('Error adding idea: ', error);
-        this.snackBar.open('There has been an error adding your idea. Please try again later', 'Close', {
-          duration: 3000,
-          verticalPosition: 'bottom',
-          horizontalPosition: 'center'
-        })
+        Swal.fire({
+          title: 'Add post',
+          text: 'There was an issue posting your idea. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'Ok',
+          allowOutsideClick: false
+        });
       });
   }
 }

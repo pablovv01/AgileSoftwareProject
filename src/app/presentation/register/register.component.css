@@ -93,3 +93,25 @@ button {
   font-weight: 600;
   padding: 12px;
 }
+
+/* Enlace para registrarse */
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+
+  p {
+    font-size: 0.9rem;
+    color: #333;
+
+    a {
+      color: #0072BA;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+}
+

@@ -11,8 +11,8 @@
 /* Registration card */
 mat-card {
   width: 100%;
-  max-width: 400px;
-  height: 90vh;
+  max-width:500px;
+  height: 70vh;
   padding: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
@@ -47,7 +47,7 @@ mat-card-title {
 /* Input field styling */
 .full-width,
 mat-form-field {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 mat-form-field {
@@ -71,7 +71,7 @@ mat-error {
 /* Button styling */
 .button-container {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 button {
@@ -99,5 +99,19 @@ button {
     a:hover {
       text-decoration: underline;
     }
+  } 
+}
+.forgot-pwd{
+  text-align: right;
+   margin-top: -35px; 
+  a {
+    color: #0072BA;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+
+  a:hover {
+    text-decoration: underline;
   }
 }

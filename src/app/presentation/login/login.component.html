@@ -25,6 +25,11 @@
         <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
       </mat-form-field>
 
+      <!-- Link para Contraseña olvidada -->
+      <div class="forgot-pwd">
+        <a href="/forgot-pwd" class="link-forgot-pwd">Forgot password?</a>
+      </div>
+
       <!-- Botón de Login -->
       <div class="button-container">
         <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>

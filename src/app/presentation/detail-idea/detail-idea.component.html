@@ -1,0 +1,20 @@
+<div class="idea-detail-container">
+    <mat-card class="idea-card">
+      <mat-card-title class="idea-card-title">
+        {{ idea.title }}
+      </mat-card-title>
+      <mat-chip-set>
+        <mat-chip>
+           {{ idea.tags }}
+        </mat-chip>
+      </mat-chip-set>
+      <mat-divider></mat-divider>
+      <mat-card-content class="idea-card-content">
+        {{ idea.description }}
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-footer class="idea-card-footer">
+        Created at {{ date.toLocaleDateString() }} {{ date.toLocaleTimeString() }} by {{ idea.userId }}
+      </mat-card-footer>
+    </mat-card>
+</div>
