@@ -12,7 +12,7 @@ export const routes: Routes = [
     { path: 'register', component: RegisterComponent }, // Route for register component
     { path: 'login', component: LoginComponent }, //Route for login component
     { path: 'add-idea', component: addIdeaComponent }, // Route for add idea component
-    { path: 'home', component: HomeComponent}, // Route for home component
+    { path: 'home', component: HomeComponent }, // Route for home component
     { path: 'edit-idea/:id', component: EditIdeaComponent },
     { path: 'forgot-pwd', component: ForgotPwdComponent },
     { path: 'detail/:id', component: DetailIdeaComponent },

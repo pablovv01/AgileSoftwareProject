@@ -7,7 +7,7 @@ import { FirebaseDbService } from '../../data/firebase_db_service';
   providedIn: 'root',
 })
 export class RegisterUseCase {
-  constructor(private firebaseAuthService: FirebaseAuthService, private firebaseDb: FirebaseDbService) {}
+  constructor(private firebaseAuthService: FirebaseAuthService, private firebaseDb: FirebaseDbService) { }
 
   async registerUser(user: User, password: string): Promise<void> {
     try {

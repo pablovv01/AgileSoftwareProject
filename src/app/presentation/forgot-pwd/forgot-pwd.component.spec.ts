@@ -10,7 +10,7 @@ describe('ForgotPwdComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ForgotPwdComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ForgotPwdComponent);
     component = fixture.componentInstance;

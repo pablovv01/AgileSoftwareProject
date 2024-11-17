@@ -35,8 +35,9 @@
                     <input matInput formControlName="email" type="email" />
                     <mat-error *ngIf="registrationForm.get('email')?.hasError('required')">Email is required</mat-error>
                     <mat-error *ngIf="registrationForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
-                    <mat-error *ngIf="registrationForm.get('email')?.hasError('emailInUse')">This email is already in use</mat-error>
-                  </mat-form-field>
+                    <mat-error *ngIf="registrationForm.get('email')?.hasError('emailInUse')">This email is already in
+                        use</mat-error>
+                </mat-form-field>
 
                 <!-- Password -->
                 <mat-form-field appearance="outline" class="full-width">
@@ -52,8 +53,9 @@
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Confirm Password</mat-label>
                     <input matInput formControlName="confirmPassword" type="password" />
-                    <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('passwordMismatch')">Passwords must match</mat-error>
-                  </mat-form-field>
+                    <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('passwordMismatch')">Passwords
+                        must match</mat-error>
+                </mat-form-field>
 
                 <!-- User Type Selection -->
                 <mat-form-field appearance="outline" class="full-width">
@@ -113,7 +115,7 @@
                     <button mat-raised-button color="primary" type="submit"
                         [disabled]="registrationForm.invalid">Register</button>
                 </div>
-                
+
                 <!-- Link to Login -->
                 <div class="login-link">
                     <p>Already have an account? <a href="/login">Login to your account now.</a></p>

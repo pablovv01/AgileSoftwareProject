@@ -2,22 +2,26 @@
   <div class="home-container">
     <h1 class="title">My Ideas Board</h1>
     <div class="underline"></div>
-    <button mat-fab extended class="button-details" (click)="goToAddPost()"><mat-icon class="icon-details">add</mat-icon>Add post</button>  
+    <button mat-fab extended class="button-details" (click)="goToAddPost()"><mat-icon
+        class="icon-details">add</mat-icon>Add post</button>
     <div class="idea-list">
       @for (idea of userIdeas; track idea) {
-        <mat-card color="primary" class="idea-card">
-          <mat-card-title class="idea-card-title">
-            {{ idea.title }}
-          </mat-card-title>
-          <mat-card-content class="idea-card-content">
-            {{ idea.description }}
-          </mat-card-content>
-          <div class="container-buttons">
-          <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea.id)"><mat-icon class="icon-details">visibility</mat-icon>Details</button>
-          <button mat-fab extended class="button-edit" (click)="goToEditIdea(idea.title)"><mat-icon>edit</mat-icon>Edit</button>
-          <button mat-fab extended class="button-delete" (click)="deleteIdea(idea.id)"><mat-icon>delete</mat-icon>Delete</button>
+      <mat-card color="primary" class="idea-card">
+        <mat-card-title class="idea-card-title">
+          {{ idea.title }}
+        </mat-card-title>
+        <mat-card-content class="idea-card-content">
+          {{ idea.description }}
+        </mat-card-content>
+        <div class="container-buttons">
+          <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea.id)"><mat-icon
+              class="icon-details">visibility</mat-icon>Details</button>
+          <button mat-fab extended class="button-edit"
+            (click)="goToEditIdea(idea.title)"><mat-icon>edit</mat-icon>Edit</button>
+          <button mat-fab extended class="button-delete"
+            (click)="deleteIdea(idea.id)"><mat-icon>delete</mat-icon>Delete</button>
         </div>
-        </mat-card>
+      </mat-card>
       }
     </div>
   </div>

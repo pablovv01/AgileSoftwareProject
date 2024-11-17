@@ -11,7 +11,7 @@
 /* Registration card */
 mat-card {
   width: 100%;
-  max-width:500px;
+  max-width: 500px;
   height: 70vh;
   padding: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
@@ -99,11 +99,13 @@ button {
     a:hover {
       text-decoration: underline;
     }
-  } 
+  }
 }
-.forgot-pwd{
+
+.forgot-pwd {
   text-align: right;
-   margin-top: -35px; 
+  margin-top: -35px;
+
   a {
     color: #0072BA;
     text-decoration: none;

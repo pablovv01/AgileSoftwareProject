@@ -47,9 +47,9 @@ export class EditIdeaComponent implements OnInit {
       title: 'Edit idea',
       text: 'Are you sure you want to save the changes?',
       icon: 'warning',
-      showCancelButton: true,  
-      confirmButtonText: 'Yes',  
-      cancelButtonText: 'No',    
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
       reverseButtons: true,
       allowOutsideClick: false
     }).then((result) => {

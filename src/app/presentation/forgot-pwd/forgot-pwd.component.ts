@@ -36,7 +36,7 @@ import { LoginUseCase } from '../../core/usecases/login.usecase';
 export class ForgotPwdComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router, private loginUseCase:LoginUseCase) {
+  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router, private loginUseCase: LoginUseCase) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
     });

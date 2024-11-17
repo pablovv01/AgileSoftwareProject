@@ -9,7 +9,7 @@ describe('AddIdeaComponent', () => {
     await TestBed.configureTestingModule({
       imports: [addIdeaComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(addIdeaComponent);
     component = fixture.componentInstance;
