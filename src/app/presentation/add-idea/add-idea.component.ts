@@ -6,12 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import { getDatabase, ref, push, set } from 'firebase/database';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-import { FirebaseDbService } from '../../data/firebase_db_service';
 import { IdeaUseCase } from '../../core/usecases/idea.usecase';
 
 

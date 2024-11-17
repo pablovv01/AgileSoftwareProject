@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -26,13 +26,13 @@ import { IdeaUseCase } from '../../core/usecases/idea.usecase';
   styleUrls: ['./edit-idea.component.css']
 })
 export class EditIdeaComponent implements OnInit {
-  formData: any = {};  // Guarda los datos del formulario
+  formData: any = {};
   ideaTitle: string = '';
   idea: any;
 
   constructor(
-    private router: Router, 
-    private route: ActivatedRoute, 
+    private router: Router,
+    private route: ActivatedRoute,
     private ideaUseCase: IdeaUseCase
   ) { }
 
@@ -40,7 +40,7 @@ export class EditIdeaComponent implements OnInit {
     this.getData();
   }
 
-  onSubmit(form: any) {
+  onSubmit(form: any): void {
     this.formData = form.value;
 
     Swal.fire({
@@ -54,12 +54,30 @@ export class EditIdeaComponent implements OnInit {
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
-        this.ideaUseCase.editIdea(this.formData, this.idea);
+        this.ideaUseCase.updateIdea(this.formData, this.idea.id).then(() => {
+          Swal.fire({
+            title: 'Saved Changes',
+            text: 'Your changes have been successfully saved.',
+            icon: 'success',
+            confirmButtonText: 'Ok',
+            allowOutsideClick: false
+          }).then(() => {
+            this.router.navigate(['/home']);
+          });
+        }).catch((error) => {
+          Swal.fire({
+            title: 'Edit error',
+            text: 'There was an issue updating your idea. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'Ok',
+            allowOutsideClick: false
+          });
+        });
       }
     });
   }
 
-  getData() {
+  getData(): void {
     this.route.paramMap.subscribe(params => {
       this.ideaTitle = params.get('id') ?? '';
     });
@@ -67,17 +85,11 @@ export class EditIdeaComponent implements OnInit {
     const retrievedSessionObject = sessionStorage.getItem('ideas');
     if (retrievedSessionObject) {
       const userIdeas = JSON.parse(retrievedSessionObject);
-
-      for (let idea of userIdeas) {
-        if (idea.title === this.ideaTitle) {
-          this.idea = idea; 
-          break;
-        }
-      }
+      this.idea = userIdeas.find((idea: any) => idea.title === this.ideaTitle);
     }
   }
 
-  discardChanges() {
+  discardChanges(): void {
     this.router.navigate(['/home']);
   }
 }

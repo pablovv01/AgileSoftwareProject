@@ -41,53 +41,52 @@ export class IdeaUseCase {
     }
   }
 
-    //Edit an idea
-    editIdea(formData: any, idea: any) {
-        const { title, description, tags } = formData;
-    
-        const updatedIdea = {
-          title,
-          description,
-          tags,
-          updatedAt: new Date().toISOString(),
-          userId: sessionStorage.getItem('userId')!
-        };
-    
-        const ideaId = idea.id;  
-        if (!ideaId) {
-          console.error('Idea ID is missing!');
-          return;
-        }
-            this.firebaseDb.updateIdea(ideaId, updatedIdea);
-      }
+  //Edit an idea
+  async updateIdea(formData: any, ideaId: string): Promise<void> {
+    try {
+      const { title, description, tags } = formData;
+      const updatedIdea = {
+        title,
+        description,
+        tags,
+        updatedAt: new Date().toISOString(),
+        userId: sessionStorage.getItem('userId')!
+      };
 
-      // Get idea details
-      async getDetails(id: string): Promise<any> {
-        try {
-          const ideaData = await this.firebaseDb.getIdeaById(id);
-          return ideaData;
-        } catch (error) {
-          console.error('Error fetching idea in service:', error);
-          throw error;
-        }
-      }
+      await this.firebaseDb.updateIdea(ideaId, updatedIdea);
+    } catch (error) {
+      console.error('Error editing idea in service:', error);
+      throw error;
+    }
+  }
 
-      // Add new idea
-      async addIdea(formData: any): Promise<void> {
-        try {
-          const { title, description, tags } = formData;
-          const newIdea = {
-            title,
-            description,
-            tags,
-            createdAt: new Date().toISOString(),
-            userId: sessionStorage.getItem('userId')!  // ID del usuario actual
-          };
-    
-          await this.firebaseDb.addIdea(newIdea);
-        } catch (error) {
-          console.error('Error adding idea in service:', error);
-          throw error;
-        }
-      }
+  // Get idea details
+  async getDetails(id: string): Promise<any> {
+    try {
+      const ideaData = await this.firebaseDb.getIdeaById(id);
+      return ideaData;
+    } catch (error) {
+      console.error('Error fetching idea in service:', error);
+      throw error;
+    }
+  }
+
+  // Add new idea
+  async addIdea(formData: any): Promise<void> {
+    try {
+      const { title, description, tags } = formData;
+      const newIdea = {
+        title,
+        description,
+        tags,
+        createdAt: new Date().toISOString(),
+        userId: sessionStorage.getItem('userId')!  // ID del usuario actual
+      };
+
+      await this.firebaseDb.addIdea(newIdea);
+    } catch (error) {
+      console.error('Error adding idea in service:', error);
+      throw error;
+    }
+  }
 }

@@ -6,10 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import { getDatabase, ref, get } from 'firebase/database';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatChip, MatChipSet } from '@angular/material/chips';
 import { MatDivider } from '@angular/material/divider';
 import { IdeaUseCase } from '../../core/usecases/idea.usecase';
@@ -26,7 +24,6 @@ import { IdeaUseCase } from '../../core/usecases/idea.usecase';
     MatInputModule,
     CommonModule,
     MatSnackBarModule,
-    MatDialogModule,
     MatChipSet,
     MatChip,
     MatDivider
@@ -39,7 +36,7 @@ export class DetailIdeaComponent implements OnInit {
   idea: any
   id: string | null = null
   date: Date = new Date()
-  constructor(private router: Router, private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase) { }
+  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
