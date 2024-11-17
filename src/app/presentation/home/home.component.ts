@@ -4,8 +4,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
-import { get, getDatabase, ref, remove } from 'firebase/database';
-import { MatDialog } from '@angular/material/dialog';
 import { Idea } from '../../core/entities/idea';
 import Swal from 'sweetalert2';
 import { IdeaUseCase } from '../../core/usecases/idea.usecase';
@@ -33,7 +31,7 @@ export class HomeComponent {
     { title: 'Contact', isActive: false }
   ];
 
-  constructor(private router: Router, private ideaUseCase: IdeaUseCase) {}
+  constructor(private router: Router, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit() {
     this.loadUserIdeas();

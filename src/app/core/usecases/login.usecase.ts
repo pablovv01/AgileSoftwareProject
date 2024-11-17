@@ -22,4 +22,14 @@ export class LoginUseCase {
       throw error;
     }
   }
+
+  async resetPassword(email: string): Promise<void> {
+    try {
+      await this.firebaseAuthService.sendPasswordResetEmail(email);
+      console.log(`Password reset email sent to ${email}`);
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      throw new Error('Error resetting password');
+    }
+  }
 }
