@@ -32,7 +32,7 @@ import Swal from 'sweetalert2';
 export class EditIdeaComponent implements OnInit {
   formData: any = {};  // Holds the form data before submission
   ideaTitle: string = '';
-  userIdeas: any = [];
+  userIdeas : any = [];
   idea: any;
 
 
@@ -61,9 +61,9 @@ export class EditIdeaComponent implements OnInit {
       title: 'Edit idea',
       text: 'Are you sure you want to save the changes?',
       icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
+      showCancelButton: true,  
+      confirmButtonText: 'Yes',  
+      cancelButtonText: 'No',    
       reverseButtons: true,
       allowOutsideClick: false
     }).then((result) => {
@@ -73,81 +73,79 @@ export class EditIdeaComponent implements OnInit {
     });
   }
 
-  getData() {
+  getData(){
     // Take idea title in url
     this.route.paramMap.subscribe(params => {
       this.ideaTitle = params.get('id') ?? '';
-      console.log(this.ideaTitle);
+      console.log(this.ideaTitle);  
     });
-
     // Recover sessionStorage
     const retrievedSessionObject = sessionStorage.getItem('ideas');
     if (retrievedSessionObject) {
       this.userIdeas = JSON.parse(retrievedSessionObject);
 
       // Get the selected idea
-      for (let idea of this.userIdeas) {
-        if (idea.title === this.ideaTitle) {
-          this.idea = idea;
-          console.log(idea)
-          break;
-        }
-      }
+  for (let idea of this.userIdeas) {
+    if (idea.title === this.ideaTitle) {
+      this.idea = idea; 
+      console.log(idea)
+      break;  
     }
   }
-  
+    }
+  }
   discardChanges() {
     this.router.navigate(['/home']);
   }
 
-  saveChanges() {
+  saveChanges(){
     const { title, description, tags } = this.formData;
 
-    const updatedIdea = {
-      title,
-      description,
-      tags,
-      updatedAt: new Date().toISOString(),
-      userId: sessionStorage.getItem('userId')!
-    };
+  const updatedIdea = {
+    title,
+    description,
+    tags,
+    updatedAt: new Date().toISOString(),  
+    userId: sessionStorage.getItem('userId')!  
+  };
 
+  
+  const ideaId = this.idea.id;  
+  if (!ideaId) {
+    console.error('Idea ID is missing!');
+    return;
+  }
 
-    const ideaId = this.idea.id;
-    if (!ideaId) {
-      console.error('Idea ID is missing!');
-      return;
-    }
+  // Inicialize bbdd
+  const db = getDatabase();
+  const ideaRef = ref(db, `ideas/${ideaId}`);  // Put the selected id idea
 
-    // Inicialize bbdd
-    const db = getDatabase();
-    const ideaRef = ref(db, `ideas/${ideaId}`);  // Put the selected id idea
-
-    // Update in bbdd
-    update(ideaRef, updatedIdea)
-      .then(() => {
-        console.log('Idea updated successfully!');
-        Swal.fire({
-          title: 'Saved Changes',
-          text: 'Your changes have been successfully saved.',
-          icon: 'success',
-          confirmButtonText: 'Ok',
-          allowOutsideClick: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Navigate login after click on ok.
-            this.router.navigate(['/home']);
-          }
-        });
-      })
-      .catch((error) => {
-        console.error('Error updating idea: ', error);
-        Swal.fire({
-          title: 'Edit error',
-          text: 'There was an issue updating your idea. Please try again.',
-          icon: 'error',
-          confirmButtonText: 'Ok',
-          allowOutsideClick: false
-        });
+  // Update in bbdd
+  update(ideaRef, updatedIdea)
+    .then(() => {
+      console.log('Idea updated successfully!');
+      Swal.fire({
+        title: 'Saved Changes',
+        text: 'Your changes have been successfully saved.',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        allowOutsideClick: false
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Navigate login after click on ok.
+          this.router.navigate(['/home']);
+        }
       });
+    })
+    .catch((error) => {
+      console.error('Error updating idea: ', error);
+      Swal.fire({
+        title: 'Edit error',
+        text: 'There was an issue updating your idea. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        allowOutsideClick: false
+      });
+    });
   }
 }
