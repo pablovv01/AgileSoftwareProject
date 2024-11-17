@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { get, getDatabase, ref, remove } from 'firebase/database';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../common/confirmation-dialog/confirmation-dialog.component';
+import { Idea } from '../../core/entities/idea';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +24,7 @@ import { ConfirmationDialogComponent } from '../common/confirmation-dialog/confi
 })
 export class HomeComponent {
   userId = sessionStorage.getItem('userId')!;
-  userIdeas: any[] = [];
+  userIdeas: Idea[] = [];
 
   ideas = [
     { title: 'Home', isActive: true },
@@ -48,15 +50,17 @@ export class HomeComponent {
   }
 
   deleteIdea(ideaId: any) {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: {
-        title: 'Confirm Deletion',
-        message: 'Are you sure you want to delete this idea?'
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'confirm') {
+    Swal.fire({
+      title: 'Delete idea',
+      text: 'Are you sure you want to delete this idea? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,  // Muestra el botón de "No"
+      confirmButtonText: 'Yes',  // Botón de "Yes"
+      cancelButtonText: 'No',    // Botón de "No"
+      reverseButtons: true,      // Cambia la posición de los botones (No a la izquierda y Yes a la derecha)
+      allowOutsideClick: false
+    }).then((result) => {
+      if (result.isConfirmed) {
         this.deleteIdeaFromBBDD(ideaId);
       }
     });
@@ -67,13 +71,27 @@ export class HomeComponent {
       const db = getDatabase();
       const ideaRef = ref(db, `ideas/${ideaId}`);
       await remove(ideaRef);
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'The idea has been successfully deleted.',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        allowOutsideClick: false  // Evita que el usuario cierre la alerta fuera de la ventana
+      });
       console.log(`Idea with ID ${ideaId} deleted successfully.`);
-      
+
       // Update the local userIdeas array to reflect the deletion
       this.userIdeas = this.userIdeas.filter(idea => idea.id !== ideaId);
-      
+
     } catch (error) {
       console.error('Error deleting idea:', error);
+      Swal.fire({
+        title: 'Delete error',
+        text: 'There was an issue deleting the idea. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        allowOutsideClick: false
+      });
     }
   }
 
@@ -85,7 +103,11 @@ export class HomeComponent {
     this.router.navigate(['/edit-idea', ideaId]);
   }
 
-  async getUserIdeas(userId: string): Promise<any[]> {
+  goToDetailIdea(ideaId: any) {
+    this.router.navigate(['/detail', ideaId]);
+  }
+
+  async getUserIdeas(userId: string): Promise<Idea[]> {
     try {
       const db = getDatabase();
       const ideasRef = ref(db, 'ideas');

@@ -1,0 +1,148 @@
+/* Main container */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  }
+ 
+  
+  /* Registration card */
+  mat-card {
+    width: 100%;
+    max-width:500px;
+    height: 63vh;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    background-color: #ffffff;
+  }
+  
+  mat-card-header {
+    display: flex;
+    color: #0072BA;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  mat-card-title {
+    font-size: 2rem;
+    font-weight: 500;
+  }
+  
+  /* Logo container */
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+
+  }
+  
+  /* Logo styling */
+  .logo {
+    width: 200px;
+    height: auto;
+  }
+  /* Input field styling */
+  .full-width,
+  mat-form-field {
+    margin-bottom: 20px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+  }
+  
+  mat-form-field.fxFlex-50 {
+    width: calc(50% - 8px);
+  }
+  
+  mat-icon {
+    color: #0072BA;
+  }
+  
+  /* Custom error styling */
+  mat-error {
+    font-size: 0.85rem;
+    color: #e53935;
+  }
+  
+  /* Button styling */
+  .button-container {
+    text-align: center;
+  }
+  
+  button {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px;
+  }
+  
+  /* Enlace para registrarse */
+  .register-link {
+    text-align: center;
+    margin-top: 20px;
+  
+    p {
+      font-size: 0.9rem;
+      color: #333;
+  
+      a {
+        color: #0072BA;
+        text-decoration: none;
+        font-weight: 500;
+      }
+  
+      a:hover {
+        text-decoration: underline;
+      }
+    } 
+  }
+
+
+  .forgot-message{
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+
+  .back-login{
+    margin-top: 10px;
+    height: 7.5vh;
+    text-align: center;
+    justify-content: center;
+    font-size: 1rem ;
+    a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 400;
+      }
+  
+      a:hover {
+        text-decoration: none;
+        color: #0072BA;
+        font-weight: 500;
+      }
+     
+  }
+
+  /* .back-login:hover{
+    cursor: pointer;
+    background-color: rgba(0, 114, 186, 0.2);
+  } */
+
+  ::ng-deep .custom-snackbar {
+    background-color: #4caf50;  /* Color de fondo verde */
+    color: white;               /* Color del texto blanco */
+    font-weight: bold;          /* Texto en negrita */
+    --mdc-snackbar-container-color: #4caf50
+    
+  }
+
+
+  

@@ -1,52 +1,179 @@
+  .principal-container {
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  }
 
-mat-nav-list{  
-    height: auto;
-    overflow-y: auto;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    background-color: #ffffff;
-    box-sizing: border-box; 
-    border: none;
-}
-
-mat-icon{
+  .home-container {
+    max-width: 900px;
+    margin: auto;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  background-color: #ffffff;
+  }
+  
+  mat-icon {
     color: #0072BA;
-}
-::ng-deep mat-list-item:hover {
-    background-color: #e3f2fd; 
-    color: #0072BA; 
-    cursor: pointer;
-}
-
-
-::ng-deep mat-list-item a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.addIdea-button-container{
+  }
+  
+  .addIdea-button-container {
     display: flex;
-    justify-content: flex-end; 
-    margin-right: 10px; 
-}
+    justify-content: flex-end;
+    position: absolute;
+    margin-right: 10px;
+  }
 
-.title{
-    font-size: xx-large;
-    margin-left: 10px;
-    color: #0072BA;
-}
-
-.idea-form-container {
+  .idea-form-container {
     height: 100vh;
     padding: 10px;
-    border: none;  
-}
-
-.underline {
-    width: 100%;           
-    height: 2px;          
-    background-color: #0072BA; 
-    margin: 10px;          
-}
+    border: none;
+  }
+.title {
+    font-size: 3rem;              
+    font-weight: bold;            
+    color: #0072BA;              
+    text-transform: uppercase;    
+    letter-spacing: 2px;          
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);  
+    margin-bottom: 5px;           
+  }
+  
+  .underline {
+    width: 100%;                   
+    height: 4px;                  
+    background-color: #0072BA;    
+    margin-top: 5px;
+    margin-bottom: 20px;
+    border-radius: 5px;          
+    transition: width 0.3s ease;  
+  }
+  
 
   
+  .container-buttons {
+    display: flex;              
+    justify-content: flex-end;  
+    gap: 10px;                  
+    position: absolute;         
+    bottom: 15px;               
+    right: 10px;                
+    width: auto;                
+  }
+  
+  .idea-card {
+    padding: 1rem;                
+    width: 100%;                  
+    position: relative;           
+    display: flex;
+    flex-direction: column;       
+    min-height: 220px;            
+    border-radius: 8px;           
+    background-color: #fff;       
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; 
+  }
+  .idea-card:hover {
+    transform: translateY(-10px); 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); 
+  }
+
+.idea-card-title {
+    font-size: 1.25rem;           
+    font-weight: bold;
+    color: #0072BA;               
+    margin-bottom: 10px;          
+    margin-left: 15px;
+  }
+
+  .idea-card-content {
+    text-align: justify;
+  }
+  
+  .idea-detail-button {
+    width: auto;                
+    min-width: 80px;            
+    padding: 8px 16px;         
+    font-size: 14px;            
+    height: 40px;               
+  }
+  
+  .idea-list {
+    display: flex;
+    flex-direction: column;     
+    justify-content: center;
+    align-items: center;
+    gap: 2ex;
+    margin-top: 3ex;
+  }
+
+button.mat-fab {
+    background-color: white; 
+    color: black;            
+    border: 2px solid;       
+    border-radius: 50px;     
+    padding: 12px 20px;      
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+    transition: all 0.3s ease;
+  }
+  
+  .button-details {
+    background-color: white;         
+    border-radius: 15px;     
+    padding: 10px 20px;      
+    font-size: 14px;        
+    width: auto;            
+    height: 40px;           
+  }
+  
+  .button-edit {
+    background-color: white;
+    border-radius: 15px;     
+    padding: 10px 20px;      
+    font-size: 14px;        
+    width: auto;            
+    height: 40px; 
+  }
+  
+  .button-delete {
+    background-color: white;
+    border-radius: 15px;     
+    padding: 10px 20px;      
+    font-size: 14px;        
+    width: auto;            
+    height: 40px; 
+  }
+  
+  button.mat-fab:hover {
+    background-color: rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); 
+  }
+  
+  .button-details:hover {
+    background-color: rgba(0, 114, 186, 0.7); 
+    color: white;              
+    mat-icon{
+        color: white
+    }
+  }
+  
+  .button-edit:hover {
+    background-color: rgba(241, 115, 24, 0.901); 
+    color: white;        
+    mat-icon{
+        color: white
+    }
+  }
+  
+  .button-delete:hover {
+    background-color: rgba(230, 12, 12, 0.7);
+    color: white;              
+    mat-icon{
+        color: white
+    }
+  }
+  
+  button.mat-fab:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  }

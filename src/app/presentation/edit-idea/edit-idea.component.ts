@@ -6,11 +6,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import { getDatabase, ref, push, set, update } from 'firebase/database';
+import { getDatabase, ref, update } from 'firebase/database';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../common/confirmation-dialog/confirmation-dialog.component';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-edit-idea',
   standalone: true,
@@ -44,14 +46,29 @@ export class EditIdeaComponent implements OnInit {
     // Store the form data before confirmation
     this.formData = form.value;
 
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: {
-        title: 'Confirm Update',
-        message:'Are you sure you want to update your idea?'
-      }})
+    // const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+    //   data: {
+    //     title: 'Confirm Update',
+    //     message:'Are you sure you want to update your idea?'
+    //   }})
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'confirm') {
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result === 'confirm') {
+    //     this.saveChanges();
+    //   }
+    // });
+
+    Swal.fire({
+      title: 'Edit idea',
+      text: 'Are you sure you want to save the changes?',
+      icon: 'warning',
+      showCancelButton: true,  
+      confirmButtonText: 'Yes',  
+      cancelButtonText: 'No',    
+      reverseButtons: true,
+      allowOutsideClick: false
+    }).then((result) => {
+      if (result.isConfirmed) {
         this.saveChanges();
       }
     });
@@ -108,20 +125,27 @@ export class EditIdeaComponent implements OnInit {
   update(ideaRef, updatedIdea)
     .then(() => {
       console.log('Idea updated successfully!');
-      this.snackBar.open('Your idea has been updated successfully!', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
-      }).afterDismissed().subscribe(() => {
-        this.router.navigate(['/home']); 
+      Swal.fire({
+        title: 'Saved Changes',
+        text: 'Your changes have been successfully saved.',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        allowOutsideClick: false
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Navigate login after click on ok.
+          this.router.navigate(['/home']);
+        }
       });
     })
     .catch((error) => {
       console.error('Error updating idea: ', error);
-      this.snackBar.open('There has been an error updating your idea. Please try again later', 'Close', {
-        duration: 3000,
-        verticalPosition: 'bottom',
-        horizontalPosition: 'center'
+      Swal.fire({
+        title: 'Edit error',
+        text: 'There was an issue updating your idea. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        allowOutsideClick: false
       });
     });
   }

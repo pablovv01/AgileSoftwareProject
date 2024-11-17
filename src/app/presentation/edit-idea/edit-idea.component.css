@@ -23,7 +23,7 @@
 }
 
 /* Header styling */
-.header-container {
+.header-container-edit {
     display: flex;
     color: #0072BA;
     justify-content: center;
@@ -141,35 +141,3 @@ button {
     z-index: 1000;
 }
 
-/* Success Notification Styling */
-.success-notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 1000;
-    text-align: center;
-}
-
-.yes-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.no-button {
-    background-color: #f44336;
-    color: white;
-    padding: 10px 20px;;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}

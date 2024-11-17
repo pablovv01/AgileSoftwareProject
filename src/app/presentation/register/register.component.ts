@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateCurrentUser, updateProfile } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification} from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
-
 import { MatCardModule } from '@angular/material/card';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import { LayoutModule } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 
 
@@ -61,20 +60,21 @@ export class RegisterComponent {
     'Instituto de Ciencias de la Educación ICE'
 ];
 
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router) {
-    this.registrationForm = this.fb.group({
-      name: ["", [Validators.required]],
-      surname: ["", [Validators.required]],
-      type:["", [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      center:[''],
-      degree:[''],
-      company:[''],
-      position:[''],
-      description: ['']
-    });
-  }
+constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router) {
+  this.registrationForm = this.fb.group({
+    name: ["", [Validators.required]],
+    surname: ["", [Validators.required]],
+    type: ["", [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
+    confirmPassword: ['', [Validators.required]],
+    center: [''],
+    degree: [''],
+    company: [''],
+    position: [''],
+    description: ['']
+  }, { validators: this.passwordsMatchValidator });
+}
 
   onTypeChange(type: string): void {
     const centerControl = this.registrationForm.get('center');
@@ -104,49 +104,75 @@ export class RegisterComponent {
     descriptionControl?.updateValueAndValidity();
   }
 
+  // Function to check if the password and confirm password fields match
+  passwordsMatchValidator(form: FormGroup) {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+  
+    if (password !== confirmPassword) {
+      form.get('confirmPassword')?.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    } else {
+      form.get('confirmPassword')?.setErrors(null);
+      return null;
+    }
+  }
+
   onRegister() {
-    const auth = getAuth();
     if (this.registrationForm.valid) {
-      const {name, surname, email, password, type, center, degree, company, position, description} = this.registrationForm.value;
+      const auth = getAuth();
+      const { name, surname, email, password, type, center, degree, company, position, description } = this.registrationForm.value;
       createUserWithEmailAndPassword(auth, email, password)
         .then(userCredential => {
-          console.log("Usuario registered:", userCredential);
+          const db = getDatabase();
+          set(ref(db, 'users/' + userCredential.user.uid), {
+            name: name,
+            surname: surname,
+            type: type,
+            center: center,
+            degree: degree,
+            company: company,
+            position: position,
+            description: description
+          });
           sendEmailVerification(userCredential.user).then(() => {
-            //Add display name to Firebase Auth
-            const db = getDatabase()
-            set(ref(db, 'users/' + userCredential.user.uid), {
-              name: name,
-              surname: surname,
-              type: type,
-              center: center,
-              degree: degree,
-              company: company,
-              position: position,
-              description: description
+            // this.snackBar.open('Verification email sent successfully.', 'Close', { duration: 8000 });
+            // this.router.navigate(['/login']);
+            Swal.fire({
+              title: 'Almost there!',
+              text: 'A verification email has been sent. Please check your inbox to verify your account.',
+              icon: 'success',
+              confirmButtonText: 'Ok',
+              allowOutsideClick: false
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Navigate login after click on ok.
+                this.router.navigate(['/login']);
+              }
             });
-            this.snackBar.open('Verification email sent successfully. Please check your inbox in order to activate your account. If it is not found check the SPAM folder', 'Close', {
-              duration: 3000, 
-              verticalPosition: 'bottom', 
-              horizontalPosition: 'center'
-            }).afterDismissed().subscribe(() => {
-              this.router.navigate(['/login']);
-            });
-          }).catch((error) => {
-            this.snackBar.open('Error sending verification email. Please try again', 'Close', {
-              duration: 3000, 
-              verticalPosition: 'bottom', 
-              horizontalPosition: 'center'
-            });
-            console.error('Error sending verification email:', error);
-          });          
+          });
         })
         .catch(error => {
-          console.error("Error en el registro:", error);
-          this.snackBar.open(error.message, 'Close', {
-            duration: 3000, 
-            verticalPosition: 'bottom', 
-            horizontalPosition: 'center'
-          });
+          // Email already in use
+          if (error.code === 'auth/email-already-in-use') {
+            this.registrationForm.get('email')?.setErrors({ emailInUse: true });
+            //this.snackBar.open('This email is already in use.', 'Close', { duration: 8000, panelClass: 'custom-snackbar' });
+            Swal.fire({
+              title: 'Whoops! Something went wrong',
+              text: 'The email address provided is already associated with an account. Please try another one or reset your password.',
+              icon: 'warning',
+              confirmButtonText: 'Ok',
+              allowOutsideClick: false
+            })
+          }else{
+            Swal.fire({
+              title: 'Registration error',
+              text: 'Something went wrong. Please try again.',
+              icon: 'error',
+              confirmButtonText: 'Ok',
+              allowOutsideClick: false
+            })
+          }
         });
     }
   }
