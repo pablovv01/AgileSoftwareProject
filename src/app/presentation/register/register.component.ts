@@ -6,12 +6,16 @@ import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { LayoutModule } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { Centers } from '../../core/entities/centers';
 import { RegisterUseCase } from '../../core/usecases/register.usecase';
 import { User } from '../../core/entities/user';
+import Swal from 'sweetalert2';
+
+
+
 
 @Component({
   selector: 'app-register',
@@ -45,13 +49,13 @@ export class RegisterComponent {
     this.registrationForm = this.fb.group({
       name: ["", [Validators.required]],
       surname: ["", [Validators.required]],
-      type:["", [Validators.required]],
+      type: ["", [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
-      center:[''],
-      degree:[''],
-      company:[''],
-      position:[''],
+      center: [''],
+      degree: [''],
+      company: [''],
+      position: [''],
       description: ['']
     });
   }
@@ -83,28 +87,61 @@ export class RegisterComponent {
     descriptionControl?.updateValueAndValidity();
   }
 
+  // Function to check if the password and confirm password fields match
+  passwordsMatchValidator(form: FormGroup) {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+
+    if (password !== confirmPassword) {
+      form.get('confirmPassword')?.setErrors({ passwordMismatch: true });
+      return { passwordMismatch: true };
+    } else {
+      form.get('confirmPassword')?.setErrors(null);
+      return null;
+    }
+  }
+
   onRegister() {
     if (this.registrationForm.valid) {
-      const {name, surname, email, password, type, center, degree, company, position, description} = this.registrationForm.value;
+      const { name, surname, email, password, type, center, degree, company, position, description } = this.registrationForm.value;
       const user = new User(name, surname, email, type, center, degree, company, position, description);
 
       this.registerUseCase.registerUser(user, password)
         .then(() => {
-          this.snackBar.open('Verification email sent successfully. Please check your inbox.', 'Close', {
-            duration: 3000,
-            verticalPosition: 'bottom',
-            horizontalPosition: 'center'
-          }).afterDismissed().subscribe(() => {
-            this.router.navigate(['/login']);
+          Swal.fire({
+            title: 'Almost there!',
+            text: 'A verification email has been sent. Please check your inbox to verify your account.',
+            icon: 'success',
+            confirmButtonText: 'Ok',
+            allowOutsideClick: false
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Navigate login after click on ok.
+              this.router.navigate(['/login']);
+            }
           });
         })
         .catch(error => {
           console.error("Error en el registro:", error);
-          this.snackBar.open(error.message, 'Close', {
-            duration: 3000,
-            verticalPosition: 'bottom',
-            horizontalPosition: 'center'
-          });
+          if (error.code === 'auth/email-already-in-use') {
+            this.registrationForm.get('email')?.setErrors({ emailInUse: true });
+            //this.snackBar.open('This email is already in use.', 'Close', { duration: 8000, panelClass: 'custom-snackbar' });
+            Swal.fire({
+              title: 'Whoops! Something went wrong',
+              text: 'The email address provided is already associated with an account. Please try another one or reset your password.',
+              icon: 'warning',
+              confirmButtonText: 'Ok',
+              allowOutsideClick: false
+            })
+          } else {
+            Swal.fire({
+              title: 'Registration error',
+              text: 'Something went wrong. Please try again.',
+              icon: 'error',
+              confirmButtonText: 'Ok',
+              allowOutsideClick: false
+            })
+          }
         });
     }
   }

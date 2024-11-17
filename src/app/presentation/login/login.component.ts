@@ -11,6 +11,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { LayoutModule } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { LoginUseCase } from '../../core/usecases/login.usecase';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -56,20 +57,23 @@ export class LoginComponent {
             this.router.navigate(['/home']);
             sessionStorage.setItem('userId', result.uid!); // Guardar el UID del usuario
           } else {
-            this.snackBar.open('Please, validate your email before signing in', 'Close', {
-              duration: 3000,
-              verticalPosition: 'bottom',
-              horizontalPosition: 'center'
-            });
+            Swal.fire({
+              title: 'You’re so close!',
+              text: 'You need to validate your email to complete the sign-in process. Check your inbox!',
+              icon: 'warning',
+              confirmButtonText: 'Okay!',
+              allowOutsideClick: false
+            })
           }
         })
         .catch(error => {
-          console.error("Sign in error: ", error);
-          this.snackBar.open("Sign in error: " + error.message, 'Close', {
-            duration: 3000,
-            verticalPosition: 'bottom',
-            horizontalPosition: 'center'
-          });
+          Swal.fire({
+            title: 'Whoops! Something went wrong',
+            text: 'We couldn’t sign you in. Please verify your credentials and try again.',
+            icon: 'error',
+            confirmButtonText: 'Ok',
+            allowOutsideClick: false
+          })
         });
     }
   }
