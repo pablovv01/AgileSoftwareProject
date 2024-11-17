@@ -1,4 +1,4 @@
-import { get, getDatabase, ref, remove, set } from "firebase/database";
+import { get, getDatabase, push, ref, remove, set, update } from "firebase/database";
 import { User } from "../core/entities/user";
 import { Injectable } from "@angular/core";
 
@@ -34,4 +34,49 @@ export class FirebaseDbService {
         const dbRef = this.getDatabaseRef(`ideas/${ideaID}`);
         await remove(dbRef);
     }
+
+    // Updates idea in Firebase Database
+    async updateIdea(ideaId: string, updatedIdea: any) {
+        const db = getDatabase();
+        const ideaRef = ref(db, `ideas/${ideaId}`);
+    
+        update(ideaRef, updatedIdea)
+          .then(() => {
+            console.log('Idea updated successfully!');
+          })
+          .catch((error) => {
+            console.error('Error updating idea: ', error);
+          });
+      }
+
+      // Get details of an idea from Firebase Database
+      async getIdeaById(id: string): Promise<any> {
+        try {
+          const db = getDatabase();
+          const ideaRef = ref(db, `ideas/${id}`);
+          const snapshot = await get(ideaRef);
+          if (snapshot.exists()) {
+            return snapshot.val();
+          } else {
+            throw new Error('Idea not found');
+          }
+        } catch (error) {
+          console.error('Error fetching idea from Firebase:', error);
+          throw error;
+        }
+      }
+
+      // Add new idea to Firebase Database
+      async addIdea(newIdea: any): Promise<void> {
+        try {
+          const db = getDatabase();
+          const ideasRef = ref(db, 'ideas');
+          const newIdeaRef = push(ideasRef);
+    
+          await set(newIdeaRef, newIdea); 
+        } catch (error) {
+          console.error('Error adding idea to Firebase:', error);
+          throw error;
+        }
+      }
 }

@@ -9,7 +9,7 @@ export class IdeaUseCase {
 
   constructor(private firebaseDb: FirebaseDbService) { }
 
-  // Obtener las ideas del usuario desde Firebase
+  // Get user ideas
   async getUserIdeas(userId: string): Promise<Idea[]> {
     try {
       const snapshot = await this.firebaseDb.getIdeas();
@@ -30,7 +30,7 @@ export class IdeaUseCase {
     }
   }
 
-  // Eliminar una idea desde Firebase
+  // Delete an idea
   async deleteIdea(ideaId: string): Promise<void> {
     try {
       await this.firebaseDb.deleteIdea(ideaId);
@@ -40,4 +40,54 @@ export class IdeaUseCase {
       throw new Error('Error deleting idea');
     }
   }
+
+    //Edit an idea
+    editIdea(formData: any, idea: any) {
+        const { title, description, tags } = formData;
+    
+        const updatedIdea = {
+          title,
+          description,
+          tags,
+          updatedAt: new Date().toISOString(),
+          userId: sessionStorage.getItem('userId')!
+        };
+    
+        const ideaId = idea.id;  
+        if (!ideaId) {
+          console.error('Idea ID is missing!');
+          return;
+        }
+            this.firebaseDb.updateIdea(ideaId, updatedIdea);
+      }
+
+      // Get idea details
+      async getDetails(id: string): Promise<any> {
+        try {
+          const ideaData = await this.firebaseDb.getIdeaById(id);
+          return ideaData;
+        } catch (error) {
+          console.error('Error fetching idea in service:', error);
+          throw error;
+        }
+      }
+
+      // Add new idea
+      async addIdea(formData: any): Promise<void> {
+        try {
+          const { title, description, tags } = formData;
+          const newIdea = {
+            title,
+            description,
+            tags,
+            createdAt: new Date().toISOString(),
+            userId: sessionStorage.getItem('userId')!  // ID del usuario actual
+          };
+    
+          await this.firebaseDb.addIdea(newIdea);
+        } catch (error) {
+          console.error('Error adding idea in service:', error);
+          throw error;
+        }
+      }
 }
