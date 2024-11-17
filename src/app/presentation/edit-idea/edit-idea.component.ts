@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
+import { getDatabase, ref, update } from 'firebase/database';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-import { IdeaUseCase } from '../../core/usecases/idea.usecase';
 
 @Component({
   selector: 'app-edit-idea',
@@ -21,27 +23,39 @@ import { IdeaUseCase } from '../../core/usecases/idea.usecase';
     MatSelectModule,
     MatInputModule,
     CommonModule,
+    MatSnackBarModule,
+    MatDialogModule
   ],
   templateUrl: './edit-idea.component.html',
-  styleUrls: ['./edit-idea.component.css']
+  styleUrl: './edit-idea.component.css'
 })
 export class EditIdeaComponent implements OnInit {
-  formData: any = {};
+  formData: any = {};  // Holds the form data before submission
   ideaTitle: string = '';
+  userIdeas: any = [];
   idea: any;
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private ideaUseCase: IdeaUseCase
-  ) { }
+
+  constructor(private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.getData();
+    this.getData()
   }
-
-  onSubmit(form: any): void {
+  onSubmit(form: any) {
+    // Store the form data before confirmation
     this.formData = form.value;
+
+    // const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+    //   data: {
+    //     title: 'Confirm Update',
+    //     message:'Are you sure you want to update your idea?'
+    //   }})
+
+    // dialogRef.afterClosed().subscribe(result => {
+    //   if (result === 'confirm') {
+    //     this.saveChanges();
+    //   }
+    // });
 
     Swal.fire({
       title: 'Edit idea',
@@ -54,42 +68,86 @@ export class EditIdeaComponent implements OnInit {
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
-        this.ideaUseCase.updateIdea(this.formData, this.idea.id).then(() => {
-          Swal.fire({
-            title: 'Saved Changes',
-            text: 'Your changes have been successfully saved.',
-            icon: 'success',
-            confirmButtonText: 'Ok',
-            allowOutsideClick: false
-          }).then(() => {
-            this.router.navigate(['/home']);
-          });
-        }).catch((error) => {
-          Swal.fire({
-            title: 'Edit error',
-            text: 'There was an issue updating your idea. Please try again.',
-            icon: 'error',
-            confirmButtonText: 'Ok',
-            allowOutsideClick: false
-          });
-        });
+        this.saveChanges();
       }
     });
   }
 
-  getData(): void {
+  getData() {
+    // Take idea title in url
     this.route.paramMap.subscribe(params => {
       this.ideaTitle = params.get('id') ?? '';
+      console.log(this.ideaTitle);
     });
 
+    // Recover sessionStorage
     const retrievedSessionObject = sessionStorage.getItem('ideas');
     if (retrievedSessionObject) {
-      const userIdeas = JSON.parse(retrievedSessionObject);
-      this.idea = userIdeas.find((idea: any) => idea.title === this.ideaTitle);
+      this.userIdeas = JSON.parse(retrievedSessionObject);
+
+      // Get the selected idea
+      for (let idea of this.userIdeas) {
+        if (idea.title === this.ideaTitle) {
+          this.idea = idea;
+          console.log(idea)
+          break;
+        }
+      }
     }
   }
-
-  discardChanges(): void {
+  
+  discardChanges() {
     this.router.navigate(['/home']);
+  }
+
+  saveChanges() {
+    const { title, description, tags } = this.formData;
+
+    const updatedIdea = {
+      title,
+      description,
+      tags,
+      updatedAt: new Date().toISOString(),
+      userId: sessionStorage.getItem('userId')!
+    };
+
+
+    const ideaId = this.idea.id;
+    if (!ideaId) {
+      console.error('Idea ID is missing!');
+      return;
+    }
+
+    // Inicialize bbdd
+    const db = getDatabase();
+    const ideaRef = ref(db, `ideas/${ideaId}`);  // Put the selected id idea
+
+    // Update in bbdd
+    update(ideaRef, updatedIdea)
+      .then(() => {
+        console.log('Idea updated successfully!');
+        Swal.fire({
+          title: 'Saved Changes',
+          text: 'Your changes have been successfully saved.',
+          icon: 'success',
+          confirmButtonText: 'Ok',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Navigate login after click on ok.
+            this.router.navigate(['/home']);
+          }
+        });
+      })
+      .catch((error) => {
+        console.error('Error updating idea: ', error);
+        Swal.fire({
+          title: 'Edit error',
+          text: 'There was an issue updating your idea. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'Ok',
+          allowOutsideClick: false
+        });
+      });
   }
 }
