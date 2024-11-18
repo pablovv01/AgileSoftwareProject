@@ -1,25 +1,25 @@
 /* Main container for form */
 .idea-detail-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: 20px;
-    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-    box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  box-sizing: border-box;
 }
 
 /* Card styling for idea form */
 .idea-card {
-    width: 100%;
-    max-width: 800px;
-    height: auto;
-    overflow-y: auto;
-    padding: 20px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    background-color: #ffffff;
-    box-sizing: border-box;
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  overflow-y: auto;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-sizing: border-box;
 }
 
 .idea-card-title {
@@ -36,6 +36,6 @@
 }
 
 mat-card-title {
-    font-size: 2rem;
-    font-weight: 500;
+  font-size: 2rem;
+  font-weight: 500;
 }

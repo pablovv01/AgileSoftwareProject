@@ -1,7 +1,7 @@
+// src/app/login/login.component.ts
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { MatCardModule } from '@angular/material/card';
 import { MatFormField, MatLabel, MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { LayoutModule } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
+import { LoginUseCase } from '../../core/usecases/login.usecase';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -29,12 +30,17 @@ import Swal from 'sweetalert2';
     LayoutModule
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private loginUseCase: LoginUseCase
+  ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -42,15 +48,14 @@ export class LoginComponent {
   }
 
   onLogin() {
-    const auth = getAuth();
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          if (userCredential.user.emailVerified) {
+
+      this.loginUseCase.login(email, password)
+        .then(result => {
+          if (result.verified) {
             this.router.navigate(['/home']);
-            sessionStorage.setItem('userId', userCredential.user.uid); //Store User ID in session storage
-            //console.log(userCredential.user)
+            sessionStorage.setItem('userId', result.uid!); // Guardar el UID del usuario
           } else {
             Swal.fire({
               title: 'You’re so close!',

@@ -6,12 +6,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
-import {getDatabase, ref, get} from 'firebase/database';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import {MatChip, MatChipSet} from '@angular/material/chips';
-import {MatDivider} from '@angular/material/divider';
+import { MatChip, MatChipSet } from '@angular/material/chips';
+import { MatDivider } from '@angular/material/divider';
+import { IdeaUseCase } from '../../core/usecases/idea.usecase';
+
 @Component({
   selector: 'app-edit-idea',
   standalone: true,
@@ -24,7 +24,6 @@ import {MatDivider} from '@angular/material/divider';
     MatInputModule,
     CommonModule,
     MatSnackBarModule,
-    MatDialogModule,
     MatChipSet,
     MatChip,
     MatDivider
@@ -32,24 +31,27 @@ import {MatDivider} from '@angular/material/divider';
   templateUrl: './detail-idea.component.html',
   styleUrl: './detail-idea.component.css'
 })
+
 export class DetailIdeaComponent implements OnInit {
   idea: any
   id: string | null = null
   date: Date = new Date()
-  constructor(private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog, private route: ActivatedRoute) { }
+  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit(): void {
-    this.id = this.route.snapshot.paramMap.get('id');
-    this.fetchIdea(this.id);
-  }
-
-  async fetchIdea(id: string | null): Promise<void> {
-    const db = getDatabase();
-    const ideaRef = ref(db, `ideas/${id}`);
-    const snapshot = await get(ideaRef);
-    if (snapshot.exists()) {
-      this.idea = snapshot.val();
-      this.date = new Date(this.idea.createdAt);
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.ideaUseCase.getDetails(id).then((ideaData) => {
+        this.idea = ideaData;
+        this.date = new Date(this.idea.createdAt);
+      }).catch(error => {
+        console.error('Error fetching idea:', error);
+        this.snackBar.open('Error fetching idea.', 'Close', {
+          duration: 3000,
+          verticalPosition: 'bottom',
+          horizontalPosition: 'center',
+        });
+      });
     }
   }
 }
