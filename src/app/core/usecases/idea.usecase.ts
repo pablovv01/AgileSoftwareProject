@@ -22,7 +22,7 @@ export class IdeaUseCase {
           return null;
         }
       }).filter(idea => idea !== null);
-
+      sessionStorage.setItem('ideas', JSON.stringify(ideasList));
       return ideasList;
     } catch (error) {
       console.error('Error fetching user ideas:', error);
