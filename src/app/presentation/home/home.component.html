@@ -1,9 +1,6 @@
 <div class="principal-container">
   <div class="home-container">
-    <h1 class="title">My Ideas Board</h1>
-    <div class="underline"></div>
-    <button mat-fab extended class="button-details" (click)="goToAddPost()"><mat-icon
-        class="icon-details">add</mat-icon>Add post</button>
+    <button mat-fab extended class="button-details" (click)="goToAddPost()"><mat-icon class="icon-details">add</mat-icon>Add post</button>  
     <div class="idea-list">
       @for (idea of userIdeas; track idea) {
       <mat-card color="primary" class="idea-card">
