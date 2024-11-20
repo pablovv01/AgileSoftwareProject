@@ -4,9 +4,11 @@
       {{ idea.title }}
     </mat-card-title>
     <mat-chip-set>
-      <mat-chip>
-        {{ idea.tags }}
-      </mat-chip>
+      @for (tag of idea.tags; track tag) {
+        <mat-chip>
+          {{ tag }}
+        </mat-chip>
+      }
     </mat-chip-set>
     <mat-divider></mat-divider>
     <mat-card-content class="idea-card-content">
