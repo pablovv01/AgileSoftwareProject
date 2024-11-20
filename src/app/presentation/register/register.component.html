@@ -33,11 +33,28 @@
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Email</mat-label>
                     <input matInput formControlName="email" type="email" />
-                    <mat-error *ngIf="registrationForm.get('email')?.hasError('required')">Email is required</mat-error>
-                    <mat-error *ngIf="registrationForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
-                    <mat-error *ngIf="registrationForm.get('email')?.hasError('emailInUse')">This email is already in
-                        use</mat-error>
-                </mat-form-field>
+                    
+                    <!-- Error for 'required' validation -->
+                    <mat-error *ngIf="registrationForm.get('email')?.hasError('required')">
+                      Email is required
+                    </mat-error>
+                    
+                    <!-- Error for 'email' validation -->
+                    <mat-error *ngIf="registrationForm.get('email')?.hasError('email')">
+                      Enter a valid email
+                    </mat-error>
+                    
+                    <!-- Error for 'emailInUse' validation -->
+                    <mat-error *ngIf="registrationForm.get('email')?.hasError('emailInUse')">
+                      This email is already in use
+                    </mat-error>
+                    
+                    <!-- Error for custom 'invalidDomain' validation -->
+                    <mat-error *ngIf="registrationForm.get('email')?.hasError('invalidDomain')">
+                      Only @upm.es or @alumnos.upm.es email addresses are allowed
+                    </mat-error>
+                  </mat-form-field>
+                  
 
                 <!-- Password -->
                 <mat-form-field appearance="outline" class="full-width">
