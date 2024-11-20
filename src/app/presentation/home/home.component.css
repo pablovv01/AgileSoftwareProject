@@ -90,7 +90,14 @@
 
   .idea-card-content {
     text-align: justify;
-  }
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+    /* Workaround for browsers that do not support webkit. max-height must be at least -webkit-line-clamp * line height */
+    max-height: 10em;
+}
 
   .idea-detail-button {
     width: auto;
