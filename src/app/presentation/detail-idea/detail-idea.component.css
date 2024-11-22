@@ -18,21 +18,38 @@
   padding: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
+  border-color: black;
+  border-width: 1px;
   background-color: #ffffff;
   box-sizing: border-box;
 }
 
 .idea-card-title {
-  margin-bottom: 0.1ex;
+  margin-bottom: 0.2ex;
+  margin-top: 0.3ex;
+  color: #007bff;
 }
 
 .idea-card-footer {
-  color: gray;
-  text-align: right;
+  color: lightgray;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.separator {
+  border-top-color: lightgray;
+}
+
+.card {
+  padding: 2ex;
+}
+
+.chipset {
+  padding-bottom: 0.5ex;
 }
 
 .idea-card-content {
-  padding-left: 0;
+  padding: 1ex 1ex 1ex 0ex;
 }
 
 mat-card-title {

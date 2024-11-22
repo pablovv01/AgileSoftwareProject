@@ -1,15 +1,32 @@
-  .principal-container {
-    padding: 20px;
-    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+.principal-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  min-height: 100vh;
   }
 
-  .home-container {
-    max-width: 900px;
+  .myIdeas-container {
+    max-width: 90%;
     margin: auto;
     padding: 20px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
     border-radius: 12px;
     background-color: #ffffff;
+  }
+
+  .header-container{
+    display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  }
+
+  .title-container {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #0072BA;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    margin-bottom: 5px;
   }
 
   mat-icon {
@@ -67,9 +84,10 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 220px;
+    max-height: 200px;
     border-radius: 8px;
     background-color: #fff;
+    border: 3px solid transparent;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
@@ -78,6 +96,7 @@
   .idea-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    border-color: #0072BA;
   }
 
   .idea-card-title {
@@ -90,7 +109,14 @@
 
   .idea-card-content {
     text-align: justify;
-  }
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    /* Workaround for browsers that do not support webkit. max-height must be at least -webkit-line-clamp * line height */
+    max-height: 10em;
+}
 
   .idea-detail-button {
     width: auto;
@@ -105,7 +131,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 2ex;
+    gap: 3ex;
     margin-top: 3ex;
   }
 
@@ -119,9 +145,23 @@
     transition: all 0.3s ease;
   }
 
+  .button-add {
+    background-color: #0072BA;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    width: auto;
+    height: 50px;
+    mat-icon {
+      color: white;
+    }
+
+  }
+
   .button-details {
     background-color: white;
-    border-radius: 15px;
+    border-radius: 8px;
     padding: 10px 20px;
     font-size: 14px;
     width: auto;
@@ -130,7 +170,7 @@
 
   .button-edit {
     background-color: white;
-    border-radius: 15px;
+    border-radius: 8px;
     padding: 10px 20px;
     font-size: 14px;
     width: auto;
@@ -139,16 +179,11 @@
 
   .button-delete {
     background-color: white;
-    border-radius: 15px;
+    border-radius: 8px;
     padding: 10px 20px;
     font-size: 14px;
     width: auto;
     height: 40px;
-  }
-
-  button.mat-fab:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   }
 
   .button-details:hover {

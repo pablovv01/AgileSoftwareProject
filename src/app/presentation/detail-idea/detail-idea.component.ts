@@ -11,6 +11,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatChip, MatChipSet } from '@angular/material/chips';
 import { MatDivider } from '@angular/material/divider';
 import { IdeaUseCase } from '../../core/usecases/idea.usecase';
+import { getAuth, signOut } from 'firebase/auth';
+import { getDatabase, ref, get } from 'firebase/database';
 
 @Component({
   selector: 'app-edit-idea',
@@ -36,14 +38,17 @@ export class DetailIdeaComponent implements OnInit {
   idea: any
   id: string | null = null
   date: Date = new Date()
+  name: string | null = null
+  surname: string | null = null
   constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.ideaUseCase.getDetails(id).then((ideaData) => {
+      this.ideaUseCase.getDetails(id).then(async (ideaData) => {
         this.idea = ideaData;
         this.date = new Date(this.idea.createdAt);
+        await this.fetchUserData();
       }).catch(error => {
         console.error('Error fetching idea:', error);
         this.snackBar.open('Error fetching idea.', 'Close', {
@@ -54,4 +59,25 @@ export class DetailIdeaComponent implements OnInit {
       });
     }
   }
+
+  async fetchUserData(): Promise<void>
+  {
+    const db = getDatabase();
+    const userRef = ref(db, `users/${this.idea.userId}`);
+
+    console.log(this.id);
+    const snapshot = await get(userRef);
+    if (snapshot.exists())
+    {
+      const userData = snapshot.val();
+      this.name = userData.name;
+      this.surname = userData.surname;
+      console.log(this.name);
+    }
+    else
+    {
+      console.error('No user data found.');
+    }
+  }
+
 }

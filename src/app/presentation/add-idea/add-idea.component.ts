@@ -53,7 +53,7 @@ export class addIdeaComponent {
             confirmButtonText: 'Ok',
             allowOutsideClick: false
           }).then(() => {
-            this.router.navigate(['/home']);
+            this.router.navigate(['/myIdeasPage']);
           });
         }).catch((error) => {
           Swal.fire({

@@ -8,8 +8,9 @@ import { Idea } from '../../core/entities/idea';
 import Swal from 'sweetalert2';
 import { IdeaUseCase } from '../../core/usecases/idea.usecase';
 
+
 @Component({
-  selector: 'app-home',
+  selector: 'app-my-ideas-page',
   standalone: true,
   imports: [
     MatButtonModule,
@@ -17,10 +18,10 @@ import { IdeaUseCase } from '../../core/usecases/idea.usecase';
     MatListModule,
     MatCardModule
   ],
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  templateUrl: './my-ideas-page.component.html',
+  styleUrl: './my-ideas-page.component.css'
 })
-export class HomeComponent {
+export class MyIdeasPageComponent {
   userId = sessionStorage.getItem('userId')!;
   userIdeas: Idea[] = [];
 

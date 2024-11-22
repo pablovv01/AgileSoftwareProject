@@ -30,6 +30,65 @@ export class IdeaUseCase {
     }
   }
 
+  // Get the user name for ideas cards
+  async getUserIdeaName(userId: string): Promise<string> {
+    try {
+      const snapshot = await this.firebaseDb.getUserSession(userId);
+      let userData = null;
+      let name = ""
+      if (snapshot.exists()) {
+      userData = snapshot.val();
+      name = userData.name + ' ' + userData.surname
+    }
+    return name
+
+    } catch (error) {
+      console.error('Error fetching user name:', error);
+      throw new Error('Error fetching name');
+    }
+  }
+
+
+  // Get all ideas
+  async getAllIdeas(limit: number, startAfterKey?: string): Promise<{
+    ideas: Idea[];
+    totalCount: number;
+    lastKey: string | undefined;
+  }> {
+    try {
+      const snapshot = await this.firebaseDb.getPaginatedIdeas(limit, startAfterKey);
+      const data = snapshot.val();
+
+      if (!data) {
+        return { ideas: [], totalCount: 0, lastKey: undefined };
+      }
+
+    const ideas: Idea[] = Object.keys(data).map((key) => ({
+      id: key,
+      title: data[key].title || '',
+      description: data[key].description || '',
+      tags: data[key].tags 
+      ? (data[key].tags as string).split(',').map((tag: string) => tag.trim()) 
+      : [],
+      userId: data[key].userId || '',
+      createdAt: data[key].createdAt || '',
+    }));
+    console.log(ideas)
+
+    // Obtener la última clave
+    const lastKey = Object.keys(data)[Object.keys(data).length - 1];
+
+    // Obtener el total de registros si es necesario
+    const totalSnapshot =  await this.firebaseDb.getIdeas();
+    const totalCount = totalSnapshot.size || Object.keys(totalSnapshot.val() || {}).length;
+
+    return { ideas, totalCount, lastKey };
+  }catch (error) {
+    console.error('Error getting paginated ideas:', error);
+    throw new Error('Error getting paginated ideas.');
+  }
+}
+
   // Delete an idea
   async deleteIdea(ideaId: string): Promise<void> {
     try {
@@ -48,7 +107,7 @@ export class IdeaUseCase {
       const updatedIdea = {
         title,
         description,
-        tags,
+        tags: tags.join(','),
         updatedAt: new Date().toISOString(),
         userId: sessionStorage.getItem('userId')!
       };
@@ -78,7 +137,7 @@ export class IdeaUseCase {
       const newIdea = {
         title,
         description,
-        tags,
+        tags: tags.join(','),
         createdAt: new Date().toISOString(),
         userId: sessionStorage.getItem('userId')!  // ID del usuario actual
       };

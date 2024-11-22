@@ -1,0 +1,32 @@
+<div class="principal-container">
+    <div class="myIdeas-container">
+        <div class="header-container">
+            <h1 class="title-container">
+                My ideas
+            </h1>
+        <button mat-fab extended class="button-add" (click)="goToAddPost()"><mat-icon class="icon-details">add_circle</mat-icon>Add post</button>
+        </div>
+      <div class="idea-list">
+        @for (idea of userIdeas; track idea) {
+        <mat-card color="primary" class="idea-card">
+          <mat-card-title class="idea-card-title">
+            {{ idea.title }}
+          </mat-card-title>
+          <mat-card-content class="idea-card-content">
+            {{ idea.description }}
+          </mat-card-content>
+          <mat-card-actions>
+            <div class="container-buttons">
+              <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea.id)"><mat-icon
+                class="icon-details">visibility</mat-icon>Details</button>
+              <button mat-fab extended class="button-edit"
+                      (click)="goToEditIdea(idea.id)"><mat-icon>edit</mat-icon>Edit</button>
+              <button mat-fab extended class="button-delete"
+                      (click)="deleteIdea(idea.id)"><mat-icon>delete</mat-icon>Delete</button>
+            </div>
+          </mat-card-actions>
+        </mat-card>
+        }
+      </div>
+    </div>
+  </div>

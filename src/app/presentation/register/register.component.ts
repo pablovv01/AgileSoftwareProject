@@ -14,7 +14,7 @@ import { RegisterUseCase } from '../../core/usecases/register.usecase';
 import { User } from '../../core/entities/user';
 import Swal from 'sweetalert2';
 
-
+import { allowedEmailDomainValidator } from './email-domain.validator';
 
 
 @Component({
@@ -50,7 +50,7 @@ export class RegisterComponent {
       name: ["", [Validators.required]],
       surname: ["", [Validators.required]],
       type: ["", [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, Validators.email,allowedEmailDomainValidator(['upm.es', 'alumnos.upm.es']),]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       center: [''],
       degree: [''],

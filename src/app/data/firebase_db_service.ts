@@ -1,6 +1,7 @@
-import { get, getDatabase, push, ref, remove, set, update } from "firebase/database";
+import { get, getDatabase, push, ref, remove, set, update, query, orderByKey, startAfter, limitToFirst } from "firebase/database";
 import { User } from "../core/entities/user";
 import { Injectable } from "@angular/core";
+import { Idea } from "../core/entities/idea";
 
 @Injectable({
   providedIn: 'root',
@@ -22,12 +23,34 @@ export class FirebaseDbService {
     return set(ref(this.db, 'users/' + userId), user);
   }
 
+  // Get all the user information
+  async getUserSession(uid: string){
+    const dbRef = this.getDatabaseRef(`users/${uid}`);
+    const snapshot = await get(dbRef);
+    return snapshot
+  }
+
   // Get the ideas from Firebase Database
   async getIdeas() {
     const dbRef = this.getDatabaseRef('ideas');
     const snapshot = await get(dbRef);
     return snapshot;
   }
+
+  // Get the ideas from Firebase Database
+  async getPaginatedIdeas(limit: number, startAfterKey?: string) {
+    const dbRef = this.getDatabaseRef('ideas');
+    let ideasQuery = query(dbRef, orderByKey(), limitToFirst(limit));
+
+    // Si se proporciona `startAfterKey`, ajusta la consulta
+    if (startAfterKey) {
+      ideasQuery = query(dbRef, orderByKey(), startAfter(startAfterKey), limitToFirst(limit));
+    }
+    const snapshot = await get(ideasQuery);
+    return snapshot;
+  }
+
+
 
   // Delete idea from Firebase Database
   async deleteIdea(ideaID: string) {
@@ -74,6 +97,22 @@ export class FirebaseDbService {
       await set(newIdeaRef, newIdea);
     } catch (error) {
       console.error('Error adding idea to Firebase:', error);
+      throw error;
+    }
+  }
+
+  async getUserById(id: string): Promise<any> {
+    try {
+      const db = getDatabase();
+      const ideaRef = ref(db, `users/${id}`);
+      const snapshot = await get(ideaRef);
+      if (snapshot.exists()) {
+        return snapshot.val();
+      } else {
+        throw new Error('User not found');
+      }
+    } catch (error) {
+      console.error('Error fetching users from Firebase:', error);
       throw error;
     }
   }
