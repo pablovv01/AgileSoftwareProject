@@ -10,7 +10,10 @@ import { getDatabase, ref, update } from 'firebase/database';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { IdeaUseCase } from '../../core/usecases/idea.usecase';
+import { Idea } from '../../core/entities/idea';
 import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-edit-idea',
@@ -31,32 +34,27 @@ import Swal from 'sweetalert2';
 })
 export class EditIdeaComponent implements OnInit {
   formData: any = {};  // Holds the form data before submission
-  ideaTitle: string = '';
   userIdeas : any = [];
-  idea: any;
+  idea: Idea = {
+    id: '',
+    title: '',
+    description: '',
+    tags: [],
+    userId: '',
+    createdAt: '',
+    authorName: ''
+  };
+  ideaId: string = ''
 
 
-  constructor(private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog, private route: ActivatedRoute) { }
+  constructor(private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit(): void {
-    this.getData()
+    this.getIdea()
   }
   onSubmit(form: any) {
     // Store the form data before confirmation
     this.formData = form.value;
-
-    // const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-    //   data: {
-    //     title: 'Confirm Update',
-    //     message:'Are you sure you want to update your idea?'
-    //   }})
-
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result === 'confirm') {
-    //     this.saveChanges();
-    //   }
-    // });
-
     Swal.fire({
       title: 'Edit idea',
       text: 'Are you sure you want to save the changes?',
@@ -68,62 +66,43 @@ export class EditIdeaComponent implements OnInit {
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
-        this.saveChanges();
+        this.updateIdea();
       }
     });
   }
 
-  getData(){
-    // Take idea title in url
-    this.route.paramMap.subscribe(params => {
-      this.ideaTitle = params.get('id') ?? '';
-      console.log(this.ideaTitle);  
-    });
-    // Recover sessionStorage
-    const retrievedSessionObject = sessionStorage.getItem('ideas');
-    if (retrievedSessionObject) {
-      this.userIdeas = JSON.parse(retrievedSessionObject);
-
-      // Get the selected idea
-  for (let idea of this.userIdeas) {
-    if (idea.title === this.ideaTitle) {
-      this.idea = idea; 
-      console.log(idea)
-      break;  
-    }
-  }
+  getIdea(){
+    this.ideaId = this.route.snapshot.paramMap.get('id') || '';
+    if (this.ideaId) {
+      this.ideaUseCase.getDetails(this.ideaId).then((ideaData) => {
+        console.log(ideaData)
+        this.idea = {
+          id: ideaData.id || '',
+          title: ideaData.title || '',
+          description: ideaData.description || '',
+          tags: ideaData.tags 
+          ? (ideaData.tags as string).split(',').map((tag: string) => tag.trim()) 
+          : [],
+          userId: ideaData.userId || '',
+          createdAt: ideaData.createdAt || '',
+          authorName: ideaData.authorName || ''
+        };
+      }).catch(error => {
+        console.error('Error fetching idea:', error);
+        this.snackBar.open('Error fetching idea.', 'Close', {
+          duration: 3000,
+          verticalPosition: 'bottom',
+          horizontalPosition: 'center',
+        });
+      });
     }
   }
   discardChanges() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/myIdeasPage']);
   }
 
-  saveChanges(){
-    const { title, description, tags } = this.formData;
-
-  const updatedIdea = {
-    title,
-    description,
-    tags,
-    updatedAt: new Date().toISOString(),  
-    userId: sessionStorage.getItem('userId')!  
-  };
-
-  
-  const ideaId = this.idea.id;  
-  if (!ideaId) {
-    console.error('Idea ID is missing!');
-    return;
-  }
-
-  // Inicialize bbdd
-  const db = getDatabase();
-  const ideaRef = ref(db, `ideas/${ideaId}`);  // Put the selected id idea
-
-  // Update in bbdd
-  update(ideaRef, updatedIdea)
-    .then(() => {
-      console.log('Idea updated successfully!');
+  updateIdea(){
+    this.ideaUseCase.updateIdea(this.formData, this.ideaId).then(() => {
       Swal.fire({
         title: 'Saved Changes',
         text: 'Your changes have been successfully saved.',
@@ -132,8 +111,7 @@ export class EditIdeaComponent implements OnInit {
         allowOutsideClick: false
       }).then((result) => {
         if (result.isConfirmed) {
-          // Navigate login after click on ok.
-          this.router.navigate(['/home']);
+          this.router.navigate(['/myIdeasPage']);
         }
       });
     })

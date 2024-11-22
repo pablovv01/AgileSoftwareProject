@@ -12,6 +12,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { LoginUseCase } from '../../core/usecases/login.usecase';
 import Swal from 'sweetalert2';
+import { User } from '../../core/entities/user';
 
 @Component({
   selector: 'app-login',
@@ -54,7 +55,8 @@ export class LoginComponent {
       this.loginUseCase.login(email, password)
         .then(result => {
           if (result.verified) {
-            this.router.navigate(['/home']);
+            // Guardar la información completa del usuario en sessionStorage
+            this.router.navigate(['/explorePage']);
             sessionStorage.setItem('userId', result.uid!); // Guardar el UID del usuario
           } else {
             Swal.fire({

@@ -1,0 +1,63 @@
+<div class="principal-container">
+<div class="profile-container mat-elevation-z4">
+    <h1 class="title">Profile</h1>
+    <mat-divider></mat-divider>
+  
+    <div class="profile-layout">
+      <!-- Columna izquierda -->
+      <div class="profile-left-column">
+        <div class="profile-image">
+          <img [src]="userImage" alt="Ícono de persona" width="120" height="120" />
+        </div>
+        <button mat-raised-button color="primary" class="change-image-btn" (click)="changePhoto()">
+          Change image
+        </button>
+      </div>
+  
+      <!-- Columna derecha -->
+      <div class="profile-right-column">
+        <div class="profile-fields">
+          <!-- Campo de Name -->
+          <div class="field-container">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Name</mat-label>
+              <input matInput [value]="user.name" [disabled]="!isEditingName" />
+            </mat-form-field>
+            <button mat-fab class="edit-icon" (click)="toggleEditName()">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+  
+          <!-- Campo de Surname -->
+          <div class="field-container">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Surname</mat-label>
+              <input matInput [value]="user.surname" [disabled]="!isEditingSurname" />
+            </mat-form-field>
+            <button mat-fab class="edit-icon" (click)="toggleEditSurname()">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+  
+          <!-- Campo de Email -->
+          <div class="field-container">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Email</mat-label>
+              <input matInput [value]="user.email" [disabled]="!isEditingEmail"/>
+            </mat-form-field>
+            <button mat-fab class="edit-icon" (click)="toggleEditEmail()">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+        </div>
+  
+        <div class="button-row">
+          <button mat-raised-button color="primary" class="modify-password-btn" (click)="openPasswordDialog()">Modify Password</button>
+          <button mat-raised-button class="confirm-btn" (click)="saveChanges()">
+            Confirm changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
