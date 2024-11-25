@@ -23,21 +23,37 @@ export class ProfileUseCase {
           //const userAuth = this.firebaseAuthService.getCurrentUser();
           const userDb = await this.firebaseDb.getUserById(uid);
           const user = new User(
-            userDb.name || "Unknown", 
-            userDb.surname || "Unknown", 
+            userDb.name || "Unknown",
+            userDb.surname || "Unknown",
             email,
-            userDb.type || "Unknown", 
-            userDb.center, 
-            userDb.degree, 
-            userDb.company, 
-            userDb.position, 
+            userDb.type || "Unknown",
+            userDb.center,
+            userDb.degree,
+            userDb.company,
+            userDb.position,
             userDb.description
           );
-      
+
           return user;
         } catch (error) {
           console.error('Error loading user info:', error);
           throw error;
         }
       }
+
+  updateName(name: string) {
+
+  }
+
+  updateSurname(surname: string) {
+    
+  }
+
+  updateEmail(email: string) {
+    
+  }
+
+  updatePhoto(photo: string | undefined) {
+    
+  }
 }

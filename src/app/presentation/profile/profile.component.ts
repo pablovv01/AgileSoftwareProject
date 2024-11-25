@@ -1,4 +1,3 @@
-import { ɵBrowserAnimationBuilder } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,7 +6,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { BrowserModule } from '@angular/platform-browser';
 import { User } from '../../core/entities/user';
 import Swal from 'sweetalert2';
 import { PasswordDialogComponent } from './password-dialog/password-dialog/password-dialog.component';
@@ -34,24 +32,22 @@ export class ProfileComponent {
   showPasswordSection: boolean = false;
   userImage: string = 'assets/userProfile_img.png';
   user!: User;
+  userOld!: User;
   isEditingName: boolean = false;
   isEditingSurname: boolean = false;
   isEditingEmail: boolean = false;
 
   constructor(private dialog: MatDialog, private profile: ProfileUseCase) { }
 
-  togglePasswordSection() {
-    this.showPasswordSection = !this.showPasswordSection;
-  }
-
   async ngOnInit() {
-    // This is a temporal solution prepared for presentation Sprint 2 - Part 1 
+    // This is a temporal solution prepared for presentation Sprint 2 - Part 1
     const retrievedSessionObject = sessionStorage.getItem('user');
     if (retrievedSessionObject) {
       const userData = JSON.parse(retrievedSessionObject)
       const uid = userData.uid;
       const email = userData.email;
       this.user = await this.profile.loadUserInfo(email, uid)
+      this.userOld = this.user
     } else {
       console.log('No se encontraron datos en sessionStorage.');
     }
@@ -76,16 +72,32 @@ export class ProfileComponent {
     this.isEditingEmail = !this.isEditingEmail;
   }
 
-  //TODO To implement
-  saveChanges() {
-    console.log('Cambios guardados:', this.user);
+  showSaveMessage(){
     Swal.fire({
-      title: 'Under construction',
-      text: 'Saving data is under construction',
-      icon: 'info',
-      confirmButtonText: 'Okay!',
+      title: 'Save profile changes',
+      text: 'Are you sure you want to save the changes to your profile?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      reverseButtons: true,
       allowOutsideClick: false
-    })
+    }).then((result) => {
+      if (result.isConfirmed) {
+        if(this.userOld.name!=this.user.name){
+          this.profile.updateName(this.user.name)
+        }
+        if(this.userOld.surname!=this.user.surname){
+          this.profile.updateSurname(this.user.surname)
+        }
+        if(this.userOld.email!=this.user.email){
+          this.profile.updateEmail(this.user.email)
+        }
+        if(this.userOld.photo!=this.user.photo){
+          this.profile.updatePhoto(this.user.photo)
+        }
+      }
+    });
   }
 
   changePhoto(){

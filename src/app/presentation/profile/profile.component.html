@@ -2,7 +2,7 @@
 <div class="profile-container mat-elevation-z4">
     <h1 class="title">Profile</h1>
     <mat-divider></mat-divider>
-  
+
     <div class="profile-layout">
       <!-- Columna izquierda -->
       <div class="profile-left-column">
@@ -13,7 +13,7 @@
           Change image
         </button>
       </div>
-  
+
       <!-- Columna derecha -->
       <div class="profile-right-column">
         <div class="profile-fields">
@@ -27,7 +27,7 @@
               <mat-icon>edit</mat-icon>
             </button>
           </div>
-  
+
           <!-- Campo de Surname -->
           <div class="field-container">
             <mat-form-field appearance="outline" class="full-width">
@@ -38,7 +38,7 @@
               <mat-icon>edit</mat-icon>
             </button>
           </div>
-  
+
           <!-- Campo de Email -->
           <div class="field-container">
             <mat-form-field appearance="outline" class="full-width">
@@ -50,10 +50,10 @@
             </button>
           </div>
         </div>
-  
+
         <div class="button-row">
           <button mat-raised-button color="primary" class="modify-password-btn" (click)="openPasswordDialog()">Modify Password</button>
-          <button mat-raised-button class="confirm-btn" (click)="saveChanges()">
+          <button mat-raised-button class="confirm-btn" (click)="showSaveMessage()">
             Confirm changes
           </button>
         </div>
