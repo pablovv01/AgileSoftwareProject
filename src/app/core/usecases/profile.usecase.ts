@@ -53,12 +53,12 @@ export class ProfileUseCase {
 
   updateEmail(user: User) {
     try {
-      this.firebaseAuthService.updateEmail(user.email)
-      this.firebaseAuthService.sendEmailVerification(this.firebaseAuthService.getCurrentUser())
+      this.firebaseAuthService.updateEmail(user.email).then(()=>{
+        this.firebaseAuthService.sendEmailVerification(this.firebaseAuthService.getCurrentUser())
+      })
     } catch (error) {
       console.log(error)
       throw error
     }
-
   }
 }

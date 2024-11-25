@@ -81,10 +81,10 @@ export class FirebaseAuthService {
     return user
   }
 
-  updateEmail(newEmail: string) {
+  async updateEmail(newEmail: string) {
     try {
       if (this.auth.currentUser)
-        updateEmail(this.auth.currentUser, newEmail)
+        await updateEmail(this.auth.currentUser, newEmail)
     }
     catch (error) {
       throw error
