@@ -21,7 +21,7 @@
           <div class="field-container">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Name</mat-label>
-              <input matInput [value]="user.name" [disabled]="!isEditingName" />
+              <input matInput [(ngModel)]="user.name" [disabled]="!isEditingName" />
             </mat-form-field>
             <button mat-fab class="edit-icon" (click)="toggleEditName()">
               <mat-icon>edit</mat-icon>
@@ -32,7 +32,7 @@
           <div class="field-container">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Surname</mat-label>
-              <input matInput [value]="user.surname" [disabled]="!isEditingSurname" />
+              <input matInput [(ngModel)]="user.surname" [disabled]="!isEditingSurname" />
             </mat-form-field>
             <button mat-fab class="edit-icon" (click)="toggleEditSurname()">
               <mat-icon>edit</mat-icon>
@@ -43,7 +43,7 @@
           <div class="field-container">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Email</mat-label>
-              <input matInput [value]="user.email" [disabled]="!isEditingEmail"/>
+              <input matInput [(ngModel)]="user.email" [disabled]="!isEditingEmail"/>
             </mat-form-field>
             <button mat-fab class="edit-icon" (click)="toggleEditEmail()">
               <mat-icon>edit</mat-icon>

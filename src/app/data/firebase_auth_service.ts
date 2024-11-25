@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, UserCredential, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword, User, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, UserCredential, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword, User, onAuthStateChanged, updateEmail } from 'firebase/auth';
 import { authentication } from '../../main';
 @Injectable({
   providedIn: 'root',
@@ -25,27 +25,27 @@ export class FirebaseAuthService {
   }
 
   // Performs login operation
-async loginUser(email: string, password: string): Promise<UserCredential> {
-  try {
-    const userCredential = await signInWithEmailAndPassword(authentication, email, password);
+  async loginUser(email: string, password: string): Promise<UserCredential> {
+    try {
+      const userCredential = await signInWithEmailAndPassword(authentication, email, password);
 
-    // Espera a que Firebase sincronice el estado del usuario
-    const user = await new Promise<User | null>((resolve) => {
-      onAuthStateChanged(authentication, resolve);
-    });
+      // Espera a que Firebase sincronice el estado del usuario
+      const user = await new Promise<User | null>((resolve) => {
+        onAuthStateChanged(authentication, resolve);
+      });
 
-    if (!user) {
-      throw new Error('Failed to retrieve the authenticated user');
+      if (!user) {
+        throw new Error('Failed to retrieve the authenticated user');
+      }
+
+      console.log('User signed in successfully:', user);
+      return userCredential;
+    } catch (error) {
+      console.error('Error during sign-in:', error);
+      throw error;
     }
-
-    console.log('User signed in successfully:', user);
-    return userCredential;
-  } catch (error) {
-    console.error('Error during sign-in:', error);
-    throw error;
   }
-}
-  
+
   // Send Password Reset Email
   async sendPasswordResetEmail(email: string): Promise<void> {
     try {
@@ -72,12 +72,22 @@ async loginUser(email: string, password: string): Promise<UserCredential> {
     }
   }
 
-  getCurrentUser():User{
+  getCurrentUser(): User {
     const user = authentication.currentUser;
-  
+
     if (!user) {
       throw new Error('No user is authenticated');
     }
     return user
+  }
+
+  updateEmail(newEmail: string) {
+    try {
+      if (this.auth.currentUser)
+        updateEmail(this.auth.currentUser, newEmail)
+    }
+    catch (error) {
+      throw error
+    }
   }
 }

@@ -11,6 +11,8 @@ import Swal from 'sweetalert2';
 import { PasswordDialogComponent } from './password-dialog/password-dialog/password-dialog.component';
 import { UploadPhotoComponent } from './upload-photo/upload-photo/upload-photo.component';
 import { ProfileUseCase } from '../../core/usecases/profile.usecase';
+import { FileUtils } from '../../utils/FileUtils';
+import { FormsModule } from '@angular/forms';
 
 
 @Component({
@@ -23,13 +25,13 @@ import { ProfileUseCase } from '../../core/usecases/profile.usecase';
     MatFormFieldModule,
     MatIconModule,
     MatDividerModule,
-    MatDialogModule
+    MatDialogModule,
+    FormsModule
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
-  showPasswordSection: boolean = false;
   userImage: string = 'assets/userProfile_img.png';
   user!: User;
   userOld!: User;
@@ -40,14 +42,16 @@ export class ProfileComponent {
   constructor(private dialog: MatDialog, private profile: ProfileUseCase) { }
 
   async ngOnInit() {
-    // This is a temporal solution prepared for presentation Sprint 2 - Part 1
     const retrievedSessionObject = sessionStorage.getItem('user');
     if (retrievedSessionObject) {
       const userData = JSON.parse(retrievedSessionObject)
       const uid = userData.uid;
       const email = userData.email;
       this.user = await this.profile.loadUserInfo(email, uid)
-      this.userOld = this.user
+      if(this.user.photo!=null){
+        this.userImage= this.user.photo
+      }
+      this.userOld = JSON.parse(JSON.stringify(this.user));
     } else {
       console.log('No se encontraron datos en sessionStorage.');
     }
@@ -72,7 +76,7 @@ export class ProfileComponent {
     this.isEditingEmail = !this.isEditingEmail;
   }
 
-  showSaveMessage(){
+  showSaveMessage() {
     Swal.fire({
       title: 'Save profile changes',
       text: 'Are you sure you want to save the changes to your profile?',
@@ -84,23 +88,58 @@ export class ProfileComponent {
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
-        if(this.userOld.name!=this.user.name){
-          this.profile.updateName(this.user.name)
+        console.log(this.userOld)
+        console.log(this.user)
+        if(this.user.photo!=this.userOld.photo || this.user.name!=this.userOld.name || this.user.surname!=this.userOld.surname){
+          this.profile.updateProfile(this.user)
+          Swal.fire({
+            title: 'Profile Updated Successfully!',
+            text: 'Your profile has been updated successfully',
+            icon: 'success',
+            confirmButtonText: 'Ok',
+            allowOutsideClick: false
+          })
         }
-        if(this.userOld.surname!=this.user.surname){
-          this.profile.updateSurname(this.user.surname)
-        }
-        if(this.userOld.email!=this.user.email){
-          this.profile.updateEmail(this.user.email)
-        }
-        if(this.userOld.photo!=this.user.photo){
-          this.profile.updatePhoto(this.user.photo)
+        else if(this.user.email!=this.userOld.email){
+          try{
+            this.profile.updateEmail(this.user)
+            Swal.fire({
+              title: 'Email Updated Successfully!',
+              text: 'Your email has been updated successfully',
+              icon: 'success',
+              confirmButtonText: 'Ok',
+              allowOutsideClick: false
+            })
+          } catch(error){
+            Swal.fire({
+              title: 'Email could not be updated!',
+              text: 'There has been an error updating your email',
+              icon: 'error',
+              confirmButtonText: 'Ok',
+              allowOutsideClick: false
+            })
+          }
+         
         }
       }
     });
   }
 
-  changePhoto(){
-    this.dialog.open(UploadPhotoComponent);
+  changePhoto(): void {
+    const dialogRef = this.dialog.open(UploadPhotoComponent);
+
+    dialogRef.afterClosed().subscribe(async (selectedFile: File | null) => {
+      if (selectedFile) {
+        try {
+          const base64Image = await new FileUtils().convertToBase64(selectedFile);
+          this.userImage = base64Image;
+          this.user.photo = base64Image;
+        } catch (error) {
+          console.error('Error converting image to Base64:', error);
+        }
+      }
+    });
   }
+
+
 }
