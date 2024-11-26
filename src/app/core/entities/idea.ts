@@ -6,4 +6,5 @@ export interface Idea {
   userId: string
   createdAt: string
   authorName?: string
+  authorPhoto?: string
 }

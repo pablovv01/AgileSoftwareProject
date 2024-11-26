@@ -15,7 +15,7 @@
       (menuOpened)="onMenuOpened()" 
       (menuClosed)="onMenuClosed()"
     >
-      <img src="assets/userProfile_img.png" alt="Profile" class="profile-picture">
+      <img [src]="accountPhoto" alt="Profile" class="profile-picture">
     </div>
     <mat-menu #profileMenu="matMenu">
       <button mat-menu-item (click)="logout()">Logout</button>

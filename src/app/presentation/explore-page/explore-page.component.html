@@ -28,7 +28,7 @@
         <mat-card color="primary" class="idea-card"
         [ngClass]="{'my-card': isCreatedByMe(idea.authorName ?? '', idea.userId)}"
         >
-        <img mat-card-avatar src="assets/userProfile_img.png" alt="" class="card-avatar-img"/>
+        <img mat-card-avatar [src]="idea.authorPhoto" alt="" class="card-avatar-img"/>
         <div class="right-column">
         <mat-card-title class="idea-card-title">
             {{ idea.title }}

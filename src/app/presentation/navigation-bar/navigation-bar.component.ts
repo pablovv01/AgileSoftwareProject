@@ -16,6 +16,7 @@ import { MatMenuTrigger } from '@angular/material/menu'; // Import MatMenuTrigge
 })
 export class NavigationBarComponent implements OnInit {
   accountType: string | null = null;
+  accountPhoto: string = "assets/userProfile_img.png"
   studentRole : string = 'student'
   investorRole : string = 'investor'
   
@@ -25,10 +26,15 @@ export class NavigationBarComponent implements OnInit {
 
    ngOnInit(){
     this.getAccountType()
+    this.getAccountPhoto()
   }
 
   getAccountType(){
     this.accountType = JSON.parse(sessionStorage.getItem('user') ?? '{}').role || null;
+  }
+
+  getAccountPhoto(){
+    this.accountPhoto = JSON.parse(sessionStorage.getItem('user') ?? '{}').photo || "assets/userProfile_img.png";
   }
 
   // Check account type

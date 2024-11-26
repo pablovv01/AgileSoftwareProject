@@ -31,16 +31,18 @@ export class IdeaUseCase {
   }
 
   // Get the user name for ideas cards
-  async getUserIdeaName(userId: string): Promise<string> {
+  async getUserIdeaName(userId: string): Promise<{name:string, photo: string}>{
     try {
       const snapshot = await this.firebaseDb.getUserSession(userId);
       let userData = null;
       let name = ""
+      let photo= ""
       if (snapshot.exists()) {
       userData = snapshot.val();
       name = userData.name + ' ' + userData.surname
+      photo = userData.photo
     }
-    return name
+    return {name, photo}
 
     } catch (error) {
       console.error('Error fetching user name:', error);
