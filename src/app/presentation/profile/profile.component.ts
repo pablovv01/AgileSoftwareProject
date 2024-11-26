@@ -98,7 +98,7 @@ export class ProfileComponent {
             allowOutsideClick: false
           })
         }
-        else if (this.user.email !== this.userOld.email) {
+        if (this.user.email !== this.userOld.email) {
           try {
             await this.profile.updateEmail(this.user);
             Swal.fire({
@@ -107,7 +107,7 @@ export class ProfileComponent {
               icon: 'success',
               confirmButtonText: 'Ok',
               allowOutsideClick: false
-            });
+        });
     
           } catch (error: any) {
             Swal.fire({
