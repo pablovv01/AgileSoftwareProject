@@ -104,7 +104,7 @@ export class RegisterComponent {
   onRegister() {
     if (this.registrationForm.valid) {
       const { name, surname, email, password, type, center, degree, company, position, description } = this.registrationForm.value;
-      const user = new User(name, surname, email, type, center, degree, company, position, description);
+      const user = new User(name, surname, email, type, '',center, degree, company, position, description);
 
       this.registerUseCase.registerUser(user, password)
         .then(() => {

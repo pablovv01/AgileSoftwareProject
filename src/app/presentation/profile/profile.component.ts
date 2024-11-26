@@ -48,7 +48,7 @@ export class ProfileComponent {
       const uid = userData.uid;
       const email = userData.email;
       this.user = await this.profile.loadUserInfo(email, uid)
-      if(this.user.photo!=null){
+      if(this.user.photo!=null && this.user.photo!=''){
         this.userImage= this.user.photo
       }
       this.userOld = JSON.parse(JSON.stringify(this.user));
@@ -86,10 +86,8 @@ export class ProfileComponent {
       cancelButtonText: 'No',
       reverseButtons: true,
       allowOutsideClick: false
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        console.log(this.userOld)
-        console.log(this.user)
         if(this.user.photo!=this.userOld.photo || this.user.name!=this.userOld.name || this.user.surname!=this.userOld.surname){
           this.profile.updateProfile(this.user)
           Swal.fire({
@@ -100,26 +98,34 @@ export class ProfileComponent {
             allowOutsideClick: false
           })
         }
-        else if(this.user.email!=this.userOld.email){
-          try{
-            this.profile.updateEmail(this.user)
+        else if (this.user.email !== this.userOld.email) {
+          try {
+            await this.profile.updateEmail(this.user);
             Swal.fire({
               title: 'Email Updated Successfully!',
               text: 'Your email has been updated successfully',
               icon: 'success',
               confirmButtonText: 'Ok',
               allowOutsideClick: false
-            })
-          } catch(error){
+            });
+    
+          } catch (error: any) {
             Swal.fire({
               title: 'Email could not be updated!',
-              text: 'There has been an error updating your email',
+              text: error.message || 'There has been an error updating your email.',
               icon: 'error',
               confirmButtonText: 'Ok',
               allowOutsideClick: false
-            })
+            });
           }
-         
+        } else {
+          Swal.fire({
+            title: 'No Changes Detected',
+            text: 'The details are the same as the current ones.',
+            icon: 'info',
+            confirmButtonText: 'Ok',
+            allowOutsideClick: false
+          });
         }
       }
     });
@@ -140,6 +146,4 @@ export class ProfileComponent {
       }
     });
   }
-
-
 }

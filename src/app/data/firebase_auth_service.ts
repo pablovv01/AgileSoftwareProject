@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, UserCredential, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword, User, onAuthStateChanged, updateEmail } from 'firebase/auth';
 import { authentication } from '../../main';
+import { FirebaseError } from 'firebase/app';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,11 +13,6 @@ export class FirebaseAuthService {
   // Register the user
   registerUser(email: string, password: string): Promise<any> {
     return createUserWithEmailAndPassword(this.auth, email, password);
-  }
-
-  // Sends verification email to the user registered
-  sendEmailVerification(user: any): Promise<void> {
-    return sendEmailVerification(user);
   }
 
   // Performs login operation
@@ -81,13 +77,33 @@ export class FirebaseAuthService {
     return user
   }
 
-  async updateEmail(newEmail: string) {
-    try {
-      if (this.auth.currentUser)
-        await updateEmail(this.auth.currentUser, newEmail)
+  // Update the user's email
+  async updateEmail(newEmail: string): Promise<void> {
+    const user = this.auth.currentUser;
+    if (user) {
+      try {
+        await updateEmail(user, newEmail);
+      } catch (error) {
+        console.error("Error updating email:", error);
+        throw error;
+      }
+    } else {
+      throw new Error("No authenticated user found.");
     }
-    catch (error) {
-      throw error
+  }
+
+  // Send email verification
+  async sendEmailVerification(): Promise<void> {
+    const user = this.auth.currentUser;
+    if (user) {
+      try {
+        await sendEmailVerification(user);
+      } catch (error) {
+        console.error("Error sending email verification:", error);
+        throw error;
+      }
+    } else {
+      throw new Error("No authenticated user found.");
     }
   }
 }

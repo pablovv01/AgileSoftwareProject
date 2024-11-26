@@ -51,14 +51,19 @@ export class ProfileUseCase {
     }
   }
 
-  updateEmail(user: User) {
+  async updateEmail(user: User): Promise<void> {
     try {
-      this.firebaseAuthService.updateEmail(user.email).then(()=>{
-        this.firebaseAuthService.sendEmailVerification(this.firebaseAuthService.getCurrentUser())
-      })
+      // Update email
+      await this.firebaseAuthService.updateEmail(user.email);
+
+      // Send email verification
+      await this.firebaseAuthService.sendEmailVerification();
+
+      // Update profile
+      this.updateProfile(user)
     } catch (error) {
-      console.log(error)
-      throw error
+      console.error("Error updating email in ProfileService:", error);
+      throw error;
     }
   }
 }
