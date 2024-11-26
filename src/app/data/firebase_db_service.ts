@@ -24,7 +24,7 @@ export class FirebaseDbService {
   }
 
   // Get all the user information
-  async getUserSession(uid: string){
+  async getUserSession(uid: string) {
     const dbRef = this.getDatabaseRef(`users/${uid}`);
     const snapshot = await get(dbRef);
     return snapshot
@@ -61,8 +61,7 @@ export class FirebaseDbService {
   // Updates idea in Firebase Database
   async updateIdea(ideaId: string, updatedIdea: any) {
     try {
-      const db = getDatabase();
-      const ideaRef = ref(db, `ideas/${ideaId}`);
+      const ideaRef = ref(this.db, `ideas/${ideaId}`);
       await update(ideaRef, updatedIdea);
     } catch (error) {
       console.error('Error updating idea in Firebase:', error);
@@ -73,8 +72,7 @@ export class FirebaseDbService {
   // Get details of an idea from Firebase Database
   async getIdeaById(id: string): Promise<any> {
     try {
-      const db = getDatabase();
-      const ideaRef = ref(db, `ideas/${id}`);
+      const ideaRef = ref(this.db, `ideas/${id}`);
       const snapshot = await get(ideaRef);
       if (snapshot.exists()) {
         return snapshot.val();
@@ -113,6 +111,16 @@ export class FirebaseDbService {
       }
     } catch (error) {
       console.error('Error fetching users from Firebase:', error);
+      throw error;
+    }
+  }
+
+  async updateUser(uid: string, user: User) {
+    try {
+      const userRef = ref(this.db, `users/${uid}`);
+      await update(userRef, user);
+    } catch (error) {
+      console.error('Error updating user in Firebase:', error);
       throw error;
     }
   }

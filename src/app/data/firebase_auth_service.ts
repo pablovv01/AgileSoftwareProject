@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, UserCredential, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword, User, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, UserCredential, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword, User, onAuthStateChanged, updateEmail } from 'firebase/auth';
 import { authentication } from '../../main';
+import { FirebaseError } from 'firebase/app';
 @Injectable({
   providedIn: 'root',
 })
@@ -14,38 +15,33 @@ export class FirebaseAuthService {
     return createUserWithEmailAndPassword(this.auth, email, password);
   }
 
-  // Sends verification email to the user registered
-  sendEmailVerification(user: any): Promise<void> {
-    return sendEmailVerification(user);
-  }
-
   // Performs login operation
   loginUserAlex(email: string, password: string): Promise<UserCredential> {
     return signInWithEmailAndPassword(this.auth, email, password);
   }
 
   // Performs login operation
-async loginUser(email: string, password: string): Promise<UserCredential> {
-  try {
-    const userCredential = await signInWithEmailAndPassword(authentication, email, password);
+  async loginUser(email: string, password: string): Promise<UserCredential> {
+    try {
+      const userCredential = await signInWithEmailAndPassword(authentication, email, password);
 
-    // Espera a que Firebase sincronice el estado del usuario
-    const user = await new Promise<User | null>((resolve) => {
-      onAuthStateChanged(authentication, resolve);
-    });
+      // Espera a que Firebase sincronice el estado del usuario
+      const user = await new Promise<User | null>((resolve) => {
+        onAuthStateChanged(authentication, resolve);
+      });
 
-    if (!user) {
-      throw new Error('Failed to retrieve the authenticated user');
+      if (!user) {
+        throw new Error('Failed to retrieve the authenticated user');
+      }
+
+      console.log('User signed in successfully:', user);
+      return userCredential;
+    } catch (error) {
+      console.error('Error during sign-in:', error);
+      throw error;
     }
-
-    console.log('User signed in successfully:', user);
-    return userCredential;
-  } catch (error) {
-    console.error('Error during sign-in:', error);
-    throw error;
   }
-}
-  
+
   // Send Password Reset Email
   async sendPasswordResetEmail(email: string): Promise<void> {
     try {
@@ -72,12 +68,42 @@ async loginUser(email: string, password: string): Promise<UserCredential> {
     }
   }
 
-  getCurrentUser():User{
+  getCurrentUser(): User {
     const user = authentication.currentUser;
-  
+
     if (!user) {
       throw new Error('No user is authenticated');
     }
     return user
+  }
+
+  // Update the user's email
+  async updateEmail(newEmail: string): Promise<void> {
+    const user = this.auth.currentUser;
+    if (user) {
+      try {
+        await updateEmail(user, newEmail);
+      } catch (error) {
+        console.error("Error updating email:", error);
+        throw error;
+      }
+    } else {
+      throw new Error("No authenticated user found.");
+    }
+  }
+
+  // Send email verification
+  async sendEmailVerification(): Promise<void> {
+    const user = this.auth.currentUser;
+    if (user) {
+      try {
+        await sendEmailVerification(user);
+      } catch (error) {
+        console.error("Error sending email verification:", error);
+        throw error;
+      }
+    } else {
+      throw new Error("No authenticated user found.");
+    }
   }
 }
