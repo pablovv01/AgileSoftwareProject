@@ -117,6 +117,10 @@
     overflow: hidden;
   }
 
+  .my-card {
+    background: linear-gradient(135deg, #f9fafb, #e1f5fe); 
+  }
+
   .idea-list {
     display: grid;
     flex-direction: column;
