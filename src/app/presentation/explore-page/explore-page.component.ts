@@ -53,24 +53,21 @@ export class ExplorePageComponent {
   selectedOrder: string = ''; // Valor predeterminado
   selectedCategory: string = '';
   userName: string | null = null;
-  accountType: string | null = null;
 
 
   constructor(private router: Router, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit() {
-    //this.loadUserIdeas();
     this.getUserName()
     this.loadPage(this.currentPage, this.pageSize)
   }
 
   getUserName(){
     this.userName = JSON.parse(sessionStorage.getItem('user') ?? '{}').name || null;
-    this.accountType = JSON.parse(sessionStorage.getItem('user') ?? '{}').role || null;
   }
 
   isCreatedByMe(authorName: string, userID: string): boolean {
-    return this.userName === authorName && this.accountType === 'student' && this.userId === userID;
+    return this.userName === authorName && this.userId === userID;
   }
   reloadPage(){
     this.loadPage(this.currentPage, this.pageSize)
