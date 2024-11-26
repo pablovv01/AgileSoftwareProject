@@ -4,8 +4,8 @@
   </div>
   <div class="navbar-center">
     <a routerLink="/explorePage" class="nav-link" routerLinkActive="active-link">Explore</a>
-    <a *ngIf="accountType === 'student'" routerLink="/myIdeasPage" class="nav-link" routerLinkActive="active-link">My Ideas</a>
-    <a *ngIf="accountType === 'investor'" routerLink="/favorite-ideas-page" class="nav-link" routerLinkActive="active-link">Favorite Ideas</a>
+    <a *ngIf="isStudent()" routerLink="/myIdeasPage" class="nav-link" routerLinkActive="active-link">My Ideas</a>
+    <a *ngIf="isInvestor()" routerLink="/favorite-ideas-page" class="nav-link" routerLinkActive="active-link">Favorite Ideas</a>
     <a routerLink="/profile" class="nav-link" routerLinkActive="active-link">Profile</a>
   </div>
   <div class="navbar-right">

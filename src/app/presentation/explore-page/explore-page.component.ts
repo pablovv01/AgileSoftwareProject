@@ -52,15 +52,23 @@ export class ExplorePageComponent {
   isLoading: boolean = true;
   selectedOrder: string = ''; // Valor predeterminado
   selectedCategory: string = '';
+  userName: string | null = null;
 
 
   constructor(private router: Router, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit() {
-    //this.loadUserIdeas();
+    this.getUserName()
     this.loadPage(this.currentPage, this.pageSize)
   }
 
+  getUserName(){
+    this.userName = JSON.parse(sessionStorage.getItem('user') ?? '{}').name || null;
+  }
+
+  isCreatedByMe(authorName: string, userID: string): boolean {
+    return this.userName === authorName && this.userId === userID;
+  }
   reloadPage(){
     this.loadPage(this.currentPage, this.pageSize)
   }

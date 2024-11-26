@@ -16,44 +16,35 @@ import { MatMenuTrigger } from '@angular/material/menu'; // Import MatMenuTrigge
 })
 export class NavigationBarComponent implements OnInit {
   accountType: string | null = null;
+  studentRole : string = 'student'
+  investorRole : string = 'investor'
   
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger | undefined;
 
   constructor(private router: Router) {}
 
-  async ngOnInit(): Promise<void> {
-    await this.fetchAccountType();
+   ngOnInit(){
+    this.getAccountType()
   }
 
-  async fetchAccountType(): Promise<void> {
-    const auth = getAuth();
-    const user = auth.currentUser;
+  getAccountType(){
+    this.accountType = JSON.parse(sessionStorage.getItem('user') ?? '{}').role || null;
+  }
 
-    if (user) {
-      try {
-        const db = getDatabase();
-        const userRef = ref(db, `users/${user.uid}`);
+  // Check account type
+  isStudent(): boolean {
+    return this.accountType === this.studentRole;
+  }
 
-        // Wait for the snapshot
-        const snapshot = await get(userRef);
-
-        if (snapshot.exists()) {
-          const userData = snapshot.val();
-          this.accountType = userData.type;
-          console.log('Account Type:', this.accountType);
-        } else {
-          console.error('No user data found.');
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    }
+  isInvestor(): boolean {
+    return this.accountType === this.investorRole;
   }
 
   logout(): void {
     const auth = getAuth();
     signOut(auth)
       .then(() => {
+        sessionStorage.clear()
         this.router.navigate(['/login']);
       })
       .catch((error) => {
