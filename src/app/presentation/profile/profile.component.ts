@@ -13,6 +13,7 @@ import { UploadPhotoComponent } from './upload-photo/upload-photo/upload-photo.c
 import { ProfileUseCase } from '../../core/usecases/profile.usecase';
 import { FileUtils } from '../../utils/FileUtils';
 import { FormsModule } from '@angular/forms';
+import { allowedEmailDomainValidator } from '../../utils/email-domain.validator';
 
 
 @Component({
@@ -38,6 +39,7 @@ export class ProfileComponent {
   isEditingName: boolean = false;
   isEditingSurname: boolean = false;
   isEditingEmail: boolean = false;
+  allowedDomains: string[] = ['alumnos.upm.es', 'upm.es'];
 
   constructor(private dialog: MatDialog, private profile: ProfileUseCase) { }
 
@@ -48,8 +50,8 @@ export class ProfileComponent {
       const uid = userData.uid;
       const email = userData.email;
       this.user = await this.profile.loadUserInfo(email, uid)
-      if(this.user.photo!=null && this.user.photo!=''){
-        this.userImage= this.user.photo
+      if (this.user.photo != null && this.user.photo != '') {
+        this.userImage = this.user.photo
       }
       this.userOld = JSON.parse(JSON.stringify(this.user));
     } else {
@@ -88,7 +90,7 @@ export class ProfileComponent {
       allowOutsideClick: false
     }).then(async (result) => {
       if (result.isConfirmed) {
-        if(this.user.photo!=this.userOld.photo || this.user.name!=this.userOld.name || this.user.surname!=this.userOld.surname){
+        if (this.user.photo != this.userOld.photo || this.user.name != this.userOld.name || this.user.surname != this.userOld.surname) {
           this.profile.updateProfile(this.user)
           Swal.fire({
             title: 'Profile Updated Successfully!',
@@ -99,6 +101,18 @@ export class ProfileComponent {
           })
         }
         if (this.user.email !== this.userOld.email) {
+          if (this.user.type === "student") {
+            if (!this.isAllowedEmailDomain(this.user.email)) {
+              Swal.fire({
+                title: 'Invalid Email Domain!',
+                text: 'Please use an email with a domain @alumnos.upm.es or @upm.es',
+                icon: 'error',
+                confirmButtonText: 'Ok',
+                allowOutsideClick: false
+              });
+              return;
+            }
+          }
           try {
             await this.profile.updateEmail(this.user);
             Swal.fire({
@@ -107,8 +121,8 @@ export class ProfileComponent {
               icon: 'success',
               confirmButtonText: 'Ok',
               allowOutsideClick: false
-        });
-    
+            });
+
           } catch (error: any) {
             Swal.fire({
               title: 'Email could not be updated!',
@@ -145,5 +159,11 @@ export class ProfileComponent {
         }
       }
     });
+  }
+
+  private isAllowedEmailDomain(email: string): boolean {
+    if (!email) return false;
+    const domain = email.split('@')[1];
+    return this.allowedDomains.includes(domain);
   }
 }

@@ -14,7 +14,7 @@ import { RegisterUseCase } from '../../core/usecases/register.usecase';
 import { User } from '../../core/entities/user';
 import Swal from 'sweetalert2';
 
-import { allowedEmailDomainValidator } from './email-domain.validator';
+import { allowedEmailDomainValidator } from '../../utils/email-domain.validator';
 
 
 @Component({
