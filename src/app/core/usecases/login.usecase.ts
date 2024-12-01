@@ -21,7 +21,7 @@ export class LoginUseCase {
         if (snapshot.exists()) {
         userData = snapshot.val();
         }
-        sessionStorage.setItem('user', JSON.stringify({uid: user.uid, email: user.email, role: userData.type, name: userData.name + " " + userData.surname}));
+        sessionStorage.setItem('user', JSON.stringify({uid: user.uid, email: user.email, role: userData.type, name: userData.name + " " + userData.surname, photo: userData.photo}));
         return { verified: true, uid: user.uid };
         
       } else {

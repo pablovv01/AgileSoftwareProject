@@ -14,7 +14,7 @@ import { RegisterUseCase } from '../../core/usecases/register.usecase';
 import { User } from '../../core/entities/user';
 import Swal from 'sweetalert2';
 
-import { allowedEmailDomainValidator } from './email-domain.validator';
+import { allowedEmailDomainValidator } from '../../utils/email-domain.validator';
 
 
 @Component({
@@ -117,7 +117,7 @@ export class RegisterComponent {
   onRegister() {
     if (this.registrationForm.valid) {
       const { name, surname, email, password, type, center, degree, company, position, description } = this.registrationForm.value;
-      const user = new User(name, surname, email, type, center, degree, company, position, description);
+      const user = new User(name, surname, email, type, '',center, degree, company, position, description);
 
       this.registerUseCase.registerUser(user, password)
         .then(() => {

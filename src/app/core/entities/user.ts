@@ -4,6 +4,7 @@ export class User {
     public surname: string,
     public email: string,
     public type: string,
+    public photo?: string,
     public center?: string,
     public degree?: string,
     public company?: string,

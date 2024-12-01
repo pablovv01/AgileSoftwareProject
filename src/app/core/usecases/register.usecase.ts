@@ -16,7 +16,7 @@ export class RegisterUseCase {
       const userId = userCredential.user.uid;
 
       // Send verification email
-      await this.firebaseAuthService.sendEmailVerification(userCredential.user);
+      await this.firebaseAuthService.sendEmailVerification();
 
       // Save data in db
       await this.firebaseDb.saveUserData(userId, user);
