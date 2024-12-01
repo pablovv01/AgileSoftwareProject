@@ -25,8 +25,10 @@
       <div class="idea-list">
         <ng-container *ngIf="!isLoading">
         @for (idea of ideas; track idea.id) {
-        <mat-card color="primary" class="idea-card">
-        <img mat-card-avatar src="assets/userProfile_img.png" alt="" class="card-avatar-img"/>
+        <mat-card color="primary" class="idea-card"
+        [ngClass]="{'my-card': isCreatedByMe(idea.authorName ?? '', idea.userId)}"
+        >
+        <img mat-card-avatar [src]="idea.authorPhoto" alt="" class="card-avatar-img"/>
         <div class="right-column">
         <mat-card-title class="idea-card-title">
             {{ idea.title }}
@@ -36,7 +38,7 @@
           </mat-card-content>
           <div class="underline-content"></div>
           <div class="created-by-content">
-            <p class="created-by-text">Created by {{idea.authorName}}</p>
+            <p class="created-by-text">{{ isCreatedByMe(idea.authorName ?? '', idea.userId) ? 'Created by me' : 'Created by ' + idea.authorName }}</p>
           </div>
            <div class="chips-container">
             @for (tag of idea.tags; track tag; let index = $index) {

@@ -14,7 +14,7 @@ import { RegisterUseCase } from '../../core/usecases/register.usecase';
 import { User } from '../../core/entities/user';
 import Swal from 'sweetalert2';
 
-import { allowedEmailDomainValidator } from './email-domain.validator';
+import { allowedEmailDomainValidator } from '../../utils/email-domain.validator';
 
 
 @Component({
@@ -50,7 +50,7 @@ export class RegisterComponent {
       name: ["", [Validators.required]],
       surname: ["", [Validators.required]],
       type: ["", [Validators.required]],
-      email: ['', [Validators.required, Validators.email,allowedEmailDomainValidator(['upm.es', 'alumnos.upm.es']),]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       center: [''],
       degree: [''],
@@ -66,10 +66,16 @@ export class RegisterComponent {
     const companyControl = this.registrationForm.get('company');
     const positionControl = this.registrationForm.get('position');
     const descriptionControl = this.registrationForm.get('description');
+    const emailControl = this.registrationForm.get('email');
 
     if (type === 'student') {
       centerControl?.setValidators(Validators.required);
       degreeControl?.setValidators(Validators.required);
+      emailControl?.setValidators([
+        Validators.required,
+        Validators.email,
+        allowedEmailDomainValidator(['upm.es', 'alumnos.upm.es'])
+      ]);
       companyControl?.clearValidators();
       positionControl?.clearValidators();
       descriptionControl?.clearValidators();
@@ -79,13 +85,20 @@ export class RegisterComponent {
       companyControl?.setValidators(Validators.required);
       positionControl?.setValidators(Validators.required);
       descriptionControl?.setValidators(Validators.required);
+      emailControl?.setValidators([
+        Validators.required,
+       Validators.email
+      ]);
     }
     centerControl?.updateValueAndValidity();
     degreeControl?.updateValueAndValidity();
     companyControl?.updateValueAndValidity();
     positionControl?.updateValueAndValidity();
     descriptionControl?.updateValueAndValidity();
+    emailControl?.updateValueAndValidity();
   }
+
+  
 
   // Function to check if the password and confirm password fields match
   passwordsMatchValidator(form: FormGroup) {
@@ -104,7 +117,7 @@ export class RegisterComponent {
   onRegister() {
     if (this.registrationForm.valid) {
       const { name, surname, email, password, type, center, degree, company, position, description } = this.registrationForm.value;
-      const user = new User(name, surname, email, type, center, degree, company, position, description);
+      const user = new User(name, surname, email, type, '',center, degree, company, position, description);
 
       this.registerUseCase.registerUser(user, password)
         .then(() => {

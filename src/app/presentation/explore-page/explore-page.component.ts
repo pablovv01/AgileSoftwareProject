@@ -52,15 +52,23 @@ export class ExplorePageComponent {
   isLoading: boolean = true;
   selectedOrder: string = ''; // Valor predeterminado
   selectedCategory: string = '';
+  userName: string | null = null;
 
 
   constructor(private router: Router, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit() {
-    //this.loadUserIdeas();
+    this.getUserName()
     this.loadPage(this.currentPage, this.pageSize)
   }
 
+  getUserName(){
+    this.userName = JSON.parse(sessionStorage.getItem('user') ?? '{}').name || null;
+  }
+
+  isCreatedByMe(authorName: string, userID: string): boolean {
+    return this.userName === authorName && this.userId === userID;
+  }
   reloadPage(){
     this.loadPage(this.currentPage, this.pageSize)
   }
@@ -90,8 +98,8 @@ export class ExplorePageComponent {
       // Obtener nombres de autores para cada idea
     this.ideas = await Promise.all(
       response.ideas.map(async (idea) => {
-        const authorName = await this.getAuthorIdeaName(idea.userId); // Obtener el nombre del autor
-        return { ...idea, authorName }; // Añadir `authorName` a cada idea
+        const user = await this.getAuthorIdeaName(idea.userId); // Obtener el nombre del autor
+        return { ...idea, authorName: user.name, authorPhoto: user.photo }; // Añadir `authorName` a cada idea
       })
     );
       this.totalItems = response.totalCount;
@@ -115,31 +123,22 @@ export class ExplorePageComponent {
     return category ? category.icon : ''; // Retorna el icono correspondiente
   }
 
-  async getAuthorIdeaName(userID: string){
+  async getAuthorIdeaName(userID: string): Promise<{name: string, photo: string }>{
     let authorName = userID
+    let authorPhoto = "assets/userProfile_img.png"
     try {
       // Llama al caso de uso para obtener el nombre del autor
-      const name = await this.ideaUseCase.getUserIdeaName(userID);
-      if (name) {
-        authorName = name;
+      const user = await this.ideaUseCase.getUserIdeaName(userID);
+      if (user.name) {
+        authorName = user.name;
+      }
+      if(user.photo){
+        authorPhoto = user.photo;
       }
     } catch (error) {
       console.error('Error loading user ideas:', error);
     }
-    return authorName;
-  }
-
-  async loadUserIdeas() {
-    try {
-      this.userIdeas = await this.ideaUseCase.getUserIdeas(this.userId);
-      this.userIdeas[0].tags = ['Education', 'Healthcare', 'Business']
-      this.userIdeas[1].tags = ['Science', 'Education', 'Business']
-      this.userIdeas[2].tags = ['Education']
-      this.userIdeas[3].tags = ['Healthcare']
-      console.log('User Ideas:', this.userIdeas);
-    } catch (error) {
-      console.error('Error loading user ideas:', error);
-    }
+    return {name: authorName, photo: authorPhoto};
   }
 
   deleteIdea(ideaId: string) {

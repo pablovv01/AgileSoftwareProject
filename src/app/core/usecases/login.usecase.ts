@@ -12,9 +12,16 @@ export class LoginUseCase {
     try {
       const userCredential = await this.firebaseAuthService.loginUser(email, password);
       const user = userCredential.user;
+      console.log(user)
 
       if (user.emailVerified) {
-        sessionStorage.setItem('user', JSON.stringify({uid: user.uid, email: user.email}));
+        const snapshot = await this.firebaseDb.getUserSession(user.uid);
+
+        let userData = null;
+        if (snapshot.exists()) {
+        userData = snapshot.val();
+        }
+        sessionStorage.setItem('user', JSON.stringify({uid: user.uid, email: user.email, role: userData.type, name: userData.name + " " + userData.surname, photo: userData.photo}));
         return { verified: true, uid: user.uid };
         
       } else {
