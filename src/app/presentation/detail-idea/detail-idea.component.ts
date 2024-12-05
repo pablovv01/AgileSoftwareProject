@@ -13,6 +13,9 @@ import { MatDivider } from '@angular/material/divider';
 import { IdeaUseCase } from '../../core/usecases/idea.usecase';
 import { getAuth, signOut } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
+import {MatIcon} from '@angular/material/icon';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {CATEGORIES} from '../../core/entities/categoriesTag';
 
 @Component({
   selector: 'app-edit-idea',
@@ -28,7 +31,9 @@ import { getDatabase, ref, get } from 'firebase/database';
     MatSnackBarModule,
     MatChipSet,
     MatChip,
-    MatDivider
+    MatDivider,
+    MatIcon,
+    MatSlideToggle
   ],
   templateUrl: './detail-idea.component.html',
   styleUrl: './detail-idea.component.css'
@@ -40,6 +45,8 @@ export class DetailIdeaComponent implements OnInit {
   date: Date = new Date()
   name: string | null = null
   surname: string | null = null
+  categories = CATEGORIES
+  showComments = false
   constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit(): void {
@@ -80,4 +87,21 @@ export class DetailIdeaComponent implements OnInit {
     }
   }
 
+  toggleComments() {
+    this.showComments = !this.showComments;
+  }
+
+  goBack() {
+    window.history.back();
+  }
+
+  getCategoryColor(tag: string): string {
+    const category = this.categories.find(c => c.category === tag);
+    return category ? category.colorClass : '';
+  }
+
+  getCategoryIcon(tag: string): string {
+    const category = this.categories.find(c => c.category === tag);
+    return category ? category.icon : '';
+  }
 }
