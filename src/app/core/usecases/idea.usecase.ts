@@ -69,8 +69,8 @@ export class IdeaUseCase {
       id: key,
       title: data[key].title || '',
       description: data[key].description || '',
-      tags: data[key].tags 
-      ? (data[key].tags as string).split(',').map((tag: string) => tag.trim()) 
+      tags: data[key].tags
+      ? (data[key].tags as string).split(',').map((tag: string) => tag.trim())
       : [],
       userId: data[key].userId || '',
       createdAt: data[key].createdAt || '',
@@ -122,10 +122,22 @@ export class IdeaUseCase {
   }
 
   // Get idea details
-  async getDetails(id: string): Promise<any> {
+  async getDetails(id: string): Promise<Idea|null> {
     try {
-      const ideaData = await this.firebaseDb.getIdeaById(id);
-      return ideaData;
+      const snapshot = await this.firebaseDb.getIdeaById(id)
+      const data = snapshot.val();
+      if (!data) {
+        return null;
+      }
+
+      return {
+        id: id,
+        title: data.title || '',
+        description: data.description || '',
+        tags: data.tags ? data.tags.split(',').map((tag: string) => tag.trim()) : [],
+        userId: data.userId || '',
+        createdAt: data.createdAt || '',
+      };
     } catch (error) {
       console.error('Error fetching idea in service:', error);
       throw error;

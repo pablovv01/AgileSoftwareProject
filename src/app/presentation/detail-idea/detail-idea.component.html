@@ -1,23 +1,19 @@
 <div class="idea-detail-container">
   <mat-card class="idea-card">
     <div class="card-header">
-      <!-- Botón de ir para atrás -->
       <button class="back-btn mat-icon-button" (click)="goBack()">
         <mat-icon>arrow_back</mat-icon>
       </button>
 
-      <!-- Título centrado -->
       <mat-card-title class="idea-card-title">
         {{ idea.title }}
       </mat-card-title>
 
-      <!-- Menú con 3 puntos alineado a la derecha -->
       <button class="menu-btn mat-icon-button">
         <mat-icon>more_vert</mat-icon>
       </button>
     </div>
 
-    <!-- Chips de tags -->
     <div class="chips-container">
       @for (tag of idea.tags; track tag; let index = $index) {
         <mat-chip-set aria-label="Category selection">
@@ -31,10 +27,8 @@
       }
     </div>
 
-    <!-- Separador -->
     <mat-divider class="separator"></mat-divider>
 
-    <!-- Contenido principal -->
     <mat-card-content class="idea-card-content">
       {{ idea.description }}
     </mat-card-content>
@@ -42,7 +36,6 @@
     <!-- Separador -->
     <mat-divider class="separator"></mat-divider>
 
-    <!-- Sección de estadísticas -->
     <div class="idea-stats">
       <div class="stat">
         <mat-icon class="material-icon">chat</mat-icon>
@@ -61,13 +54,11 @@
       </div>
     </div>
 
-    <!-- Pie de la tarjeta -->
     <mat-card-footer class="idea-card-footer">
-      Created by {{ name }} {{ surname }} &commat; {{idea.createdAt.}}
+      Created by {{ name }} {{ surname }} &commat; {{idea.createdAt}}
     </mat-card-footer>
   </mat-card>
 
-  <!-- Comentarios dentro de la tarjeta -->
   <div class="comment-section-container">
     <button class="toggle-comments-button" (click)="toggleComments()">
       <mat-icon>{{ showComments ? 'expand_less' : 'expand_more' }}</mat-icon>
@@ -77,11 +68,9 @@
     <div class="comment-section" *ngIf="showComments">
       <h2>Comment Section</h2>
 
-      <!-- Entrada para agregar comentarios -->
       <div class="comment-input">
         <textarea placeholder="Add a comment..." class="comment-textarea"></textarea>
 
-        <!-- Switch de privacidad -->
         <div class="privacy-toggle">
           <mat-slide-toggle color="primary" id="private-comment">Private</mat-slide-toggle>
         </div>
@@ -91,7 +80,6 @@
         </button>
       </div>
 
-      <!-- Lista de comentarios -->
       <div class="comments">
         <div class="comment">
           <div class="avatar">A</div>

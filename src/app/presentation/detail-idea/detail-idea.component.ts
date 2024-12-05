@@ -8,13 +8,13 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatChip, MatChipSet } from '@angular/material/chips';
+import {MatChip, MatChipSet, MatChipsModule} from '@angular/material/chips';
 import { MatDivider } from '@angular/material/divider';
 import { IdeaUseCase } from '../../core/usecases/idea.usecase';
 import { getAuth, signOut } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
-import {MatIcon} from '@angular/material/icon';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {MatIcon, MatIconModule} from '@angular/material/icon';
+import {MatSlideToggle, MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {CATEGORIES} from '../../core/entities/categoriesTag';
 
 @Component({
@@ -29,11 +29,10 @@ import {CATEGORIES} from '../../core/entities/categoriesTag';
     MatInputModule,
     CommonModule,
     MatSnackBarModule,
-    MatChipSet,
-    MatChip,
+    MatChipsModule,
     MatDivider,
-    MatIcon,
-    MatSlideToggle
+    MatIconModule,
+    MatSlideToggleModule
   ],
   templateUrl: './detail-idea.component.html',
   styleUrl: './detail-idea.component.css'

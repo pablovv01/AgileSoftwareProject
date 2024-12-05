@@ -73,12 +73,57 @@
 }
 
 .chip {
-  background-color: #e0f7fa;
-  color: #007bff;
   padding: 5px 10px;
   border-radius: 12px;
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+.chip-healthcare  {
+  --mdc-chip-elevated-container-color: rgba(128, 241, 131, 0.5);
+}
+.chip-education {
+  --mdc-chip-elevated-container-color: rgba(33, 150, 243, 0.5);
+}
+
+.chip-sustainability {
+  --mdc-chip-elevated-container-color: rgba(139, 195, 74, 0.5);
+}
+
+.chip-business {
+  --mdc-chip-elevated-container-color: rgba(156, 39, 176, 0.5);
+}
+
+.chip-art {
+  --mdc-chip-elevated-container-color: rgba(255, 87, 34, 0.5);
+}
+
+.chip-science {
+  --mdc-chip-elevated-container-color: rgba(103, 58, 183, 0.5);
+}
+
+.chip-sports {
+  --mdc-chip-elevated-container-color: rgba(255, 152, 0, 0.5);
+}
+
+.chip-architecture {
+  --mdc-chip-elevated-container-color: rgba(63, 81, 181, 0.5);
+}
+
+.chip-aviation {
+  --mdc-chip-elevated-container-color: rgba(0, 150, 136, 0.5);
+}
+
+.chip-industry {
+  --mdc-chip-elevated-container-color: rgba(96, 125, 139, 0.5);
+}
+
+.chip-nature {
+  --mdc-chip-elevated-container-color: rgba(76, 175, 80, 0.5);
+}
+
+.chip-technology {
+  --mdc-chip-elevated-container-color: rgba(35, 201, 198, 0.825);
 }
 
 /* Separator */

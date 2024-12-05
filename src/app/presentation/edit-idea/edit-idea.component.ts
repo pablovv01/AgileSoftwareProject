@@ -59,9 +59,9 @@ export class EditIdeaComponent implements OnInit {
       title: 'Edit idea',
       text: 'Are you sure you want to save the changes?',
       icon: 'warning',
-      showCancelButton: true,  
-      confirmButtonText: 'Yes',  
-      cancelButtonText: 'No',    
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
       reverseButtons: true,
       allowOutsideClick: false
     }).then((result) => {
@@ -76,17 +76,20 @@ export class EditIdeaComponent implements OnInit {
     if (this.ideaId) {
       this.ideaUseCase.getDetails(this.ideaId).then((ideaData) => {
         console.log(ideaData)
-        this.idea = {
-          id: ideaData.id || '',
-          title: ideaData.title || '',
-          description: ideaData.description || '',
-          tags: ideaData.tags 
-          ? (ideaData.tags as string).split(',').map((tag: string) => tag.trim()) 
-          : [],
-          userId: ideaData.userId || '',
-          createdAt: ideaData.createdAt || '',
-          authorName: ideaData.authorName || ''
-        };
+        if(ideaData){
+          this.idea = {
+            id: ideaData.id || '',
+            title: ideaData.title || '',
+            description: ideaData.description || '',
+            tags: ideaData.tags
+              ? (ideaData.tags as unknown as string).split(',').map((tag: string) => tag.trim())
+              : [],
+            userId: ideaData.userId || '',
+            createdAt: ideaData.createdAt || '',
+            authorName: ideaData.authorName || ''
+          };
+        }
+
       }).catch(error => {
         console.error('Error fetching idea:', error);
         this.snackBar.open('Error fetching idea.', 'Close', {
