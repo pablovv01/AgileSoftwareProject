@@ -371,7 +371,13 @@
   
 
 
+.idea-card {
+  position: relative; /* Make the card relative for absolute positioning */
+}
 
-  
-  
-
+.favourite-button {
+  position: absolute;
+  top: 5px; /* Distance from the top */
+  right: 10px; /* Distance from the right */
+  z-index: 1; /* Ensure it is above other content */
+}

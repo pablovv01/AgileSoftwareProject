@@ -22,12 +22,21 @@
           <mat-spinner color="primary"></mat-spinner>
           <p class="loading-text">Loading ideas...</p>
         </div>
+
+
+
+
       <div class="idea-list">
         <ng-container *ngIf="!isLoading">
         @for (idea of ideas; track idea.id) {
         <mat-card color="primary" class="idea-card"
         [ngClass]="{'my-card': isCreatedByMe(idea.authorName ?? '', idea.userId)}"
         >
+
+        <button mat-raised-button color="primary" class="favourite-button" (click)="favouriteIdea(+idea.id)" matTooltip="Favourite Idea">
+          Favourite
+      </button>
+
         <img mat-card-avatar [src]="idea.authorPhoto" alt="" class="card-avatar-img"/>
         <div class="right-column">
         <mat-card-title class="idea-card-title">
@@ -52,6 +61,15 @@
                 </mat-chip-set>
             }
             </div> 
+
+
+          
+
+            <button mat-raised-button color="primary" class="favourite-button" (click)="favouriteIdea(+idea.id)" matTooltip="Favourite Idea">
+              Favourite
+          </button>
+          
+
           <mat-card-actions class="mat-card-actions">
             <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea.id)"><mat-icon
                 class="icon-details">visibility</mat-icon>Show more</button>

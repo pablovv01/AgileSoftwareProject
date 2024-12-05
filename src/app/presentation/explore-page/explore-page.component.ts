@@ -19,6 +19,8 @@ import { MatOption, MatSelect } from '@angular/material/select';
 
 
 
+
+
 @Component({
   selector: 'app-explore-page',
   standalone: true,
@@ -189,4 +191,15 @@ export class ExplorePageComponent {
   goToDetailIdea(ideaId: any) {
     this.router.navigate(['/detail', ideaId]);
   }
+
+
+  favouriteIdea(ideaId: number): void {
+    console.log(`Idea with ID ${ideaId} marked as favourite.`);
+    // Add logic to handle the "favourite" action, such as toggling a favourite state or updating the backend
+    // For example, you could update an array of favourite ideas or call an API to save the status
+  }
+
+
 }
+
+
