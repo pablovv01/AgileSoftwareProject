@@ -7,4 +7,5 @@ export interface Idea {
   createdAt: string
   authorName?: string
   authorPhoto?: string
+  views: number
 }

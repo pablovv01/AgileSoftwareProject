@@ -74,6 +74,7 @@ export class IdeaUseCase {
       : [],
       userId: data[key].userId || '',
       createdAt: data[key].createdAt || '',
+      views: data[key].views || 0
     }));
     console.log(ideas)
 
@@ -137,6 +138,7 @@ export class IdeaUseCase {
         tags: data.tags ? data.tags.split(',').map((tag: string) => tag.trim()) : [],
         userId: data.userId || '',
         createdAt: data.createdAt || '',
+        views: data.views || 0
       };
     } catch (error) {
       console.error('Error fetching idea in service:', error);
@@ -153,6 +155,7 @@ export class IdeaUseCase {
         description,
         tags: tags.join(','),
         createdAt: new Date().toISOString(),
+        views: 0,
         userId: sessionStorage.getItem('userId')!  // ID del usuario actual
       };
 
