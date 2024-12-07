@@ -79,6 +79,14 @@
   font-weight: 600;
 }
 
+.chips-container{
+  margin-left: 15px;
+  margin-top: -10px;
+  display: inline-flex;
+  gap: 10px;
+}
+
+
 .chip-healthcare  {
   --mdc-chip-elevated-container-color: rgba(128, 241, 131, 0.5);
 }
