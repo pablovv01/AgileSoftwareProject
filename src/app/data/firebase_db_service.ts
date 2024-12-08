@@ -1,4 +1,4 @@
-import { get, getDatabase, push, ref, remove, set, update, query, orderByKey, startAfter, limitToFirst } from "firebase/database";
+import { get, getDatabase, push, ref, remove, set, update, query, orderByKey, startAfter, limitToFirst, child } from "firebase/database";
 import { User } from "../core/entities/user";
 import { Injectable } from "@angular/core";
 import { Idea } from "../core/entities/idea";
@@ -38,9 +38,30 @@ export class FirebaseDbService {
   }
 
   // Get the ideas from Firebase Database
+  async getOrderIdeas(filterOrder?: string) {
+    const dbRef = this.getDatabaseRef('ideas');
+
+    const snapshot = await get(dbRef);
+    return snapshot;
+  }
+
+  // Get the ideas from Firebase Database
   async getPaginatedIdeas(limit: number, startAfterKey?: string) {
     const dbRef = this.getDatabaseRef('ideas');
-    let ideasQuery = query(dbRef, orderByKey(), limitToFirst(limit));
+    let ideasQuery = query(dbRef, orderByKey(), limitToFirst(limit) );
+
+    // Si se proporciona `startAfterKey`, ajusta la consulta
+    if (startAfterKey) {
+      ideasQuery = query(dbRef, orderByKey(), startAfter(startAfterKey), limitToFirst(limit));
+    }
+    const snapshot = await get(ideasQuery);
+    return snapshot;
+  }
+
+  // Get the ideas from Firebase Database
+  async getPaginatedIdeas2(limit: number, startAfterKey?: string) {
+    const dbRef = this.getDatabaseRef('ideas');
+    let ideasQuery = query(dbRef, orderByKey(), limitToFirst(limit) );
 
     // Si se proporciona `startAfterKey`, ajusta la consulta
     if (startAfterKey) {

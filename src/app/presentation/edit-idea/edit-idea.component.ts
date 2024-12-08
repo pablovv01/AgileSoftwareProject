@@ -42,7 +42,8 @@ export class EditIdeaComponent implements OnInit {
     tags: [],
     userId: '',
     createdAt: '',
-    authorName: ''
+    authorName: '',
+    visualizations: 0
   };
   ideaId: string = ''
 
@@ -85,7 +86,8 @@ export class EditIdeaComponent implements OnInit {
           : [],
           userId: ideaData.userId || '',
           createdAt: ideaData.createdAt || '',
-          authorName: ideaData.authorName || ''
+          authorName: ideaData.authorName || '',
+          visualizations: ideaData.visualizations || 0,
         };
       }).catch(error => {
         console.error('Error fetching idea:', error);
