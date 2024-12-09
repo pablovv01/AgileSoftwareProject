@@ -1,22 +1,97 @@
 <div class="idea-detail-container">
   <mat-card class="idea-card">
-    <div class="card">
+    <div class="card-header">
+      <button class="back-btn mat-icon-button" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
       <mat-card-title class="idea-card-title">
         {{ idea.title }}
       </mat-card-title>
-      <mat-chip-set class="chipset">
-        <mat-chip>
-          {{ idea.tags }}
-        </mat-chip>
-      </mat-chip-set>
-      <mat-divider class="separator"></mat-divider>
-      <mat-card-content class="idea-card-content">
-        {{ idea.description }}
-      </mat-card-content>
-      <mat-divider class="separator"></mat-divider>
-      <mat-card-footer class="idea-card-footer">
-        Created by {{ name }} {{ surname }}
-      </mat-card-footer>
+
+      <button class="menu-btn mat-icon-button">
+        <mat-icon>more_vert</mat-icon>
+      </button>
     </div>
+
+    <div class="chips-container">
+      @for (tag of idea.tags; track tag; let index = $index) {
+        <mat-chip-set aria-label="Category selection">
+          @if (index < 2) {
+            <mat-chip [ngClass]="getCategoryColor(tag)">
+              <img matChipAvatar [src]="getCategoryIcon(tag)" alt=""/>
+              {{ tag }}
+            </mat-chip>
+          }
+        </mat-chip-set>
+      }
+    </div>
+
+    <mat-divider class="separator"></mat-divider>
+
+    <mat-card-content class="idea-card-content">
+      {{ idea.description }}
+    </mat-card-content>
+
+    <!-- Separador -->
+    <mat-divider class="separator"></mat-divider>
+
+    <div class="idea-stats">
+      <div class="stat">
+        <mat-icon class="material-icon">chat</mat-icon>
+        <span>100</span>
+      </div>
+      <div class="stat">
+        <mat-icon class="material-icon">favorite</mat-icon>
+        <span>100</span>
+      </div>
+      <div class="stat">
+        <mat-icon class="material-icon">visibility</mat-icon>
+        <span>{{idea.views}}</span>
+      </div>
+      <div class="visibility-icon">
+        <mat-icon class="material-icon">public</mat-icon>
+      </div>
+    </div>
+
+    <mat-card-footer class="idea-card-footer">
+      Created by {{ name }} {{ surname }} &commat; {{idea.createdAt}}
+    </mat-card-footer>
   </mat-card>
+
+  <div class="comment-section-container">
+    <button class="toggle-comments-button" (click)="toggleComments()">
+      <mat-icon>{{ showComments ? 'expand_less' : 'expand_more' }}</mat-icon>
+      {{ showComments ? 'Hide Comments' : 'Show Comments' }}
+    </button>
+
+    <div class="comment-section" *ngIf="showComments">
+      <h2>Comment Section</h2>
+
+      <div class="comment-input">
+        <textarea placeholder="Add a comment..." class="comment-textarea"></textarea>
+
+        <div class="privacy-toggle">
+          <mat-slide-toggle color="primary" id="private-comment">Private</mat-slide-toggle>
+        </div>
+
+        <button class="comment-button mat-icon-button">
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+
+      <div class="comments">
+        <div class="comment">
+          <div class="avatar">A</div>
+          <div class="comment-content">
+            <p><strong>user1234</strong> 1 day ago</p>
+            <p>This is the description example...</p>
+            <button class="reply-button mat-icon-button">
+              <mat-icon>reply</mat-icon> Reply
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

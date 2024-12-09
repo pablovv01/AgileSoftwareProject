@@ -91,12 +91,12 @@ export class FirebaseDbService {
   }
 
   // Get details of an idea from Firebase Database
-  async getIdeaById(id: string): Promise<any> {
+  async getIdeaById(id: string){
     try {
       const ideaRef = ref(this.db, `ideas/${id}`);
       const snapshot = await get(ideaRef);
       if (snapshot.exists()) {
-        return snapshot.val();
+        return snapshot
       } else {
         throw new Error('Idea not found');
       }
