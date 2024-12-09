@@ -218,6 +218,7 @@
   border-radius: 8px;
   font-size: 1rem;
   resize: none;
+  margin-right: 10px;
 }
 
 .privacy-toggle {

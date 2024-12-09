@@ -55,7 +55,7 @@
     </div>
 
     <mat-card-footer class="idea-card-footer">
-      Created by {{ name }} {{ surname }} &commat; {{idea.createdAt}}
+      Created by {{ name }} {{ surname }} on {{ idea.createdAt | date:'MMMM d, y' }}
     </mat-card-footer>
   </mat-card>
 
