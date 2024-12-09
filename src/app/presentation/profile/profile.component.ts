@@ -91,7 +91,8 @@ export class ProfileComponent {
     }).then(async (result) => {
       if (result.isConfirmed) {
         if (this.user.photo != this.userOld.photo || this.user.name != this.userOld.name || this.user.surname != this.userOld.surname) {
-          this.profile.updateProfile(this.user)
+          await this.profile.updateProfile(this.user)
+          this.userOld = Object.assign({}, this.user);
           Swal.fire({
             title: 'Profile Updated Successfully!',
             text: 'Your profile has been updated successfully',
@@ -99,8 +100,7 @@ export class ProfileComponent {
             confirmButtonText: 'Ok',
             allowOutsideClick: false
           })
-        }
-        if (this.user.email !== this.userOld.email) {
+        } else if (this.user.email !== this.userOld.email) {
           if (this.user.type === "student") {
             if (!this.isAllowedEmailDomain(this.user.email)) {
               Swal.fire({
@@ -115,6 +115,7 @@ export class ProfileComponent {
           }
           try {
             await this.profile.updateEmail(this.user);
+            this.userOld = Object.assign({}, this.user);
             Swal.fire({
               title: 'Email Updated Successfully!',
               text: 'Your email has been updated successfully',
