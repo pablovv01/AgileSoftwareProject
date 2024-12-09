@@ -47,7 +47,7 @@
       </div>
       <div class="stat">
         <mat-icon class="material-icon">visibility</mat-icon>
-        <span>{{idea.views}}</span>
+        <span>{{idea.visualizations}}</span>
       </div>
       <div class="visibility-icon">
         <mat-icon class="material-icon">public</mat-icon>
@@ -55,7 +55,7 @@
     </div>
 
     <mat-card-footer class="idea-card-footer">
-      Created by {{ name }} {{ surname }} &commat; {{idea.createdAt}}
+      Created by {{ name }} {{ surname }} on {{ idea.createdAt | date:'MMMM d, y' }}
     </mat-card-footer>
   </mat-card>
 

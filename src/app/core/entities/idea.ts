@@ -5,7 +5,7 @@ export interface Idea {
   tags: string[]
   userId: string
   createdAt: string
+  visualizations: number
   authorName?: string
   authorPhoto?: string
-  views: number
 }

@@ -43,7 +43,7 @@ export class EditIdeaComponent implements OnInit {
     userId: '',
     createdAt: '',
     authorName: '',
-    views:0
+    visualizations: 0
   };
   ideaId: string = ''
 
@@ -88,10 +88,9 @@ export class EditIdeaComponent implements OnInit {
             userId: ideaData.userId || '',
             createdAt: ideaData.createdAt || '',
             authorName: ideaData.authorName || '',
-            views: ideaData.views || 0
+            visualizations: ideaData.visualizations || 0,
           };
         }
-
       }).catch(error => {
         console.error('Error fetching idea:', error);
         this.snackBar.open('Error fetching idea.', 'Close', {

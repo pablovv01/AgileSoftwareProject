@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
@@ -16,6 +16,10 @@ import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
 import { MatTooltip } from '@angular/material/tooltip';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
+import { filter } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+
 
 
 
@@ -34,12 +38,12 @@ import { MatOption, MatSelect } from '@angular/material/select';
     MatPaginatorModule,
     MatTooltip,
     MatProgressSpinnerModule,
-    MatSelect,
-  MatOption],
+    MatMenuModule,
+    FormsModule],
   templateUrl: './explore-page.component.html',
   styleUrl: './explore-page.component.css'
 })
-export class ExplorePageComponent {
+export class ExplorePageComponent implements AfterViewInit{
   userId = sessionStorage.getItem('userId')!;
   userIdeas: Idea[] = [];
   categories = CATEGORIES;
@@ -53,13 +57,94 @@ export class ExplorePageComponent {
   selectedOrder: string = ''; // Valor predeterminado
   selectedCategory: string = '';
   userName: string | null = null;
+  selectedCategoriesFilter: string[] = [];
+  selectedOrderFilter: string = ''
+  isMenuOpen = false; // Variable que controla el estado del menú
+  selectedSortOption: string = '';
+  searchTitle:string = '';
+  notFound: boolean = false;
 
+  @ViewChild('filtersChips', { static: false }) chipsContainer!: ElementRef;
+  showArrows: boolean = false;
+  showClear: boolean = false;
 
   constructor(private router: Router, private ideaUseCase: IdeaUseCase) { }
 
   ngOnInit() {
     this.getUserName()
-    this.loadPage(this.currentPage, this.pageSize)
+    this.loadPage()
+  }
+
+  ngAfterViewInit(): void {
+    this.checkOverflow(); // Verificar en la carga inicial
+  }
+
+  loadBySortOption(option: string) {
+    this.selectedSortOption = option;
+    this.showClear = true;
+    if(option === ""){
+      this.showClear = false;
+    }
+    this.checkOverflow();
+    this.reloadPage();
+  }
+
+  scrollLeft(): void {
+    const container = this.chipsContainer.nativeElement;
+    container.scrollLeft -= 100;
+  }
+  
+  clearFilters(){
+    this.selectedCategoriesFilter = [];
+    this.loadBySortOption("");
+    this.checkOverflow();
+  }
+
+  scrollRight(): void {
+    const container = this.chipsContainer.nativeElement;
+    container.scrollLeft += 100;
+  }
+
+  checkOverflow(): void {
+    const container = document.querySelector('.filters-chips') as HTMLElement;
+  
+    if (container) {
+      const isOverflowing = container.scrollWidth > container.clientWidth;
+      this.showArrows = (isOverflowing && this.selectedCategoriesFilter.length > 0) || this.selectedSortOption != "";
+    }
+  }
+
+  closeMenu(){
+    this.isMenuOpen = false;
+  }
+
+  openMenu(){
+    this.isMenuOpen = true;
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  toggleCategorySelection(category: any) {
+    const index = this.selectedCategoriesFilter.indexOf(category.category);
+    if (index === -1) {
+      this.selectedCategoriesFilter.push(category.category);
+    }else {
+      this.selectedCategoriesFilter.splice(index, 1);
+    }
+    this.reloadPage()
+    this.checkOverflow();
+    this.showClear = true;
+  }
+
+  removeCategory(category: any) {
+    this.categories = this.categories.filter(cat => cat !== category);
+    this.selectedCategoriesFilter = this.selectedCategoriesFilter.filter(cat => cat !== category);
+  }
+
+  trackByCategory(index: number, category: any): string {
+    return category.category;
   }
 
   getUserName(){
@@ -69,41 +154,31 @@ export class ExplorePageComponent {
   isCreatedByMe(authorName: string, userID: string): boolean {
     return this.userName === authorName && this.userId === userID;
   }
+
+  refreshButton(){
+    this.clearFilters();
+    this.searchTitle = ''
+    this.loadPage();
+  }
+
   reloadPage(){
-    this.loadPage(this.currentPage, this.pageSize)
+    this.loadPage()
   }
 
-  onPageChange(event: PageEvent): void {
-    const { pageIndex, pageSize } = event;
-    this.pageSize = pageSize;
-    this.currentPage = pageIndex;
-    this.loadPage(pageIndex, pageSize);
-  }
-
-  private async loadPage(pageIndex: number, pageSize: number): Promise<void> {
+  private async loadPage(){
     try {
       this.isLoading = true; 
-      let startAfterKey: string | undefined;
-  
-      if (pageIndex > 0) {
-        startAfterKey = this.pageKeys[pageIndex - 1]; // Usar la clave de la página anterior
-      }
-      const response = await this.ideaUseCase.getAllIdeas(pageSize, startAfterKey);
-  
-      // Si es una nueva página, guarda la clave
-      if (pageIndex === this.pageKeys.length) {
-        this.pageKeys.push(response.lastKey!);
-      }
-  
+      //Get all ideas and filter by the selected options
+      const response = await this.ideaUseCase.getIdeas(this.selectedCategoriesFilter, this.selectedSortOption, this.searchTitle);
+
       // Obtener nombres de autores para cada idea
     this.ideas = await Promise.all(
       response.ideas.map(async (idea) => {
-        const user = await this.getAuthorIdeaName(idea.userId); // Obtener el nombre del autor
-        return { ...idea, authorName: user.name, authorPhoto: user.photo }; // Añadir `authorName` a cada idea
+        const user = await this.getAuthorIdeaName(idea.userId); // Get author name
+        return { ...idea, authorName: user.name, authorPhoto: user.photo }; // Add `authorName` a cada idea
       })
     );
-      this.totalItems = response.totalCount;
-      this.currentPage = pageIndex;
+    this.notFound = (this.ideas.length === 0) ? true : false; //Check not found
     } catch (error) {
       console.error('Error fetching paginated ideas:', error);
     }finally {
@@ -111,13 +186,13 @@ export class ExplorePageComponent {
     }
   }
 
-  // Función para obtener el color y clase según el tag
+  // Get color and tag for chips
   getCategoryColor(tag: string): string {
     const category = this.categories.find(c => c.category === tag);
     return category ? category.colorClass : ''; // Retorna la clase de color correspondiente
   }
 
-  // Función para obtener el icono correspondiente según el tag
+  // Get icon for tag
   getCategoryIcon(tag: string): string {
     const category = this.categories.find(c => c.category === tag);
     return category ? category.icon : ''; // Retorna el icono correspondiente
@@ -127,7 +202,7 @@ export class ExplorePageComponent {
     let authorName = userID
     let authorPhoto = "assets/userProfile_img.png"
     try {
-      // Llama al caso de uso para obtener el nombre del autor
+      // Get author name of idea
       const user = await this.ideaUseCase.getUserIdeaName(userID);
       if (user.name) {
         authorName = user.name;
@@ -140,53 +215,31 @@ export class ExplorePageComponent {
     }
     return {name: authorName, photo: authorPhoto};
   }
-
-  deleteIdea(ideaId: string) {
-    Swal.fire({
-      title: 'Delete idea',
-      text: 'Are you sure you want to delete this idea? This action cannot be undone.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-      reverseButtons: true,
-      allowOutsideClick: false
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await this.ideaUseCase.deleteIdea(ideaId);
-          Swal.fire({
-            title: 'Deleted!',
-            text: 'The idea has been successfully deleted.',
-            icon: 'success',
-            confirmButtonText: 'Ok',
-            allowOutsideClick: false
-          });
-          console.log(`Idea with ID ${ideaId} deleted successfully.`);
-          this.userIdeas = this.userIdeas.filter(idea => idea.id !== ideaId);
-        } catch (error) {
-          console.error('Error deleting idea:', error);
-          Swal.fire({
-            title: 'Delete error',
-            text: 'There was an issue deleting the idea. Please try again.',
-            icon: 'error',
-            confirmButtonText: 'Ok',
-            allowOutsideClick: false
-          });
-        }
-      }
-    });
+  searchByTitle() {
+    //Clear other filters
+    this.clearFilters();
+    //Check empty input
+    if (this.searchTitle === ""){
+      Swal.fire({
+        title: 'Search idea',
+        text: 'Please enter a title to perform the search.',
+        icon: 'warning',
+        allowOutsideClick: false
+      });
+    }else{
+      this.reloadPage()
+    }
   }
 
-  goToAddPost() {
-    this.router.navigate(['/add-idea']);
-  }
-
-  goToEditIdea(ideaId: any) {
-    this.router.navigate(['/edit-idea', ideaId]);
-  }
-
-  goToDetailIdea(ideaId: any) {
-    this.router.navigate(['/detail', ideaId]);
+  goToDetailIdea(idea: Idea) {
+    //Add visualization
+    idea.visualizations += 1;
+    try{
+      //Update field in data base
+      this.ideaUseCase.updateIdeaVisualizations(idea);
+    }catch (error) {
+      console.error('Error updating visualizations:', error);
+    }
+    this.router.navigate(['/detail', idea.id]);
   }
 }
