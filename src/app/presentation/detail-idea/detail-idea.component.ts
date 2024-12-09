@@ -16,9 +16,12 @@ import { getDatabase, ref, get } from 'firebase/database';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
 import {MatSlideToggle, MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {CATEGORIES} from '../../core/entities/categoriesTag';
+import Swal from 'sweetalert2';
+import {User} from '../../core/entities/user';
+import {ProfileUseCase} from '../../core/usecases/profile.usecase';
 
 @Component({
-  selector: 'app-edit-idea',
+  selector: 'detail-idea',
   standalone: true,
   imports: [
     FormsModule,
@@ -44,11 +47,15 @@ export class DetailIdeaComponent implements OnInit {
   date: Date = new Date()
   name: string | null = null
   surname: string | null = null
+  uid: string | null = null
   categories = CATEGORIES
   showComments = false
-  constructor(private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase) { }
+  user: User | null = null
+  investorRole : string = 'investor'
 
-  ngOnInit(): void {
+  constructor(private router:Router,private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase, private profile:ProfileUseCase) { }
+
+  async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.ideaUseCase.getDetails(id).then(async (ideaData) => {
@@ -64,6 +71,23 @@ export class DetailIdeaComponent implements OnInit {
         });
       });
     }
+    const retrievedSessionObject = sessionStorage.getItem('user');
+    if (retrievedSessionObject) {
+      const userData = JSON.parse(retrievedSessionObject)
+      this.uid = userData.uid;
+      const email = userData.email;
+      this.user = await this.profile.loadUserInfo(email, this.uid!!)
+    } else {
+      console.log('No se encontraron datos en sessionStorage.');
+    }
+  }
+
+  isInvestor(){
+    return this.user?.type !== this.investorRole
+  }
+
+  isMyIdea(){
+    return this.uid == this.idea.userId
   }
 
   async fetchUserData(): Promise<void>
@@ -102,5 +126,46 @@ export class DetailIdeaComponent implements OnInit {
   getCategoryIcon(tag: string): string {
     const category = this.categories.find(c => c.category === tag);
     return category ? category.icon : '';
+  }
+
+  deleteIdea(ideaId: string) {
+    Swal.fire({
+      title: 'Delete idea',
+      text: 'Are you sure you want to delete this idea? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      reverseButtons: true,
+      allowOutsideClick: false
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await this.ideaUseCase.deleteIdea(ideaId);
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'The idea has been successfully deleted.',
+            icon: 'success',
+            confirmButtonText: 'Ok',
+            allowOutsideClick: false
+          });
+          console.log(`Idea with ID ${ideaId} deleted successfully.`);
+          this.goBack()
+        } catch (error) {
+          console.error('Error deleting idea:', error);
+          Swal.fire({
+            title: 'Delete error',
+            text: 'There was an issue deleting the idea. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'Ok',
+            allowOutsideClick: false
+          });
+        }
+      }
+    });
+  }
+
+  goToEditIdea(ideaId: any) {
+    this.router.navigate(['/edit-idea', ideaId]);
   }
 }
