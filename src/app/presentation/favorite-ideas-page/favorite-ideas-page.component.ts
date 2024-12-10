@@ -22,7 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 export class FavoriteIdeasPageComponent implements OnInit {
   userId = sessionStorage.getItem('userId')!;
-  favoriteIdeas: Idea[] = [];  // Store the favorited ideas
+  favoriteIdeas: Awaited<Idea | null>[] = []; 
   isLoading: boolean = true;
 
   constructor(
@@ -42,8 +42,8 @@ export class FavoriteIdeasPageComponent implements OnInit {
         const ideaDetails = await this.ideaUseCase.getDetails(ideaId);  // Fetch idea details by ID
         return ideaDetails;
       });
-      
-      this.favoriteIdeas = await Promise.all(favoriteDetailsPromises);  // Wait for all details to be fetched
+
+      this.favoriteIdeas = (await Promise.all(favoriteDetailsPromises)) || [];  // Wait for all details to be fetched
     } catch (error) {
       console.error('Error loading favorite ideas:', error);
       Swal.fire({
