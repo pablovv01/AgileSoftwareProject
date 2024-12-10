@@ -367,17 +367,18 @@
 
 }
 
-  
-  
-
-
 .idea-card {
   position: relative; /* Make the card relative for absolute positioning */
 }
 
-.favourite-button {
+.favourite-icon {
+  cursor: pointer;
+  font-size: 24px;
+  transition: color 0.3s ease;
   position: absolute;
-  top: 5px; /* Distance from the top */
-  right: 10px; /* Distance from the right */
-  z-index: 1; /* Ensure it is above other content */
+  margin-left: 525px;
+}
+
+.favourite {
+  color: red;  /* Change this to your preferred colour */
 }

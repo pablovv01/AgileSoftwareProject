@@ -27,7 +27,7 @@ export class FirebaseDbService {
   async getUserSession(uid: string) {
     const dbRef = this.getDatabaseRef(`users/${uid}`);
     const snapshot = await get(dbRef);
-    return snapshot
+    return snapshot;
   }
 
   // Get the ideas from Firebase Database
@@ -37,20 +37,17 @@ export class FirebaseDbService {
     return snapshot;
   }
 
-  // Get the ideas from Firebase Database
+  // Get the ideas from Firebase Database with pagination
   async getPaginatedIdeas(limit: number, startAfterKey?: string) {
     const dbRef = this.getDatabaseRef('ideas');
     let ideasQuery = query(dbRef, orderByKey(), limitToFirst(limit));
 
-    // Si se proporciona `startAfterKey`, ajusta la consulta
     if (startAfterKey) {
       ideasQuery = query(dbRef, orderByKey(), startAfter(startAfterKey), limitToFirst(limit));
     }
     const snapshot = await get(ideasQuery);
     return snapshot;
   }
-
-
 
   // Delete idea from Firebase Database
   async deleteIdea(ideaID: string) {
@@ -115,12 +112,70 @@ export class FirebaseDbService {
     }
   }
 
+  // Update user data in Firebase Database
   async updateUser(uid: string, user: User) {
     try {
       const userRef = ref(this.db, `users/${uid}`);
       await update(userRef, user);
     } catch (error) {
       console.error('Error updating user in Firebase:', error);
+      throw error;
+    }
+  }
+
+  // Add idea to user's favorites
+  async addFavorite(userId: string, ideaId: string): Promise<void> {
+    try {
+      const favoritesRef = ref(this.db, `users/${userId}/favorites`);
+      const snapshot = await get(favoritesRef);
+
+      // If the user already has favorites, push the new favorite idea
+      if (snapshot.exists()) {
+        const favorites = snapshot.val();
+        if (!favorites.includes(ideaId)) {
+          favorites.push(ideaId);
+          await set(favoritesRef, favorites);
+        }
+      } else {
+        // If no favorites yet, initialize the list with the new favorite
+        await set(favoritesRef, [ideaId]);
+      }
+    } catch (error) {
+      console.error('Error adding favorite:', error);
+      throw error;
+    }
+  }
+
+  // Remove idea from user's favorites
+  async removeFavorite(userId: string, ideaId: string): Promise<void> {
+    try {
+      const favoritesRef = ref(this.db, `users/${userId}/favorites`);
+      const snapshot = await get(favoritesRef);
+
+      // If favorites exist, filter out the specified idea
+      if (snapshot.exists()) {
+        const favorites = snapshot.val();
+        const updatedFavorites = favorites.filter((id: string) => id !== ideaId);
+        await set(favoritesRef, updatedFavorites);
+      }
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+      throw error;
+    }
+  }
+
+  // Get user's favorite ideas
+  async getUserFavorites(userId: string): Promise<string[]> {
+    try {
+      const favoritesRef = ref(this.db, `users/${userId}/favorites`);
+      const snapshot = await get(favoritesRef);
+      if (snapshot.exists()) {
+        return snapshot.val();
+      } else {
+        return []; // Return empty array if no favorites exist
+      }
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
       throw error;
     }
   }

@@ -12,14 +12,11 @@ import { IdeaUseCase } from '../../core/usecases/idea.usecase';
 import { CATEGORIES } from '../../core/entities/categoriesTag';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTooltip } from '@angular/material/tooltip';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatOption, MatSelect } from '@angular/material/select';
-
-
-
-
+import { ProfileUseCase } from '../../core/usecases/profile.usecase';
 
 @Component({
   selector: 'app-explore-page',
@@ -37,9 +34,10 @@ import { MatOption, MatSelect } from '@angular/material/select';
     MatTooltip,
     MatProgressSpinnerModule,
     MatSelect,
-  MatOption],
+    MatOption,
+  ],
   templateUrl: './explore-page.component.html',
-  styleUrl: './explore-page.component.css'
+  styleUrls: ['./explore-page.component.css']
 })
 export class ExplorePageComponent {
   userId = sessionStorage.getItem('userId')!;
@@ -55,23 +53,47 @@ export class ExplorePageComponent {
   selectedOrder: string = ''; // Valor predeterminado
   selectedCategory: string = '';
   userName: string | null = null;
+  accountType: string | null = null;
+  favouriteIdeas: Set<string> = new Set();  // Track favourited idea IDs
 
-
-  constructor(private router: Router, private ideaUseCase: IdeaUseCase) { }
+  constructor(
+    private router: Router, 
+    private ideaUseCase: IdeaUseCase,
+    private profileUseCase: ProfileUseCase // Inject ProfileUseCase
+  ) { }
 
   ngOnInit() {
     this.getUserName()
+    this.getAccountType()
+    this.loadFavorites();  // Load favorites on initialization
     this.loadPage(this.currentPage, this.pageSize)
   }
 
-  getUserName(){
+  getUserName() {
     this.userName = JSON.parse(sessionStorage.getItem('user') ?? '{}').name || null;
+  }
+
+  getAccountType(){
+    this.accountType = JSON.parse(sessionStorage.getItem('user') ?? '{}').role || null;
+    console.log(this.accountType)
   }
 
   isCreatedByMe(authorName: string, userID: string): boolean {
     return this.userName === authorName && this.userId === userID;
   }
-  reloadPage(){
+
+  private async loadFavorites() {
+    try {
+      const favorites = await this.profileUseCase.getFavorites(this.userId);  // Fetch the favorite ideas from the DB
+      this.favouriteIdeas = new Set(favorites);  // Update the set of favorite ideas
+      sessionStorage.setItem('favouriteIdeas', JSON.stringify(Array.from(this.favouriteIdeas)));  // Persist to sessionStorage
+      console.log('Favorites loaded:', this.favouriteIdeas);
+    } catch (error) {
+      console.error('Error loading favorites:', error);
+    }
+  }
+
+  reloadPage() {
     this.loadPage(this.currentPage, this.pageSize)
   }
 
@@ -84,31 +106,31 @@ export class ExplorePageComponent {
 
   private async loadPage(pageIndex: number, pageSize: number): Promise<void> {
     try {
-      this.isLoading = true; 
+      this.isLoading = true;
       let startAfterKey: string | undefined;
-  
+
       if (pageIndex > 0) {
         startAfterKey = this.pageKeys[pageIndex - 1]; // Usar la clave de la página anterior
       }
       const response = await this.ideaUseCase.getAllIdeas(pageSize, startAfterKey);
-  
+
       // Si es una nueva página, guarda la clave
       if (pageIndex === this.pageKeys.length) {
         this.pageKeys.push(response.lastKey!);
       }
-  
+
       // Obtener nombres de autores para cada idea
-    this.ideas = await Promise.all(
-      response.ideas.map(async (idea) => {
-        const user = await this.getAuthorIdeaName(idea.userId); // Obtener el nombre del autor
-        return { ...idea, authorName: user.name, authorPhoto: user.photo }; // Añadir `authorName` a cada idea
-      })
-    );
+      this.ideas = await Promise.all(
+        response.ideas.map(async (idea) => {
+          const user = await this.getAuthorIdeaName(idea.userId); // Obtener el nombre del autor
+          return { ...idea, authorName: user.name, authorPhoto: user.photo }; // Añadir `authorName` a cada idea
+        })
+      );
       this.totalItems = response.totalCount;
       this.currentPage = pageIndex;
     } catch (error) {
       console.error('Error fetching paginated ideas:', error);
-    }finally {
+    } finally {
       this.isLoading = false; // Desactivar el estado de carga
     }
   }
@@ -125,7 +147,7 @@ export class ExplorePageComponent {
     return category ? category.icon : ''; // Retorna el icono correspondiente
   }
 
-  async getAuthorIdeaName(userID: string): Promise<{name: string, photo: string }>{
+  async getAuthorIdeaName(userID: string): Promise<{ name: string, photo: string }> {
     let authorName = userID
     let authorPhoto = "assets/userProfile_img.png"
     try {
@@ -134,13 +156,13 @@ export class ExplorePageComponent {
       if (user.name) {
         authorName = user.name;
       }
-      if(user.photo){
+      if (user.photo) {
         authorPhoto = user.photo;
       }
     } catch (error) {
       console.error('Error loading user ideas:', error);
     }
-    return {name: authorName, photo: authorPhoto};
+    return { name: authorName, photo: authorPhoto };
   }
 
   deleteIdea(ideaId: string) {
@@ -192,14 +214,28 @@ export class ExplorePageComponent {
     this.router.navigate(['/detail', ideaId]);
   }
 
-
-  favouriteIdea(ideaId: number): void {
-    console.log(`Idea with ID ${ideaId} marked as favourite.`);
-    // Add logic to handle the "favourite" action, such as toggling a favourite state or updating the backend
-    // For example, you could update an array of favourite ideas or call an API to save the status
+  async favouriteIdea(ideaId: string): Promise<void> {
+    try {
+      if (this.favouriteIdeas.has(ideaId)) {
+        // If already favorited, remove it
+        await this.profileUseCase.removeFavorite(ideaId);
+        this.favouriteIdeas.delete(ideaId);  // Remove from the set
+      } else {
+        // If not favorited, add it
+        await this.profileUseCase.addFavorite(ideaId);
+        this.favouriteIdeas.add(ideaId);  // Add to the set
+      }
+  
+      console.log(`Idea with ID ${ideaId} marked as favourite: ${this.favouriteIdeas.has(ideaId)}`);
+    } catch (error) {
+      console.error('Error handling favourite idea:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'There was an issue with favouriting the idea. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        allowOutsideClick: false
+      });
+    }
   }
-
-
 }
-
-

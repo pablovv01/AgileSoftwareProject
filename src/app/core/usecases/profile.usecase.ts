@@ -20,7 +20,6 @@ export class ProfileUseCase {
 
   async loadUserInfo(email: string, uid: string): Promise<User> {
     try {
-      //const userAuth = this.firebaseAuthService.getCurrentUser();
       const userDb = await this.firebaseDb.getUserById(uid);
       const user = new User(
         userDb.name || "Unknown",
@@ -32,7 +31,8 @@ export class ProfileUseCase {
         userDb.degree,
         userDb.company,
         userDb.position,
-        userDb.description
+        userDb.description,
+        userDb.favorites || [] 
       );
 
       return user;
@@ -53,16 +53,57 @@ export class ProfileUseCase {
 
   async updateEmail(user: User): Promise<void> {
     try {
-      // Update email
       await this.firebaseAuthService.updateEmail(user.email);
-
-      // Send email verification
       await this.firebaseAuthService.sendEmailVerification();
-
-      // Update profile
       this.updateProfile(user)
     } catch (error) {
       console.error("Error updating email in ProfileService:", error);
+      throw error;
+    }
+  }
+
+  // Add favorite idea to the investor's collection (Firebase Realtime Database)
+  async addFavorite(ideaId: string): Promise<void> {
+    try {
+      const currentUserId = this.firebaseAuthService.getCurrentUser().uid;
+
+      // Get the current user's profile
+      const user = await this.firebaseDb.getUserById(currentUserId);
+
+      // Add the ideaId to the investor's favorites list
+      await this.firebaseDb.addFavorite(currentUserId, ideaId);
+
+    } catch (error) {
+      console.error('Error adding favorite:', error);
+      throw error;
+    }
+  }
+
+  // Remove favorite idea from the investor's collection (Firebase Realtime Database)
+  async removeFavorite(ideaId: string): Promise<void> {
+    try {
+      const currentUserId = this.firebaseAuthService.getCurrentUser().uid;
+
+      // Get the current user's profile
+      const user = await this.firebaseDb.getUserById(currentUserId);
+
+      // Remove the ideaId from the investor's favorites list
+      await this.firebaseDb.removeFavorite(currentUserId, ideaId);
+
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+      throw error;
+    }
+  }
+
+  async getFavorites(uid: string): Promise<string[]> {
+    try {
+      const userDb = await this.firebaseDb.getUserById(uid);
+
+      // Return the list of favorite idea IDs (if any)
+      return userDb.favorites || [];
+    } catch (error) {
+      console.error('Error getting favorites:', error);
       throw error;
     }
   }
