@@ -36,27 +36,30 @@ export class FavoriteIdeasPageComponent implements OnInit {
     try {
       // Step 1: Fetch all favorite idea IDs
       const favorites = await this.profileUseCase.getFavorites(this.userId);
-
+  
       // Step 2: Fetch details for each idea and author info
       const favoriteDetailsPromises = favorites.map(async (ideaId: string) => {
         const ideaDetails = await this.ideaUseCase.getDetails(ideaId);
-
+  
         if (ideaDetails) {
           // Step 3: Fetch author data for the current idea
           const authorData = await this.fetchUserData(ideaDetails.userId);
-
+          console.log('idea id', ideaId);
+  
+          // Ensure that the idea ID is included in the returned object
           return {
             ...ideaDetails,
             authorName: `${authorData.name || 'Unknown'} ${authorData.surname || ''}`.trim(),
+            id: ideaId, // Include the ID explicitly
           };
         }
-
+  
         return null;
       });
-
+  
       // Step 4: Resolve all promises and filter out null values
       this.favoriteIdeas = (await Promise.all(favoriteDetailsPromises)).filter(
-        (idea): idea is Idea & { authorName: string } => idea !== null
+        (idea): idea is Idea & { authorName: string, id: string } => idea !== null
       );
     } catch (error) {
       console.error('Error loading favorite ideas:', error);

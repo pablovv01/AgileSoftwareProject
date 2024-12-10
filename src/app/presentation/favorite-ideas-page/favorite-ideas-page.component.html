@@ -14,11 +14,12 @@
         <mat-card-subtitle class="idea-card-subtitle">Created on {{ idea?.createdAt | date:'MMMM d, y' }} by {{ idea.authorName }}</mat-card-subtitle>
         <mat-card-content class="idea-card-content">{{ idea?.description }}</mat-card-content>
         <mat-card-actions>
-          <!-- <div class="container-buttons">
-            <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea?.id)">
+          <div class="container-buttons">
+            <button mat-fab extended class="button-details" 
+              (click)="idea?.id ? goToDetailIdea(idea.id) : null">
               <mat-icon class="icon-details">visibility</mat-icon>Details
             </button>
-          </div> -->
+          </div>
         </mat-card-actions>
       </mat-card>
     </div>
