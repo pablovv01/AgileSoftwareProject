@@ -84,10 +84,18 @@
           <div class="comment-content">
             <p><strong>{{ comment.authorName }}</strong> {{ comment.publishedDate | date:'short' }}</p> <!-- Formateo de fecha -->
             <p>{{ comment.content }}</p>
-            <button class="reply-button mat-icon-button">
+            <button class="reply-button mat-icon-button" (click)="toggleReplyInput(comment)">
               <mat-icon>reply</mat-icon>
               Reply
             </button>
+            <div *ngIf="comment.showReplyInput" class="reply-input-container">
+              <mat-form-field appearance="fill" class="reply-textarea">
+                <textarea matInput [(ngModel)]="comment.replyContent" placeholder="Write your reply..."></textarea>
+              </mat-form-field>
+              <button mat-icon-button color="primary" (click)="sendReply(comment, index)" aria-label="Send reply">
+                <mat-icon>send</mat-icon>
+              </button>
+            </div>
 
             <div *ngFor="let commentReply of comment.reply; let replyIndex = index">
               <div class="comment reply">

@@ -293,3 +293,32 @@
 .reply-button:hover {
   text-decoration: underline;
 }
+
+.reply-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.reply-textarea {
+  flex-grow: 1;
+  margin: 0;
+}
+
+.reply-input-container button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.reply-input-container button:hover {
+  background-color: #0056b3;
+}
+

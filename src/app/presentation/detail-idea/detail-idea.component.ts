@@ -200,5 +200,25 @@ export class DetailIdeaComponent implements OnInit {
       console.error('Error adding comment:', error);
     }
   }
+
+  toggleReplyInput(comment: any) {
+    comment.showReplyInput = !comment.showReplyInput;  // Alternar la visibilidad del cuadro de respuesta
+  }
+
+  sendReply(comment: any, index: number) {
+    if (!comment.replyContent || !comment.replyContent.trim()) {
+      console.error('Reply content cannot be empty.');
+      return;
+    }
+
+    const reply: Comment = {
+      authorName: `${this.user?.name} ${this.user?.surname}`,
+      content: comment.replyContent.trim(),
+      publishedDate: new Date().toISOString(),
+      reply: [],
+      userId: this.uid ?? '',
+      private: false,
+    };
+  }
 }
 
