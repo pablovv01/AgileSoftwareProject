@@ -19,6 +19,9 @@ import {CATEGORIES} from '../../core/entities/categoriesTag';
 import Swal from 'sweetalert2';
 import {User} from '../../core/entities/user';
 import {ProfileUseCase} from '../../core/usecases/profile.usecase';
+import {Comment} from '../../core/entities/comment';
+import {CommentUseCase} from '../../core/usecases/comment.usecase';
+import {Idea} from '../../core/entities/idea';
 
 @Component({
   selector: 'detail-idea',
@@ -51,9 +54,12 @@ export class DetailIdeaComponent implements OnInit {
   categories = CATEGORIES
   showComments = false
   user: User | null = null
-  investorRole : string = 'investor'
+  investorRole: string = 'investor'
+  newCommentContent: string = "";
+  isPrivate: boolean = false;
 
-  constructor(private router:Router,private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase, private profile:ProfileUseCase) { }
+  constructor(private router: Router, private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase, private profile: ProfileUseCase, private commentUseCase: CommentUseCase) {
+  }
 
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -61,6 +67,10 @@ export class DetailIdeaComponent implements OnInit {
       this.ideaUseCase.getDetails(id).then(async (ideaData) => {
         this.idea = ideaData;
         this.date = new Date(this.idea.createdAt);
+        if (!Array.isArray(this.idea.comments)) {
+          console.error('Comments are not an array:', this.idea.comments);
+          this.idea.comments = [];
+        }
         await this.fetchUserData();
       }).catch(error => {
         console.error('Error fetching idea:', error);
@@ -82,30 +92,26 @@ export class DetailIdeaComponent implements OnInit {
     }
   }
 
-  isInvestor(){
+  isInvestor() {
     return this.user?.type !== this.investorRole
   }
 
-  isMyIdea(){
+  isMyIdea() {
     return this.uid == this.idea.userId
   }
 
-  async fetchUserData(): Promise<void>
-  {
+  async fetchUserData(): Promise<void> {
     const db = getDatabase();
     const userRef = ref(db, `users/${this.idea.userId}`);
 
     console.log(this.id);
     const snapshot = await get(userRef);
-    if (snapshot.exists())
-    {
+    if (snapshot.exists()) {
       const userData = snapshot.val();
       this.name = userData.name;
       this.surname = userData.surname;
       console.log(this.name);
-    }
-    else
-    {
+    } else {
       console.error('No user data found.');
     }
   }
@@ -168,4 +174,31 @@ export class DetailIdeaComponent implements OnInit {
   goToEditIdea(ideaId: any) {
     this.router.navigate(['/edit-idea', ideaId]);
   }
+
+  async addNewComment() {
+    // Verificar si el contenido del comentario está vacío
+    if (!this.newCommentContent.trim()) {
+      console.error('Comment content cannot be empty.');
+      return;
+    }
+
+    // Construir el comentario
+    const comment: Comment = {
+      authorName: `${this.user?.name} ${this.user?.surname}`,
+      reply: [],
+      userId: this.uid!!,
+      content: this.newCommentContent.trim(),
+      publishedDate: new Date().toISOString(),
+      private: this.isPrivate,
+    };
+
+    try {
+      await this.commentUseCase.addComment(this.idea.id, comment);
+      console.log('Comment added successfully');
+      this.newCommentContent = '';
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
+  }
 }
+

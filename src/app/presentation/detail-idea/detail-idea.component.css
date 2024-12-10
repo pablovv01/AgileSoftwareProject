@@ -207,13 +207,12 @@
 .comment-input {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .comment-textarea {
   width: 100%;
-  padding: 10px;
+  padding: 5px;
   border: 1px solid lightgray;
   border-radius: 8px;
   font-size: 1rem;
@@ -221,27 +220,35 @@
   margin-right: 10px;
 }
 
-.privacy-toggle {
+.comment-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   font-size: 1rem;
 }
 
-.comment-button {
-  align-self: flex-end;
-  padding: 10px 20px;
+.comment-actions mat-slide-toggle {
+  font-size: 1rem;
+}
+
+.comment-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 50%;
   cursor: pointer;
+  width: 48px;
+  height: 48px;
 }
 
-.comment-button:hover {
+.comment-actions button:hover {
   background-color: #0056b3;
 }
+
 
 .comments {
   margin-top: 20px;

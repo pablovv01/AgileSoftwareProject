@@ -1,3 +1,5 @@
+import {Comment} from '@angular/compiler';
+
 export interface Idea {
   id: string
   title: string
@@ -8,4 +10,5 @@ export interface Idea {
   visualizations: number
   authorName?: string
   authorPhoto?: string
+  comments: Comment[]
 }

@@ -47,10 +47,7 @@
       </div>
       <div class="stat">
         <mat-icon class="material-icon">visibility</mat-icon>
-        <span>{{idea.visualizations}}</span>
-      </div>
-      <div class="visibility-icon">
-        <mat-icon class="material-icon">public</mat-icon>
+        <span>{{ idea.visualizations }}</span>
       </div>
     </div>
 
@@ -69,26 +66,38 @@
       <h2>Comment Section</h2>
 
       <div class="comment-input">
-        <textarea placeholder="Add a comment..." class="comment-textarea"></textarea>
+        <mat-form-field appearance="fill" class="comment-input">
+          <textarea matInput [(ngModel)]="newCommentContent" placeholder="Add a comment..."></textarea>
+        </mat-form-field>
 
-        <div class="privacy-toggle">
-          <mat-slide-toggle color="primary" id="private-comment">Private</mat-slide-toggle>
+        <div class="comment-actions">
+          <mat-slide-toggle color="primary" id="private-comment" [(ngModel)]="isPrivate">Private</mat-slide-toggle>
+          <button mat-icon-button color="primary"  (click)="addNewComment()" aria-label="Send comment">
+            <mat-icon>send</mat-icon>
+          </button>
         </div>
-
-        <button class="comment-button mat-icon-button">
-          <mat-icon>send</mat-icon>
-        </button>
       </div>
 
       <div class="comments">
-        <div class="comment">
-          <div class="avatar">A</div>
+        <div *ngFor="let comment of idea.comments; let index = index" class="comment">
+          <div class="avatar">{{ comment.authorName.charAt(0) }}</div> <!-- Mostrar la primera letra del autor -->
           <div class="comment-content">
-            <p><strong>user1234</strong> 1 day ago</p>
-            <p>This is the description example...</p>
+            <p><strong>{{ comment.authorName }}</strong> {{ comment.publishedDate | date:'short' }}</p> <!-- Formateo de fecha -->
+            <p>{{ comment.content }}</p>
             <button class="reply-button mat-icon-button">
-              <mat-icon>reply</mat-icon> Reply
+              <mat-icon>reply</mat-icon>
+              Reply
             </button>
+
+            <div *ngFor="let commentReply of comment.reply; let replyIndex = index">
+              <div class="comment reply">
+                <div class="avatar">{{ commentReply.authorName.charAt(0) }}</div>
+                <div class="comment-content">
+                  <p><strong>{{ commentReply.authorName }}</strong> {{ commentReply.publishedDate | date:'short' }}</p> <!-- Formateo de fecha -->
+                  <p>{{ commentReply.content }}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

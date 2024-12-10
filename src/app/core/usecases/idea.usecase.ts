@@ -72,6 +72,10 @@ export class IdeaUseCase {
         userId: data[key].userId || '',
         createdAt: data[key].createdAt || '',
         visualizations: data[key].visualizations || 0,
+        comments: data[key].comments ? Object.keys(data[key].comments).map(commentKey => ({
+          ...data[key].comments[commentKey],
+          id: commentKey
+        })) : []
       }))
       //Order by Tag
       .filter((idea) =>
@@ -164,7 +168,11 @@ private getSortFunction(filterOrder: string): (a: Idea, b: Idea) => number {
         tags: data.tags ? data.tags.split(',').map((tag: string) => tag.trim()) : [],
         userId: data.userId || '',
         createdAt: data.createdAt || '',
-        visualizations: data.visualizations || 0
+        visualizations: data.visualizations || 0,
+        comments: data.comments ? Object.keys(data.comments).map(key => ({
+          ...data.comments[key],
+          id: key
+        })) : []
       };
     } catch (error) {
       console.error('Error fetching idea in service:', error);

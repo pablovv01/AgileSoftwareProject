@@ -2,6 +2,7 @@ import { get, getDatabase, push, ref, remove, set, update, query, orderByKey, st
 import { User } from "../core/entities/user";
 import { Injectable } from "@angular/core";
 import { Idea } from "../core/entities/idea";
+import {Comment} from '../core/entities/comment';
 
 @Injectable({
   providedIn: 'root',
@@ -142,6 +143,17 @@ export class FirebaseDbService {
       await update(userRef, user);
     } catch (error) {
       console.error('Error updating user in Firebase:', error);
+      throw error;
+    }
+  }
+
+  async addComment(ideaId: string, comment: Comment): Promise<void> {
+    try {
+      const ideaRef = ref(this.db, `ideas/${ideaId}/comments`);
+      const newCommentRef = push(ideaRef);
+      await set(newCommentRef, comment);
+    } catch (error) {
+      console.error('Error adding comment to Firebase:', error);
       throw error;
     }
   }
