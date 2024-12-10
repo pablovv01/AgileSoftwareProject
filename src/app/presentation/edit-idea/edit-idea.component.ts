@@ -84,7 +84,7 @@ export class EditIdeaComponent implements OnInit {
             title: ideaData.title || '',
             description: ideaData.description || '',
             tags: ideaData.tags
-              ? (ideaData.tags as unknown as string).split(',').map((tag: string) => tag.trim())
+              ? ideaData.tags
               : [],
             userId: ideaData.userId || '',
             createdAt: ideaData.createdAt || '',
