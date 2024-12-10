@@ -8,20 +8,20 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {MatChip, MatChipSet, MatChipsModule} from '@angular/material/chips';
+import {MatChipsModule} from '@angular/material/chips';
 import { MatDivider } from '@angular/material/divider';
 import { IdeaUseCase } from '../../core/usecases/idea.usecase';
-import { getAuth, signOut } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
-import {MatIcon, MatIconModule} from '@angular/material/icon';
-import {MatSlideToggle, MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {CATEGORIES} from '../../core/entities/categoriesTag';
 import Swal from 'sweetalert2';
 import {User} from '../../core/entities/user';
 import {ProfileUseCase} from '../../core/usecases/profile.usecase';
 import {Comment} from '../../core/entities/comment';
 import {CommentUseCase} from '../../core/usecases/comment.usecase';
-import {Idea} from '../../core/entities/idea';
+import {MatMenuModule} from '@angular/material/menu';
+
 
 @Component({
   selector: 'detail-idea',
@@ -38,7 +38,8 @@ import {Idea} from '../../core/entities/idea';
     MatChipsModule,
     MatDivider,
     MatIconModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatMenuModule
   ],
   templateUrl: './detail-idea.component.html',
   styleUrl: './detail-idea.component.css'
@@ -176,13 +177,11 @@ export class DetailIdeaComponent implements OnInit {
   }
 
   async addNewComment() {
-    // Verificar si el contenido del comentario está vacío
     if (!this.newCommentContent.trim()) {
       console.error('Comment content cannot be empty.');
       return;
     }
 
-    // Construir el comentario
     const comment: Comment = {
       authorName: `${this.user?.name} ${this.user?.surname}`,
       reply: [],
@@ -195,6 +194,7 @@ export class DetailIdeaComponent implements OnInit {
     try {
       await this.commentUseCase.addComment(this.idea.id, comment);
       console.log('Comment added successfully');
+      this.idea.comments.push(comment);
       this.newCommentContent = '';
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -205,20 +205,34 @@ export class DetailIdeaComponent implements OnInit {
     comment.showReplyInput = !comment.showReplyInput;  // Alternar la visibilidad del cuadro de respuesta
   }
 
-  sendReply(comment: any, index: number) {
-    if (!comment.replyContent || !comment.replyContent.trim()) {
-      console.error('Reply content cannot be empty.');
-      return;
-    }
+  async sendReply(comment: any, index: number) {
+    try {
+      if (!comment.replyContent) {
+        console.error('Reply content cannot be empty.');
+        return;
+      }
 
-    const reply: Comment = {
-      authorName: `${this.user?.name} ${this.user?.surname}`,
-      content: comment.replyContent.trim(),
-      publishedDate: new Date().toISOString(),
-      reply: [],
-      userId: this.uid ?? '',
-      private: false,
-    };
+      const reply: Comment = {
+        authorName: `${this.user?.name} ${this.user?.surname}`,
+        reply: [],
+        userId: this.uid!!,
+        content: comment.replyContent,
+        publishedDate: new Date().toISOString(),
+        private: comment.private,
+      };
+
+      await this.commentUseCase.addReplyToComment(
+        this.idea.id,
+        comment.id,
+        reply
+      );
+
+      console.log('Reply added successfully');
+      comment.replyContent = '';
+      this.idea.comments[index].reply.push(reply);
+      comment.showReplyInput = false;
+    } catch (error) {
+      console.error('Error sending reply:', error);
+    }
   }
 }
-

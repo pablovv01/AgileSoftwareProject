@@ -8,10 +8,16 @@
       <mat-card-title class="idea-card-title">
         {{ idea.title }}
       </mat-card-title>
+      <div *ngIf="isMyIdea()">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
 
-      <button class="menu-btn mat-icon-button">
-        <mat-icon>more_vert</mat-icon>
-      </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="goToEditIdea(this.idea.id)">Edit</button>
+          <button mat-menu-item (click)="deleteIdea(this.idea.id)">Delete</button>
+        </mat-menu>
+      </div>
     </div>
 
     <div class="chips-container">

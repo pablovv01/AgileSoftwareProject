@@ -157,4 +157,15 @@ export class FirebaseDbService {
       throw error;
     }
   }
+
+  async addReplyToComment(ideaId: string, commentId: string, reply: Comment) {
+    try {
+      const commentRef = ref(this.db, `ideas/${ideaId}/comments/${commentId}/reply`);
+      const newReplyRef = push(commentRef);
+      await set(newReplyRef, reply);
+    } catch (error) {
+      console.error('Error adding comment to Firebase:', error);
+      throw error;
+    }
+  }
 }

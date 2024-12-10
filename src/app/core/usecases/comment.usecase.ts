@@ -20,4 +20,18 @@ export class CommentUseCase {
       throw new Error('Error adding comment');
     }
   }
+
+  async addReplyToComment(
+    ideaId: string,
+    commentId: string,
+    reply: Comment
+  ): Promise<void> {
+    try {
+      await this.firebaseDb.addReplyToComment(ideaId, commentId, reply);
+      console.log(`Comment added to idea ${ideaId} successfully.`);
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      throw new Error('Error adding comment');
+    }
+  }
 }

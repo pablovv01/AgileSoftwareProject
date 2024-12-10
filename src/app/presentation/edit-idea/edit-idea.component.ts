@@ -104,7 +104,7 @@ export class EditIdeaComponent implements OnInit {
     }
   }
   discardChanges() {
-    this.router.navigate(['/myIdeasPage']);
+    window.history.back();
   }
 
   updateIdea(){

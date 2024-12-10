@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Idea } from '../entities/idea';
 import { FirebaseDbService } from '../../data/firebase_db_service';
-import { get, getDatabase, push, ref, remove, set, update, query, orderByKey, startAfter, limitToFirst, child } from "firebase/database";
 
 @Injectable({
   providedIn: 'root'
@@ -169,10 +168,33 @@ private getSortFunction(filterOrder: string): (a: Idea, b: Idea) => number {
         userId: data.userId || '',
         createdAt: data.createdAt || '',
         visualizations: data.visualizations || 0,
-        comments: data.comments ? Object.keys(data.comments).map(key => ({
-          ...data.comments[key],
-          id: key
-        })) : []
+        comments: data.comments
+          ? Object.keys(data.comments).map(key => {
+            const comment = data.comments[key];
+            return {
+              id: key,
+              userId: comment.userId || '',
+              authorName: comment.authorName || '',
+              publishedDate: comment.publishedDate || '',
+              content: comment.content || '',
+              private: !!comment.private,
+              reply: comment.reply
+                ? Object.keys(comment.reply).map(replyKey => {
+                  const reply = comment.reply[replyKey];
+                  return {
+                    id: replyKey,
+                    userId: reply.userId || '',
+                    authorName: reply.authorName || '',
+                    publishedDate: reply.publishedDate || '',
+                    content: reply.content || '',
+                    private: !!reply.private,
+                    reply: [],
+                  };
+                })
+                : [],
+            };
+          })
+          : [],
       };
     } catch (error) {
       console.error('Error fetching idea in service:', error);
