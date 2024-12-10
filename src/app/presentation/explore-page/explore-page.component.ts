@@ -57,7 +57,7 @@ export class ExplorePageComponent {
   favouriteIdeas: Set<string> = new Set();  // Track favourited idea IDs
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private ideaUseCase: IdeaUseCase,
     private profileUseCase: ProfileUseCase // Inject ProfileUseCase
   ) { }
@@ -225,7 +225,7 @@ export class ExplorePageComponent {
         await this.profileUseCase.addFavorite(ideaId);
         this.favouriteIdeas.add(ideaId);  // Add to the set
       }
-  
+
       console.log(`Idea with ID ${ideaId} marked as favourite: ${this.favouriteIdeas.has(ideaId)}`);
     } catch (error) {
       console.error('Error handling favourite idea:', error);
