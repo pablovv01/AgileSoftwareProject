@@ -1,22 +1,120 @@
 <div class="idea-detail-container">
   <mat-card class="idea-card">
-    <div class="card">
+    <div class="card-header">
+      <button class="back-btn mat-icon-button" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
       <mat-card-title class="idea-card-title">
         {{ idea.title }}
       </mat-card-title>
-      <mat-chip-set class="chipset">
-        <mat-chip>
-          {{ idea.tags }}
-        </mat-chip>
-      </mat-chip-set>
-      <mat-divider class="separator"></mat-divider>
-      <mat-card-content class="idea-card-content">
-        {{ idea.description }}
-      </mat-card-content>
-      <mat-divider class="separator"></mat-divider>
-      <mat-card-footer class="idea-card-footer">
-        Created by {{ name }} {{ surname }}
-      </mat-card-footer>
+      <div *ngIf="isMyIdea()">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="goToEditIdea(this.idea.id)">Edit</button>
+          <button mat-menu-item (click)="deleteIdea(this.idea.id)">Delete</button>
+        </mat-menu>
+      </div>
     </div>
+
+    <div class="chips-container">
+      @for (tag of idea.tags; track tag; let index = $index) {
+        <mat-chip-set aria-label="Category selection">
+          @if (index < 2) {
+            <mat-chip [ngClass]="getCategoryColor(tag)">
+              <img matChipAvatar [src]="getCategoryIcon(tag)" alt=""/>
+              {{ tag }}
+            </mat-chip>
+          }
+        </mat-chip-set>
+      }
+    </div>
+
+    <mat-divider class="separator"></mat-divider>
+
+    <mat-card-content class="idea-card-content">
+      {{ idea.description }}
+    </mat-card-content>
+
+    <!-- Separador -->
+    <mat-divider class="separator"></mat-divider>
+
+    <div class="idea-stats">
+      <div class="stat">
+        <mat-icon class="material-icon">chat</mat-icon>
+        <span>100</span>
+      </div>
+      <div class="stat">
+        <mat-icon class="material-icon">favorite</mat-icon>
+        <span>100</span>
+      </div>
+      <div class="stat">
+        <mat-icon class="material-icon">visibility</mat-icon>
+        <span>{{ idea.visualizations }}</span>
+      </div>
+    </div>
+
+    <mat-card-footer class="idea-card-footer">
+      Created by {{ name }} {{ surname }} on {{ idea.createdAt | date:'MMMM d, y' }}
+    </mat-card-footer>
   </mat-card>
+
+  <div class="comment-section-container">
+    <button class="toggle-comments-button" (click)="toggleComments()">
+      <mat-icon>{{ showComments ? 'expand_less' : 'expand_more' }}</mat-icon>
+      {{ showComments ? 'Hide Comments' : 'Show Comments' }}
+    </button>
+
+    <div class="comment-section" *ngIf="showComments">
+      <h2>Comment Section</h2>
+
+      <div class="comment-input">
+        <mat-form-field appearance="fill" class="comment-input">
+          <textarea matInput [(ngModel)]="newCommentContent" placeholder="Add a comment..."></textarea>
+        </mat-form-field>
+
+        <div class="comment-actions">
+          <mat-slide-toggle color="primary" id="private-comment" [(ngModel)]="isPrivate">Private</mat-slide-toggle>
+          <button mat-icon-button color="primary"  (click)="addNewComment()" aria-label="Send comment">
+            <mat-icon>send</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="comments">
+        <div *ngFor="let comment of idea.comments; let index = index" class="comment">
+          <div class="avatar">{{ comment.authorName.charAt(0) }}</div> <!-- Mostrar la primera letra del autor -->
+          <div class="comment-content">
+            <p><strong>{{ comment.authorName }}</strong> {{ comment.publishedDate | date:'short' }}</p> <!-- Formateo de fecha -->
+            <p>{{ comment.content }}</p>
+            <button class="reply-button mat-icon-button" (click)="toggleReplyInput(comment)">
+              <mat-icon>reply</mat-icon>
+              Reply
+            </button>
+            <div *ngIf="comment.showReplyInput" class="reply-input-container">
+              <mat-form-field appearance="fill" class="reply-textarea">
+                <textarea matInput [(ngModel)]="comment.replyContent" placeholder="Write your reply..."></textarea>
+              </mat-form-field>
+              <button mat-icon-button color="primary" (click)="sendReply(comment, index)" aria-label="Send reply">
+                <mat-icon>send</mat-icon>
+              </button>
+            </div>
+
+            <div *ngFor="let commentReply of comment.reply; let replyIndex = index">
+              <div class="comment reply">
+                <div class="avatar">{{ commentReply.authorName.charAt(0) }}</div>
+                <div class="comment-content">
+                  <p><strong>{{ commentReply.authorName }}</strong> {{ commentReply.publishedDate | date:'short' }}</p> <!-- Formateo de fecha -->
+                  <p>{{ commentReply.content }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

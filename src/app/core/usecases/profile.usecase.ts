@@ -32,7 +32,7 @@ export class ProfileUseCase {
         userDb.company,
         userDb.position,
         userDb.description,
-        userDb.favorites || [] 
+        userDb.favorites || []
       );
 
       return user;
@@ -42,9 +42,9 @@ export class ProfileUseCase {
     }
   }
 
-  updateProfile(user: User) {
+  async updateProfile(user: User) {
     try {
-      this.firebaseDb.updateUser(this.firebaseAuthService.getCurrentUser().uid, user)
+      await this.firebaseDb.updateUser(this.firebaseAuthService.getCurrentUser().uid, user)
     } catch (error) {
       console.error('Error updating user in Firebase:', error);
       throw error;
@@ -55,7 +55,7 @@ export class ProfileUseCase {
     try {
       await this.firebaseAuthService.updateEmail(user.email);
       await this.firebaseAuthService.sendEmailVerification();
-      this.updateProfile(user)
+      await this.updateProfile(user)
     } catch (error) {
       console.error("Error updating email in ProfileService:", error);
       throw error;

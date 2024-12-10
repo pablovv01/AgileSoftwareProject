@@ -1,7 +1,8 @@
-import { get, getDatabase, push, ref, remove, set, update, query, orderByKey, startAfter, limitToFirst } from "firebase/database";
+import { get, getDatabase, push, ref, remove, set, update, query, orderByKey, startAfter, limitToFirst, child } from "firebase/database";
 import { User } from "../core/entities/user";
 import { Injectable } from "@angular/core";
 import { Idea } from "../core/entities/idea";
+import {Comment} from '../core/entities/comment';
 
 @Injectable({
   providedIn: 'root',
@@ -37,10 +38,32 @@ export class FirebaseDbService {
     return snapshot;
   }
 
-  // Get the ideas from Firebase Database with pagination
+
+  // Get the ideas from Firebase Database
+  async getOrderIdeas(filterOrder?: string) {
+    const dbRef = this.getDatabaseRef('ideas');
+
+    const snapshot = await get(dbRef);
+    return snapshot;
+  }
+
+  // Get the ideas from Firebase Database
   async getPaginatedIdeas(limit: number, startAfterKey?: string) {
     const dbRef = this.getDatabaseRef('ideas');
-    let ideasQuery = query(dbRef, orderByKey(), limitToFirst(limit));
+    let ideasQuery = query(dbRef, orderByKey(), limitToFirst(limit) );
+
+    // Si se proporciona `startAfterKey`, ajusta la consulta
+    if (startAfterKey) {
+      ideasQuery = query(dbRef, orderByKey(), startAfter(startAfterKey), limitToFirst(limit));
+    }
+    const snapshot = await get(ideasQuery);
+    return snapshot;
+  }
+
+  // Get the ideas from Firebase Database
+  async getPaginatedIdeas2(limit: number, startAfterKey?: string) {
+    const dbRef = this.getDatabaseRef('ideas');
+    let ideasQuery = query(dbRef, orderByKey(), limitToFirst(limit) );
 
     if (startAfterKey) {
       ideasQuery = query(dbRef, orderByKey(), startAfter(startAfterKey), limitToFirst(limit));
@@ -67,12 +90,12 @@ export class FirebaseDbService {
   }
 
   // Get details of an idea from Firebase Database
-  async getIdeaById(id: string): Promise<any> {
+  async getIdeaById(id: string){
     try {
       const ideaRef = ref(this.db, `ideas/${id}`);
       const snapshot = await get(ideaRef);
       if (snapshot.exists()) {
-        return snapshot.val();
+        return snapshot
       } else {
         throw new Error('Idea not found');
       }
@@ -123,7 +146,28 @@ export class FirebaseDbService {
     }
   }
 
-  // Add idea to user's favorites
+  async addComment(ideaId: string, comment: Comment): Promise<void> {
+    try {
+      const ideaRef = ref(this.db, `ideas/${ideaId}/comments`);
+      const newCommentRef = push(ideaRef);
+      await set(newCommentRef, comment);
+    } catch (error) {
+      console.error('Error adding comment to Firebase:', error);
+      throw error;
+    }
+  }
+
+      async addReplyToComment(ideaId: string, commentId: string, reply: Comment) {
+        try {
+          const commentRef = ref(this.db, `ideas/${ideaId}/comments/${commentId}/reply`);
+          const newReplyRef = push(commentRef);
+          await set(newReplyRef, reply);
+        } catch (error) {
+          console.error('Error adding comment to Firebase:', error);
+          throw error;
+        }
+      }
+// Add idea to user's favorites
   async addFavorite(userId: string, ideaId: string): Promise<void> {
     try {
       const favoritesRef = ref(this.db, `users/${userId}/favorites`);
@@ -142,10 +186,8 @@ export class FirebaseDbService {
       }
     } catch (error) {
       console.error('Error adding favorite:', error);
-      throw error;
     }
   }
-
   // Remove idea from user's favorites
   async removeFavorite(userId: string, ideaId: string): Promise<void> {
     try {
@@ -179,4 +221,7 @@ export class FirebaseDbService {
       throw error;
     }
   }
+
+
 }
+
