@@ -1,0 +1,119 @@
+/* Main container */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+}
+
+/* Registration card */
+mat-card {
+  width: 100%;
+  max-width: 500px;
+  height: 70vh;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+mat-card-header {
+  display: flex;
+  color: #0072BA;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+mat-card-title {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+/* Logo container */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+/* Logo styling */
+.logo {
+  width: 200px;
+  height: auto;
+}
+
+/* Input field styling */
+.full-width,
+mat-form-field {
+  margin-bottom: 20px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-form-field.fxFlex-50 {
+  width: calc(50% - 8px);
+}
+
+mat-icon {
+  color: #0072BA;
+}
+
+/* Custom error styling */
+mat-error {
+  font-size: 0.85rem;
+  color: #e53935;
+}
+
+/* Button styling */
+.button-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+button {
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px;
+}
+
+/* Enlace para registrarse */
+.register-link {
+  text-align: center;
+  margin-top: 20px;
+
+  p {
+    font-size: 0.9rem;
+    color: #333;
+
+    a {
+      color: #0072BA;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.forgot-pwd {
+  text-align: right;
+  margin-top: -35px;
+
+  a {
+    color: #0072BA;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}

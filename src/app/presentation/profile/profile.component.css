@@ -1,0 +1,120 @@
+.principal-container {
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    min-height: 100vh;
+  }
+
+.profile-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px; /* Padding adicional alrededor del contenedor */
+    border-radius: 8px;
+    background-color: #ffffff;
+  }
+
+  .title {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: left; /* Título alineado a la izquierda */
+    margin-bottom: 10px;
+    color: #0072BA;
+  }
+
+  .profile-layout {
+    display: flex;
+    gap: 40px; /* Espaciado entre columnas */
+    padding-top: 15px;
+  }
+
+  .profile-left-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+.profile-image {
+  width: 120px;
+  height: 120px;
+  border: 3px solid #0072BA;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e3f2fd;
+  overflow: hidden;
+}
+
+.profile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+
+  .profile-image mat-icon {
+    font-size: 96px; /* Icono ocupa todo el círculo */
+    color: #0072BA;
+  }
+
+  .change-image-btn {
+    width: 140px;
+  }
+
+  .profile-right-column {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .profile-fields {
+    margin-bottom: 5px;
+  }
+
+  .full-width {
+    flex: 1;
+  }
+
+  .password-section {
+    margin-top: 10px;
+  }
+
+  .password-fields .full-width {
+    margin-bottom: 16px;
+  }
+
+  .modify-password-btn,
+  .confirm-btn {
+    width: 200px;
+  }
+
+  .field-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  mat-form-field {
+    flex: 1;
+  }
+
+  .edit-icon {
+    margin-left: 8px;
+    margin-top: -20px;
+    color: #0072BA;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  .modify-password-btn,
+  .confirm-btn {
+    width: auto;
+  }

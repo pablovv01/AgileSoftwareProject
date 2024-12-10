@@ -1,0 +1,21 @@
+export enum Centers {
+    CSDMM = 'Centro Superior de Diseño de Moda de Madrid',
+    EPES = 'Escuela Politécnica de Enseñanza Superior',
+    ETSA = 'Escuela Técnica Superior de Arquitectura',
+    ETSCAD = 'Escuela Técnica Superior de Ciencias de la Actividad Física y del Deporte (INEF)',
+    ETSE = 'Escuela Técnica Superior de Edificación',
+    ETSIAB = 'Escuela Técnica Superior de Ingeniería Agronómica, Alimentaria y de Biosistemas',
+    ETSIAE = 'Escuela Técnica Superior de Ingeniería Aeronáutica y del Espacio',
+    ETSIMFN = 'Escuela Técnica Superior de Ingeniería de Montes, Forestal y del Medio Natural',
+    ETSISI = 'Escuela Técnica Superior de Ingeniería de Sistemas Informáticos',
+    ETSIDI = 'Escuela Técnica Superior de Ingeniería y Diseño Industrial',
+    ETSIST = 'Escuela Técnica Superior de Ingeniería y Sistemas de Telecomunicación',
+    ETSIN = 'Escuela Técnica Superior de Ingenieros Navales',
+    ETSICCP = 'Escuela Técnica Superior de Ingenieros de Caminos, Canales y Puertos',
+    ETSIME = 'Escuela Técnica Superior de Ingenieros de Minas y Energía',
+    ETSIT = 'Escuela Técnica Superior de Ingenieros de Telecomunicación',
+    ETSITGC = 'Escuela Técnica Superior de Ingenieros en Topografía, Geodesia y Cartografía',
+    ETSII = 'Escuela Técnica Superior de Ingenieros Industriales',
+    ETSIINF = 'Escuela Técnica Superior de Ingenieros Informáticos',
+    ICE = 'Instituto de Ciencias de la Educación ICE'
+}

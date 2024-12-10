@@ -1,0 +1,85 @@
+<div class="principal-container">
+    <div class="explore-container">
+        <div class="header-container">
+            <h1 class="title-container">
+                Explore
+            </h1>
+            <mat-form-field appearance="outline"  class="search-container">
+                <button matPrefix mat-icon-button aria-label="Search" disabled>
+                    <mat-icon>search</mat-icon>
+                  </button>
+                <input matInput type="search" class="input-search" placeholder="Search">   
+              </mat-form-field>
+
+            <button mat-fab class="button-search" (click)="goToAddPost()" matTooltip="Search"><mat-icon>search</mat-icon></button>
+        </div>
+        <div class="filters-container">
+          <button mat-icon-button class="refresh-button" matTooltip="Refresh Ideas" aria-label="Refresh" (click)="reloadPage()">
+              <mat-icon>refresh</mat-icon>
+          </button>
+      </div>
+        <div *ngIf="isLoading" class="loading-container">
+          <mat-spinner color="primary"></mat-spinner>
+          <p class="loading-text">Loading ideas...</p>
+        </div>
+
+
+
+
+      <div class="idea-list">
+        <ng-container *ngIf="!isLoading">
+        @for (idea of ideas; track idea.id) {
+        <mat-card color="primary" class="idea-card"
+        [ngClass]="{'my-card': isCreatedByMe(idea.authorName ?? '', idea.userId)}"
+        >
+
+        <button mat-raised-button color="primary" class="favourite-button" (click)="favouriteIdea(+idea.id)" matTooltip="Favourite Idea">
+          Favourite
+      </button>
+
+        <img mat-card-avatar [src]="idea.authorPhoto" alt="" class="card-avatar-img"/>
+        <div class="right-column">
+        <mat-card-title class="idea-card-title">
+            {{ idea.title }}
+          </mat-card-title>
+          <mat-card-content class="idea-card-content">
+            {{ idea.description }}
+          </mat-card-content>
+          <div class="underline-content"></div>
+          <div class="created-by-content">
+            <p class="created-by-text">{{ isCreatedByMe(idea.authorName ?? '', idea.userId) ? 'Created by me' : 'Created by ' + idea.authorName }}</p>
+          </div>
+           <div class="chips-container">
+            @for (tag of idea.tags; track tag; let index = $index) {
+                <mat-chip-set aria-label="Category selection">
+                    @if (index < 2) {
+                    <mat-chip [ngClass]="getCategoryColor(tag)">
+                       <img matChipAvatar [src]="getCategoryIcon(tag)" alt=""/> 
+                       {{ tag }}
+                    </mat-chip>
+                }
+                </mat-chip-set>
+            }
+            </div> 
+
+
+          
+
+            <button mat-raised-button color="primary" class="favourite-button" (click)="favouriteIdea(+idea.id)" matTooltip="Favourite Idea">
+              Favourite
+          </button>
+          
+
+          <mat-card-actions class="mat-card-actions">
+            <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea.id)"><mat-icon
+                class="icon-details">visibility</mat-icon>Show more</button>
+        </mat-card-actions>
+        </div>
+        </mat-card>
+        }
+      </ng-container>
+      </div>
+      <mat-paginator class="paginator" [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[6, 10, 20]" (page)="onPageChange($event)" aria-label="Select page">
+    </mat-paginator>
+    </div>
+  </div>
