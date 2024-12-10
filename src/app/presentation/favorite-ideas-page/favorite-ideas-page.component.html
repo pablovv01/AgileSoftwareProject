@@ -1,4 +1,26 @@
-<div class="favorite-ideas-container">
-    <h1>Favorite Ideas</h1>
+<div class="principal-container">
+  <div class="myIdeas-container">
+    <div class="header-container">
+      <h1 class="title-container">Favorite Ideas</h1>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-spinner">
+      <mat-progress-spinner mode="indeterminate" color="primary"></mat-progress-spinner>
+    </div>
+
+    <div class="idea-list" *ngIf="!isLoading">
+      <mat-card *ngFor="let idea of favoriteIdeas" class="idea-card">
+        <mat-card-title class="idea-card-title">{{ idea.title }}</mat-card-title>
+        <mat-card-subtitle class="idea-card-subtitle">{{ idea.authorName }}</mat-card-subtitle>
+        <mat-card-content class="idea-card-content">{{ idea.description }}</mat-card-content>
+        <mat-card-actions>
+          <div class="container-buttons">
+            <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea.id)">
+              <mat-icon class="icon-details">visibility</mat-icon>Details
+            </button>
+          </div>
+        </mat-card-actions>
+      </mat-card>
+    </div>
   </div>
-  
+</div>
