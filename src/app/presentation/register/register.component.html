@@ -59,7 +59,10 @@
                 <!-- Password -->
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Password</mat-label>
-                    <input matInput formControlName="password" type="password" />
+                    <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"/>
+                    <button mat-icon-button matSuffix (click)="togglePasswordVisibility($event)" [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hidePassword">
+                        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
                     <mat-error *ngIf="registrationForm.get('password')?.hasError('required')">Password is
                         required</mat-error>
                     <mat-error *ngIf="registrationForm.get('password')?.hasError('minlength')">Password must be at least
@@ -69,9 +72,13 @@
                 <!-- Confirm Password -->
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Confirm Password</mat-label>
-                    <input matInput formControlName="confirmPassword" type="password" />
-                    <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('passwordMismatch')">Passwords
-                        must match</mat-error>
+                    <input matInput [type]="hideConfirmPassword ? 'password' : 'text'"  formControlName="confirmPassword" />
+                    <button mat-icon-button matSuffix (click)="toggleConfirmPasswordVisibility($event)" [attr.aria-label]="'Toggle confirm password visibility'" [attr.aria-pressed]="!hideConfirmPassword">
+                        <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                    <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('passwordMismatch')">
+                        Passwords must match
+                      </mat-error>
                 </mat-form-field>
 
                 <!-- User Type Selection -->
