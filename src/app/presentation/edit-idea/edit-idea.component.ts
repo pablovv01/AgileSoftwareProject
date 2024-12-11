@@ -44,7 +44,8 @@ export class EditIdeaComponent implements OnInit {
     createdAt: '',
     authorName: '',
     visualizations: 0,
-    comments: []
+    comments: [],
+    likes: 0
   };
   ideaId: string = ''
 
@@ -91,6 +92,7 @@ export class EditIdeaComponent implements OnInit {
             authorName: ideaData.authorName || '',
             visualizations: ideaData.visualizations || 0,
             comments: ideaData.comments || [],
+            likes: ideaData.likes || 0,
           };
         }
       }).catch(error => {

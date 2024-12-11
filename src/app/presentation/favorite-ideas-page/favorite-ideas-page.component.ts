@@ -19,7 +19,7 @@ import { getDatabase, ref, get } from 'firebase/database';
 })
 export class FavoriteIdeasPageComponent implements OnInit {
   userId = sessionStorage.getItem('userId')!;
-  favoriteIdeas: (Idea & { authorName: string })[] = []; // Add `authorName` to each idea
+  favoriteIdeas: (Idea & { authorName: string })[] = []; 
   isLoading: boolean = true;
 
   constructor(
@@ -34,30 +34,25 @@ export class FavoriteIdeasPageComponent implements OnInit {
 
   async loadFavorites() {
     try {
-      // Step 1: Fetch all favorite idea IDs
       const favorites = await this.profileUseCase.getFavorites(this.userId);
   
-      // Step 2: Fetch details for each idea and author info
       const favoriteDetailsPromises = favorites.map(async (ideaId: string) => {
         const ideaDetails = await this.ideaUseCase.getDetails(ideaId);
   
         if (ideaDetails) {
-          // Step 3: Fetch author data for the current idea
           const authorData = await this.fetchUserData(ideaDetails.userId);
           console.log('idea id', ideaId);
   
-          // Ensure that the idea ID is included in the returned object
           return {
             ...ideaDetails,
             authorName: `${authorData.name || 'Unknown'} ${authorData.surname || ''}`.trim(),
-            id: ideaId, // Include the ID explicitly
+            id: ideaId,
           };
         }
   
         return null;
       });
   
-      // Step 4: Resolve all promises and filter out null values
       this.favoriteIdeas = (await Promise.all(favoriteDetailsPromises)).filter(
         (idea): idea is Idea & { authorName: string, id: string } => idea !== null
       );
@@ -80,10 +75,10 @@ export class FavoriteIdeasPageComponent implements OnInit {
     const snapshot = await get(userRef);
 
     if (snapshot.exists()) {
-      return snapshot.val(); // Return the user's data
+      return snapshot.val(); 
     } else {
       console.error(`No user data found for userId: ${userId}`);
-      return { name: 'Unknown', surname: '' }; // Fallback for missing user data
+      return { name: 'Unknown', surname: '' }; 
     }
   }
 

@@ -52,7 +52,7 @@ export class ExplorePageComponent implements AfterViewInit {
   searchTitle: string = '';
   notFound: boolean = false;
   accountType: string | null = null;
-  favouriteIdeas: Set<string> = new Set();  // Track favourited idea IDs
+  favouriteIdeas: Set<string> = new Set();  // Para trackear los ids de las ideas favoritas
 
   @ViewChild('filtersChips', {static: false}) chipsContainer!: ElementRef;
   showArrows: boolean = false;
@@ -61,14 +61,14 @@ export class ExplorePageComponent implements AfterViewInit {
   constructor(
     private router: Router,
     private ideaUseCase: IdeaUseCase,
-    private profileUseCase: ProfileUseCase // Inject ProfileUseCase
+    private profileUseCase: ProfileUseCase 
   ) {
   }
 
   async ngOnInit() {
     this.getUserName()
     this.getAccountType()
-    await this.loadFavorites();  // Load favorites on initialization
+    await this.loadFavorites();  // Carga los favoritos al iniciar para que salgan los corazones ya puestos.
     await this.loadPage()
   }
 
@@ -231,10 +231,12 @@ export class ExplorePageComponent implements AfterViewInit {
       if (this.favouriteIdeas.has(ideaId)) {
         // If already favorited, remove it
         await this.profileUseCase.removeFavorite(ideaId);
+        await this.ideaUseCase.unlikeIdea(ideaId);
         this.favouriteIdeas.delete(ideaId);  // Remove from the set
       } else {
         // If not favorited, add it
         await this.profileUseCase.addFavorite(ideaId);
+        await this.ideaUseCase.likeIdea(ideaId);
         this.favouriteIdeas.add(ideaId);  // Add to the set
       }
 
@@ -253,8 +255,8 @@ export class ExplorePageComponent implements AfterViewInit {
 
   private async loadFavorites() {
     try {
-      const favorites = await this.profileUseCase.getFavorites(this.userId);  // Fetch the favorite ideas from the DB
-      this.favouriteIdeas = new Set(favorites);  // Update the set of favorite ideas
+      const favorites = await this.profileUseCase.getFavorites(this.userId);  
+      this.favouriteIdeas = new Set(favorites);  
       sessionStorage.setItem('favouriteIdeas', JSON.stringify(Array.from(this.favouriteIdeas)));  // Persist to sessionStorage
       console.log('Favorites loaded:', this.favouriteIdeas);
     } catch (error) {
@@ -265,21 +267,19 @@ export class ExplorePageComponent implements AfterViewInit {
   private async loadPage() {
     try {
       this.isLoading = true;
-      //Get all ideas and filter by the selected options
       const response = await this.ideaUseCase.getIdeas(this.selectedCategoriesFilter, this.selectedSortOption, this.searchTitle);
 
-      // Obtener nombres de autores para cada idea
       this.ideas = await Promise.all(
         response.ideas.map(async (idea) => {
-          const user = await this.getAuthorIdeaName(idea.userId); // Get author name
-          return {...idea, authorName: user.name, authorPhoto: user.photo}; // Add `authorName` a cada idea
+          const user = await this.getAuthorIdeaName(idea.userId); 
+          return {...idea, authorName: user.name, authorPhoto: user.photo}; 
         })
       );
-      this.notFound = (this.ideas.length === 0) ? true : false; //Check not found
+      this.notFound = (this.ideas.length === 0) ? true : false; 
     } catch (error) {
       console.error('Error fetching paginated ideas:', error);
     } finally {
-      this.isLoading = false; // Desactivar el estado de carga
+      this.isLoading = false; 
     }
   }
 }

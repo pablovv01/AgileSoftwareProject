@@ -74,7 +74,8 @@ export class IdeaUseCase {
         comments: data[key].comments ? Object.keys(data[key].comments).map(commentKey => ({
           ...data[key].comments[commentKey],
           id: commentKey
-        })) : []
+        })) : [],
+        likes: data[key].likes || 0
       }))
       //Order by Tag
       .filter((idea) =>
@@ -195,6 +196,7 @@ private getSortFunction(filterOrder: string): (a: Idea, b: Idea) => number {
             };
           })
           : [],
+        likes: data.likes || 0,
       };
     } catch (error) {
       console.error('Error fetching idea in service:', error);
@@ -212,13 +214,44 @@ private getSortFunction(filterOrder: string): (a: Idea, b: Idea) => number {
         tags: tags.join(','),
         createdAt: new Date().toISOString(),
         visualizations: 0,
-        userId: sessionStorage.getItem('userId')!  // ID del usuario actual
+        likes: 0, // Initialize likes to 0
+        userId: sessionStorage.getItem('userId')!
       };
-
+  
       await this.firebaseDb.addIdea(newIdea);
     } catch (error) {
       console.error('Error adding idea in service:', error);
       throw error;
     }
   }
+
+  // Increment likes
+  async likeIdea(ideaId: string): Promise<void> {
+    try {
+      const idea = await this.getDetails(ideaId); // Fetch the idea details
+      if (idea) {
+        const updatedField = { likes: idea.likes + 1 };
+        await this.firebaseDb.updateIdea(ideaId, updatedField);
+        console.log(`Idea with ID ${ideaId} liked successfully.`);
+      }
+    } catch (error) {
+      console.error('Error liking idea:', error);
+      throw error;
+    }
+  }
+
+  // Remove Likes
+  async unlikeIdea(ideaId: string): Promise<void> {
+    try {
+      const idea = await this.getDetails(ideaId); // Fetch the idea details
+      if (idea) {
+        const updatedField = { likes: idea.likes > 0 ? idea.likes - 1 : 0 };
+        await this.firebaseDb.updateIdea(ideaId, updatedField);
+        console.log(`Idea with ID ${ideaId} unliked successfully.`);
+      }
+    } catch (error) {
+      console.error('Error unliking idea:', error);
+      throw error;
+    }
+  }  
 }

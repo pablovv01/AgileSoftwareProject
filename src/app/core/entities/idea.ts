@@ -12,4 +12,5 @@ export interface Idea {
   authorPhoto?: string
   isFavourited?: boolean
   comments: Comment[]
+  likes: number;
 }
