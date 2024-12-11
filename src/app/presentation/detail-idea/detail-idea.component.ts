@@ -53,7 +53,7 @@ export class DetailIdeaComponent implements OnInit {
   surname: string | null = null
   uid: string | null = null
   categories = CATEGORIES
-  showComments = false
+  showComments = true
   user: User | null = null
   investorRole: string = 'investor'
   newCommentContent: string = "";
