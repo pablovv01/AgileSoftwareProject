@@ -14,6 +14,7 @@
             <button mat-fab class="button-search" (click)="searchByTitle()" matTooltip="Search"><mat-icon>search</mat-icon></button>
         </div>
         <div *ngIf="!notFound" class="filters-container">
+          
           <button mat-mini-fab class="arrow-button"   (click)="scrollLeft()" *ngIf="showArrows">
             <mat-icon>arrow_back</mat-icon>
           </button>
@@ -48,6 +49,10 @@
           <button mat-icon-button class="refresh-button" matTooltip="Refresh Ideas" aria-label="Refresh" (click)="reloadPage()">
               <mat-icon>refresh</mat-icon>
           </button>
+      </div>
+      <div *ngIf="!isLoading && ideas.length === 0 && !notFound" class="notFound-container">
+        <p class="notFound-text">Not found ideas...</p>
+        <mat-icon class="notFound-sadIcon">sentiment_dissatisfied</mat-icon>
       </div>
         <div *ngIf="isLoading" class="loading-container">
           <mat-spinner color="primary"></mat-spinner>

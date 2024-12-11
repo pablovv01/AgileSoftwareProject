@@ -60,7 +60,7 @@
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Password</mat-label>
                     <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"/>
-                    <button mat-icon-button matSuffix (click)="togglePasswordVisibility($event)" [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hidePassword">
+                    <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility($event)" [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hidePassword">
                         <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </button>
                     <mat-error *ngIf="registrationForm.get('password')?.hasError('required')">Password is
@@ -73,7 +73,7 @@
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Confirm Password</mat-label>
                     <input matInput [type]="hideConfirmPassword ? 'password' : 'text'"  formControlName="confirmPassword" />
-                    <button mat-icon-button matSuffix (click)="toggleConfirmPasswordVisibility($event)" [attr.aria-label]="'Toggle confirm password visibility'" [attr.aria-pressed]="!hideConfirmPassword">
+                    <button mat-icon-button matSuffix type="button" (click)="toggleConfirmPasswordVisibility($event)" [attr.aria-label]="'Toggle confirm password visibility'" [attr.aria-pressed]="!hideConfirmPassword">
                         <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </button>
                     <mat-error *ngIf="registrationForm.get('confirmPassword')?.hasError('passwordMismatch')">
