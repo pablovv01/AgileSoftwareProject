@@ -521,8 +521,9 @@ mat-chip-option {
   font-size: 24px;
   transition: color 0.3s ease;
   position: absolute;
-  margin-left: 525px;
+  right: 30px;
 }
+
 
 .favourite {
   color: red;  /* Change this to your preferred colour */
