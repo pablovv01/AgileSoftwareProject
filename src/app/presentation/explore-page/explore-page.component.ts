@@ -178,7 +178,7 @@ export class ExplorePageComponent implements AfterViewInit{
         return { ...idea, authorName: user.name, authorPhoto: user.photo }; // Add `authorName` a cada idea
       })
     );
-    this.notFound = (this.ideas.length === 0) ? true : false; //Check not found
+    this.notFound = (this.ideas.length === 0 && this.searchTitle != "");
     } catch (error) {
       console.error('Error fetching paginated ideas:', error);
     }finally {
@@ -231,12 +231,12 @@ export class ExplorePageComponent implements AfterViewInit{
     }
   }
 
-  goToDetailIdea(idea: Idea) {
+  async goToDetailIdea(idea: Idea) {
     //Add visualization
     idea.visualizations += 1;
     try{
       //Update field in data base
-      this.ideaUseCase.updateIdeaVisualizations(idea);
+      await this.ideaUseCase.updateIdeaVisualizations(idea);
     }catch (error) {
       console.error('Error updating visualizations:', error);
     }

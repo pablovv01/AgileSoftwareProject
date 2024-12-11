@@ -13,7 +13,7 @@
 
             <button mat-fab class="button-search" (click)="searchByTitle()" matTooltip="Search"><mat-icon>search</mat-icon></button>
         </div>
-        <div *ngIf="ideas.length > 0" class="filters-container">
+        <div *ngIf="!notFound" class="filters-container">
           <button mat-mini-fab class="arrow-button"   (click)="scrollLeft()" *ngIf="showArrows">
             <mat-icon>arrow_back</mat-icon>
           </button>
@@ -102,8 +102,5 @@
         }
       </ng-container>
       </div>
-
-      <!-- <mat-paginator class="paginator" [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[6, 10, 20]" (page)="onPageChange($event)" aria-label="Select page">
-    </mat-paginator> -->
     </div>
   </div>
