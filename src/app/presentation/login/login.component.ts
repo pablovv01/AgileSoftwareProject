@@ -12,7 +12,9 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { Router } from '@angular/router';
 import { LoginUseCase } from '../../core/usecases/login.usecase';
 import Swal from 'sweetalert2';
+
 import { User } from '../../core/entities/user';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
@@ -28,14 +30,15 @@ import { User } from '../../core/entities/user';
     MatButtonModule,
     MatSelectModule,
     MatSnackBarModule,
-    LayoutModule
+    LayoutModule,
+    MatIcon
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   loginForm: FormGroup;
-
+  hidePassword: boolean = true;
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -46,6 +49,11 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
+  }
+
+  togglePasswordVisibility(event: Event): void {
+    event.preventDefault();
+    this.hidePassword = !this.hidePassword;
   }
 
   onLogin() {
