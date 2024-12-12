@@ -1,23 +1,28 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {MatListModule} from '@angular/material/list';
-import {MatIconModule} from '@angular/material/icon';
-import {MatCardModule} from '@angular/material/card';
-import {MatChipsModule} from '@angular/material/chips';
-import {Router} from '@angular/router';
-import {Idea} from '../../core/entities/idea';
+import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { Router } from '@angular/router';
+import { Idea } from '../../core/entities/idea';
 import Swal from 'sweetalert2';
-import {IdeaUseCase} from '../../core/usecases/idea.usecase';
-import {CATEGORIES} from '../../core/entities/categoriesTag';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatTooltip} from '@angular/material/tooltip';
+import { IdeaUseCase } from '../../core/usecases/idea.usecase';
+import { CATEGORIES } from '../../core/entities/categoriesTag';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
+import { MatTooltip } from '@angular/material/tooltip';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
+import { filter } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 import {ProfileUseCase} from '../../core/usecases/profile.usecase';
-import {MatMenuModule} from '@angular/material/menu';
-import {FormsModule} from '@angular/forms';
+
+
+
 
 @Component({
   selector: 'app-explore-page',
@@ -35,43 +40,49 @@ import {FormsModule} from '@angular/forms';
     MatTooltip,
     MatProgressSpinnerModule,
     MatMenuModule,
-    FormsModule
-  ],
+    FormsModule],
   templateUrl: './explore-page.component.html',
-  styleUrls: ['./explore-page.component.css']
+  styleUrl: './explore-page.component.css'
 })
-export class ExplorePageComponent implements AfterViewInit {
+export class ExplorePageComponent implements AfterViewInit{
   userId = sessionStorage.getItem('userId')!;
+  userIdeas: Idea[] = [];
   categories = CATEGORIES;
-  ideas: Idea[] = [];
+  pageKeys: string[] = [];
+  ideas: Idea[] = []; // Ideas visibles en la página actual
+  totalItems = 0; // Número total de ideas
+  pageSize = 6; // Tamaño de la página
+  lastKey: string | undefined; // Clave del último registro cargado
+  currentPage = 0; // Página actual
   isLoading: boolean = true;
+  selectedOrder: string = ''; // Valor predeterminado
+  selectedCategory: string = '';
   userName: string | null = null;
   selectedCategoriesFilter: string[] = [];
+  selectedOrderFilter: string = ''
   isMenuOpen = false; // Variable que controla el estado del menú
   selectedSortOption: string = '';
-  searchTitle: string = '';
+  searchTitle:string = '';
   notFound: boolean = false;
   accountType: string | null = null;
   favouriteIdeas: Set<string> = new Set();  // Para trackear los ids de las ideas favoritas
 
-  @ViewChild('filtersChips', {static: false}) chipsContainer!: ElementRef;
+  @ViewChild('filtersChips', { static: false }) chipsContainer!: ElementRef;
   showArrows: boolean = false;
   showClear: boolean = false;
 
   constructor(
     private router: Router,
     private ideaUseCase: IdeaUseCase,
-    private profileUseCase: ProfileUseCase 
+    private profileUseCase: ProfileUseCase
   ) {
   }
-
   async ngOnInit() {
     this.getUserName()
     this.getAccountType()
     await this.loadFavorites();  // Carga los favoritos al iniciar para que salgan los corazones ya puestos.
     await this.loadPage()
   }
-
 
   ngAfterViewInit(): void {
     this.checkOverflow(); // Verificar en la carga inicial
@@ -80,7 +91,7 @@ export class ExplorePageComponent implements AfterViewInit {
   loadBySortOption(option: string) {
     this.selectedSortOption = option;
     this.showClear = true;
-    if (option === "") {
+    if(option === ""){
       this.showClear = false;
     }
     this.checkOverflow();
@@ -92,7 +103,7 @@ export class ExplorePageComponent implements AfterViewInit {
     container.scrollLeft -= 100;
   }
 
-  clearFilters() {
+  clearFilters(){
     this.selectedCategoriesFilter = [];
     this.loadBySortOption("");
     this.checkOverflow();
@@ -112,11 +123,11 @@ export class ExplorePageComponent implements AfterViewInit {
     }
   }
 
-  closeMenu() {
+  closeMenu(){
     this.isMenuOpen = false;
   }
 
-  openMenu() {
+  openMenu(){
     this.isMenuOpen = true;
   }
 
@@ -128,7 +139,7 @@ export class ExplorePageComponent implements AfterViewInit {
     const index = this.selectedCategoriesFilter.indexOf(category.category);
     if (index === -1) {
       this.selectedCategoriesFilter.push(category.category);
-    } else {
+    }else {
       this.selectedCategoriesFilter.splice(index, 1);
     }
     this.reloadPage()
@@ -145,7 +156,7 @@ export class ExplorePageComponent implements AfterViewInit {
     return category.category;
   }
 
-  getUserName() {
+  getUserName(){
     this.userName = JSON.parse(sessionStorage.getItem('user') ?? '{}').name || null;
   }
 
@@ -154,17 +165,18 @@ export class ExplorePageComponent implements AfterViewInit {
     console.log(this.accountType)
   }
 
+
   isCreatedByMe(authorName: string, userID: string): boolean {
     return this.userName === authorName && this.userId === userID;
   }
 
-  refreshButton() {
+  refreshButton(){
     this.clearFilters();
     this.searchTitle = ''
     this.loadPage();
   }
 
-  reloadPage() {
+  reloadPage(){
     this.loadPage()
   }
 
@@ -180,7 +192,7 @@ export class ExplorePageComponent implements AfterViewInit {
     return category ? category.icon : ''; // Retorna el icono correspondiente
   }
 
-  async getAuthorIdeaName(userID: string): Promise<{ name: string, photo: string }> {
+  async getAuthorIdeaName(userID: string): Promise<{name: string, photo: string }>{
     let authorName = userID
     let authorPhoto = "assets/userProfile_img.png"
     try {
@@ -189,7 +201,7 @@ export class ExplorePageComponent implements AfterViewInit {
       if (user.name) {
         authorName = user.name;
       }
-      if (user.photo) {
+      if(user.photo){
         authorPhoto = user.photo;
       }
     } catch (error) {
@@ -197,19 +209,18 @@ export class ExplorePageComponent implements AfterViewInit {
     }
     return {name: authorName, photo: authorPhoto};
   }
-
   searchByTitle() {
     //Clear other filters
     this.clearFilters();
     //Check empty input
-    if (this.searchTitle === "") {
+    if (this.searchTitle === ""){
       Swal.fire({
         title: 'Search idea',
         text: 'Please enter a title to perform the search.',
         icon: 'warning',
         allowOutsideClick: false
       });
-    } else {
+    }else{
       this.reloadPage()
     }
   }
@@ -217,7 +228,7 @@ export class ExplorePageComponent implements AfterViewInit {
   goToDetailIdea(idea: Idea) {
     //Add visualization
     idea.visualizations += 1;
-    try {
+    try{
       //Update field in data base
       this.ideaUseCase.updateIdeaVisualizations(idea);
     } catch (error) {
@@ -225,6 +236,7 @@ export class ExplorePageComponent implements AfterViewInit {
     }
     this.router.navigate(['/detail', idea.id]);
   }
+
 
   async favouriteIdea(ideaId: string): Promise<void> {
     try {
@@ -255,8 +267,8 @@ export class ExplorePageComponent implements AfterViewInit {
 
   private async loadFavorites() {
     try {
-      const favorites = await this.profileUseCase.getFavorites(this.userId);  
-      this.favouriteIdeas = new Set(favorites);  
+      const favorites = await this.profileUseCase.getFavorites(this.userId);
+      this.favouriteIdeas = new Set(favorites);
       sessionStorage.setItem('favouriteIdeas', JSON.stringify(Array.from(this.favouriteIdeas)));  // Persist to sessionStorage
       console.log('Favorites loaded:', this.favouriteIdeas);
     } catch (error) {
@@ -271,15 +283,15 @@ export class ExplorePageComponent implements AfterViewInit {
 
       this.ideas = await Promise.all(
         response.ideas.map(async (idea) => {
-          const user = await this.getAuthorIdeaName(idea.userId); 
-          return {...idea, authorName: user.name, authorPhoto: user.photo}; 
+          const user = await this.getAuthorIdeaName(idea.userId);
+          return {...idea, authorName: user.name, authorPhoto: user.photo};
         })
       );
-      this.notFound = (this.ideas.length === 0) ? true : false; 
+      this.notFound = (this.ideas.length === 0) ? true : false;
     } catch (error) {
       console.error('Error fetching paginated ideas:', error);
     } finally {
-      this.isLoading = false; 
+      this.isLoading = false;
     }
   }
 }

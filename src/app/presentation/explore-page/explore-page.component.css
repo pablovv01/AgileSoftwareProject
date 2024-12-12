@@ -176,8 +176,7 @@
     hyphens: auto; /* Permite la separación de palabras si es necesario */
     display: -webkit-box;
     -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical; /* Necesario para que funcione -webkit-line-clamp */
-
+    -webkit-box-orient: vertical;
   }
 
 
@@ -523,7 +522,6 @@ mat-chip-option {
   position: absolute;
   right: 30px;
 }
-
 
 .favourite {
   color: red;  /* Change this to your preferred colour */
