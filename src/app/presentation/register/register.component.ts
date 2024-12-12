@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors  } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
@@ -14,7 +14,9 @@ import { RegisterUseCase } from '../../core/usecases/register.usecase';
 import { User } from '../../core/entities/user';
 import Swal from 'sweetalert2';
 
+
 import { allowedEmailDomainValidator } from '../../utils/email-domain.validator';
+import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
@@ -31,7 +33,8 @@ import { allowedEmailDomainValidator } from '../../utils/email-domain.validator'
     MatButtonModule,
     MatSelectModule,
     MatSnackBarModule,
-    LayoutModule
+    LayoutModule,
+    MatIcon
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
@@ -39,7 +42,8 @@ import { allowedEmailDomainValidator } from '../../utils/email-domain.validator'
 export class RegisterComponent {
   registrationForm: FormGroup;
   centers = Object.values(Centers);
-
+  hidePassword: boolean = true;
+  hideConfirmPassword: boolean = true;
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
@@ -52,12 +56,24 @@ export class RegisterComponent {
       type: ["", [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required],
       center: [''],
       degree: [''],
       company: [''],
       position: [''],
       description: ['']
-    });
+    }, { validators: this.passwordsMatchValidator } 
+  );
+}
+
+  togglePasswordVisibility(event: Event): void {
+    event.preventDefault();
+    this.hidePassword = !this.hidePassword;
+  }
+
+  toggleConfirmPasswordVisibility(event: Event): void {
+    event.preventDefault();
+    this.hideConfirmPassword = !this.hideConfirmPassword;
   }
 
   onTypeChange(type: string): void {

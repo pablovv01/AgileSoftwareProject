@@ -168,6 +168,27 @@ export class ExplorePageComponent implements AfterViewInit {
     this.loadPage()
   }
 
+  private async loadPage(){
+    try {
+      this.isLoading = true; 
+      //Get all ideas and filter by the selected options
+      const response = await this.ideaUseCase.getIdeas(this.selectedCategoriesFilter, this.selectedSortOption, this.searchTitle);
+
+      // Obtener nombres de autores para cada idea
+    this.ideas = await Promise.all(
+      response.ideas.map(async (idea) => {
+        const user = await this.getAuthorIdeaName(idea.userId); // Get author name
+        return { ...idea, authorName: user.name, authorPhoto: user.photo }; // Add `authorName` a cada idea
+      })
+    );
+    this.notFound = (this.ideas.length === 0 && this.searchTitle != "");
+    } catch (error) {
+      console.error('Error fetching paginated ideas:', error);
+    }finally {
+      this.isLoading = false; // Desactivar el estado de carga
+    }
+  }
+
   // Get color and tag for chips
   getCategoryColor(tag: string): string {
     const category = this.categories.find(c => c.category === tag);
@@ -214,13 +235,13 @@ export class ExplorePageComponent implements AfterViewInit {
     }
   }
 
-  goToDetailIdea(idea: Idea) {
+  async goToDetailIdea(idea: Idea) {
     //Add visualization
     idea.visualizations += 1;
     try {
       //Update field in data base
-      this.ideaUseCase.updateIdeaVisualizations(idea);
-    } catch (error) {
+      await this.ideaUseCase.updateIdeaVisualizations(idea);
+    }catch (error) {
       console.error('Error updating visualizations:', error);
     }
     this.router.navigate(['/detail', idea.id]);

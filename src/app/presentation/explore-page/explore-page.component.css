@@ -103,8 +103,8 @@
 
   .idea-card {
     display: grid;
-    grid-template-columns: 0.75fr 3fr; /* La columna izquierda será más pequeña */
-    gap: 0rem; /* Espaciado entre columnas */
+    grid-template-columns: 0.75fr 3fr; 
+    gap: 0rem; 
     padding: 1rem;
     width: 100%;
     position: relative;
@@ -168,16 +168,15 @@
 
   .idea-card-content {
     text-align: justify;
-    margin-bottom: 10px;
-    position: relative; /* Necesario para usar ::after */
-    overflow: hidden; /* Ocultar el contenido que sobrepase */
-    text-overflow: ellipsis; /* Mostrar tres puntos al cortar el texto */
+    margin-bottom: 10px; 
+    position: relative; 
+    overflow: hidden;
+    text-overflow: ellipsis;
     word-break: keep-all;
-    hyphens: auto; /* Permite la separación de palabras si es necesario */
+    hyphens: auto; 
     display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical; /* Necesario para que funcione -webkit-line-clamp */
-
+    -webkit-line-clamp: 4; 
+    -webkit-box-orient: vertical; 
   }
 
 
@@ -199,7 +198,7 @@
   }
 
   .created-by-text{
-    color: #808080; /* Gris más oscuro */
+    color: #808080;
     font-size: 0.85rem;
     margin-right: 25px;
   }
@@ -407,9 +406,9 @@
 }
 
 .sortby-button:hover{
-  background-color: inherit !important; /* Mantén el fondo */
-  box-shadow: none !important;         /* Sin sombra */
-  transition: none !important;         /* Sin animaciones */
+  background-color: inherit !important; 
+  box-shadow: none !important;       
+  transition: none !important;         
 }
 
 mat-icon.rotated {
