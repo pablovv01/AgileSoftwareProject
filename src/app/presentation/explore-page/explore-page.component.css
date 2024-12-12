@@ -38,13 +38,13 @@
     position: absolute;
     margin-right: 10px;
   }
-  
+
   .button-search {
     background-color: #1469C0;
-    border-top-right-radius: 15px;   
-    border-bottom-right-radius: 15px; 
-    border-bottom-left-radius: 0px; 
-    border-top-left-radius: 0px; 
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
     padding: 28px 20px;
     font-size: 14px;
     width: auto;
@@ -55,13 +55,13 @@
         color: white;
         transition: transform 0.3s ease;
       }
-      
+
     }
     /* Efecto de hover */
 .button-search:hover mat-icon {
   transform: scale(1.3);  /* Aumenta el tamaño del icono en un 30% */
 }
-    
+
 
 
   .idea-form-container {
@@ -118,7 +118,7 @@
   }
 
   .my-card {
-    background: linear-gradient(135deg, #f9fafb, #e1f5fe); 
+    background: linear-gradient(135deg, #f9fafb, #e1f5fe);
   }
 
   .idea-list {
@@ -136,15 +136,15 @@
   }
 
   .card-avatar-img{
-    width: 100px; 
-    height: auto; 
-    object-fit: cover; 
-    border-radius: 50%; 
+    width: 100px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 50%;
   }
 
   .right-column {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
   }
 
   .idea-card-title {
@@ -153,34 +153,33 @@
     color: #0072BA;
     margin-bottom: 10px;
     margin-left: 15px;
-    padding-bottom: 5px; 
+    padding-bottom: 5px;
     border-bottom: 2px solid #0072BA;
-    width: calc(100% - 30px);  
-    overflow: hidden; 
-    text-overflow: ellipsis; 
+    width: calc(100% - 30px);
+    overflow: hidden;
+    text-overflow: ellipsis;
     word-break: break-all;
-    hyphens: auto; 
+    hyphens: auto;
     display: -webkit-box;
-    -webkit-line-clamp: 1; 
-    -webkit-box-orient: vertical; 
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
   }
 
-  
+
   .idea-card-content {
     text-align: justify;
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
     position: relative; /* Necesario para usar ::after */
     overflow: hidden; /* Ocultar el contenido que sobrepase */
     text-overflow: ellipsis; /* Mostrar tres puntos al cortar el texto */
-    word-break: break-all;
+    word-break: keep-all;
     hyphens: auto; /* Permite la separación de palabras si es necesario */
     display: -webkit-box;
-    -webkit-line-clamp: 4; 
-    -webkit-box-orient: vertical; /* Necesario para que funcione -webkit-line-clamp */
-    
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
   }
-  
-  
+
+
 
   .underline-content{
     background-color: #ccc;
@@ -190,13 +189,18 @@
 
   }
   .created-by-content{
+    display: inline-flex;
+    gap: 5px;
     margin-top: 5px;
     margin-left: 15px;
+    color: #0072BA;
+
   }
 
   .created-by-text{
     color: #808080; /* Gris más oscuro */
     font-size: 0.85rem;
+    margin-right: 25px;
   }
 
   .chips-container{
@@ -223,7 +227,7 @@
     height: 40px;
   }
 
-  
+
 
   button.mat-fab {
     background-color: white;
@@ -270,47 +274,47 @@
     --mdc-chip-elevated-container-color: rgba(128, 241, 131, 0.5);
   }
   .chip-education {
-    --mdc-chip-elevated-container-color: rgba(33, 150, 243, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(33, 150, 243, 0.5);
   }
-  
+
   .chip-sustainability {
-    --mdc-chip-elevated-container-color: rgba(139, 195, 74, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(139, 195, 74, 0.5);
   }
-  
+
   .chip-business {
-    --mdc-chip-elevated-container-color: rgba(156, 39, 176, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(156, 39, 176, 0.5);
   }
-  
+
   .chip-art {
-    --mdc-chip-elevated-container-color: rgba(255, 87, 34, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(255, 87, 34, 0.5);
   }
 
   .chip-science {
-    --mdc-chip-elevated-container-color: rgba(103, 58, 183, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(103, 58, 183, 0.5);
   }
 
   .chip-sports {
-    --mdc-chip-elevated-container-color: rgba(255, 152, 0, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(255, 152, 0, 0.5);
   }
-  
+
   .chip-architecture {
-    --mdc-chip-elevated-container-color: rgba(63, 81, 181, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(63, 81, 181, 0.5);
   }
-  
+
   .chip-aviation {
-    --mdc-chip-elevated-container-color: rgba(0, 150, 136, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(0, 150, 136, 0.5);
   }
-  
+
   .chip-industry {
-    --mdc-chip-elevated-container-color: rgba(96, 125, 139, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(96, 125, 139, 0.5);
   }
 
   .chip-nature {
-    --mdc-chip-elevated-container-color: rgba(76, 175, 80, 0.5); 
+    --mdc-chip-elevated-container-color: rgba(76, 175, 80, 0.5);
   }
 
   .chip-technology {
-    --mdc-chip-elevated-container-color: rgba(35, 201, 198, 0.825); 
+    --mdc-chip-elevated-container-color: rgba(35, 201, 198, 0.825);
   }
 
   /* Estilo para el contenedor del paginator */
@@ -333,28 +337,162 @@
     align-items: center;
     justify-content: center;
     min-height: 300px;
-    width: 100%; 
+    width: 100%;
   }
-  
+
+  .notFound-container{
+     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    overflow: visible; /* Asegura que el icono pueda sobresalir del contenedor */
+
+
+
+  }
+  .notFound-container .notFound-sadIcon{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #0072BA;
+    transform: scale(3.0); /* Aumenta el tamaño del icono */
+  }
+
+  .notFound-button {
+    background-color: #0072BA;
+    margin-top: 20px;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 14px;
+    width: auto;
+    height: 50px;
+    mat-icon {
+      color: white;
+    }
+  }
+  .notFound-text{
+    margin-top: 30px;
+    font-weight: bold;
+    font-size: 30px;
+    color: #0072BA;
+  }
+
   .loading-text {
     margin-top: 16px;
     font-size: 16px;
-    color: #0072ba; 
+    color: #0072ba;
   }
 
   .filters-container {
     margin-top: 10px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     gap: 16px;
     margin-bottom: 10px;
+
 }
+
+.sortby-button{
+  background-color: white;
+  border-radius: 10px;
+  color: #0072BA !important;
+  white-space: nowrap; /* Impide el salto de línea */
+    mat-icon{
+      transition: transform 0.5s ease;
+      color: #0072BA;
+    }
+}
+
+.sortby-button:hover{
+  background-color: inherit !important; /* Mantén el fondo */
+  box-shadow: none !important;         /* Sin sombra */
+  transition: none !important;         /* Sin animaciones */
+}
+
+mat-icon.rotated {
+  transform: rotate(360deg); /* Gira el icono 180 grados */
+}
+
+/* Estilo del menú */
+::ng-deep .mat-menu-draft {
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 0;
+  width: 150px;
+}
+
+/* Estilo del menú */
+::ng-deep .mat-menu-draft .mat-mdc-menu-item:hover {
+  background-color: #78c3f2;
+}
+
+.filters-chips{
+  gap: 10px;
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+    flex-grow: 1;
+    padding: 4px 0;
+    width: 65%;
+  }
+
+  .filters-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .arrow-button {
+    background-color: #ffffff;
+    box-shadow: none;
+    height: 30px;
+    width: 40px;
+    padding: 0%;
+    border-radius: 10px;
+
+    mat-icon {
+      color: #0072BA;
+      line-height: 1; /* Asegurar alineación perfecta */
+    }
+
+    &:hover{
+      box-shadow: none;
+    }
+    &:focus{
+      box-shadow: none;
+    }
+  }
+
+  .removeFilter-button{
+    background-color: #ffffff;
+    box-shadow: none;
+
+    padding: 0%;
+    border-radius: 10px;
+
+    mat-icon {
+      color: #0072BA;
+
+    }
+
+    &:hover{
+      box-shadow: none;
+      mat-icon {
+        color: #f04037;
+
+      }
+    }
+    &:focus{
+      box-shadow: none;
+    }
+  }
 
 .refresh-button {
     background-color: white;
     color: white;
-    border-radius: 50%;
+     border-radius: 50%;
     transition: transform 0.5s ease;
 }
 
@@ -364,14 +502,27 @@
     mat-icon {
       color: white
     }
-
 }
 
-  
-  
+.idea-card {
+  position: relative; /* Make the card relative for absolute positioning */
+}
 
+mat-chip-option {
+  --mdc-chip-elevated-selected-container-color:#0072ba ;
+  --mdc-chip-selected-label-text-color:#ffffff ;
+  --mdc-chip-with-icon-selected-icon-color:#ffffff ;
+  --mdc-chip-selected-focus-state-layer-color:none
+}
 
+.favourite-icon {
+  cursor: pointer;
+  font-size: 24px;
+  transition: color 0.3s ease;
+  position: absolute;
+  right: 30px;
+}
 
-  
-  
-
+.favourite {
+  color: red;  /* Change this to your preferred colour */
+}

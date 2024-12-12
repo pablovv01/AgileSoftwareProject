@@ -1,58 +1,335 @@
-/* Main container for form */
+/* Main container */
 .idea-detail-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
   padding: 20px;
   background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   box-sizing: border-box;
+  min-height: 100vh;
 }
 
-/* Card styling for idea form */
+/* Card styling */
 .idea-card {
   width: 100%;
   max-width: 800px;
-  height: auto;
-  overflow-y: auto;
   padding: 20px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
-  border-color: black;
-  border-width: 1px;
   background-color: #ffffff;
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
+/* Card header layout */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Back button */
+.back-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.back-btn mat-icon {
+  font-size: 24px;
+}
+
+/* Title */
 .idea-card-title {
-  margin-bottom: 0.2ex;
-  margin-top: 0.3ex;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 500;
   color: #007bff;
 }
 
+/* Menu button */
+.menu-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.menu-btn mat-icon {
+  font-size: 24px;
+}
+
+/* Chips */
+.chipset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.chip {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.chips-container{
+  margin-left: 15px;
+  margin-top: -10px;
+  display: inline-flex;
+  gap: 10px;
+}
+
+
+.chip-healthcare  {
+  --mdc-chip-elevated-container-color: rgba(128, 241, 131, 0.5);
+}
+.chip-education {
+  --mdc-chip-elevated-container-color: rgba(33, 150, 243, 0.5);
+}
+
+.chip-sustainability {
+  --mdc-chip-elevated-container-color: rgba(139, 195, 74, 0.5);
+}
+
+.chip-business {
+  --mdc-chip-elevated-container-color: rgba(156, 39, 176, 0.5);
+}
+
+.chip-art {
+  --mdc-chip-elevated-container-color: rgba(255, 87, 34, 0.5);
+}
+
+.chip-science {
+  --mdc-chip-elevated-container-color: rgba(103, 58, 183, 0.5);
+}
+
+.chip-sports {
+  --mdc-chip-elevated-container-color: rgba(255, 152, 0, 0.5);
+}
+
+.chip-architecture {
+  --mdc-chip-elevated-container-color: rgba(63, 81, 181, 0.5);
+}
+
+.chip-aviation {
+  --mdc-chip-elevated-container-color: rgba(0, 150, 136, 0.5);
+}
+
+.chip-industry {
+  --mdc-chip-elevated-container-color: rgba(96, 125, 139, 0.5);
+}
+
+.chip-nature {
+  --mdc-chip-elevated-container-color: rgba(76, 175, 80, 0.5);
+}
+
+.chip-technology {
+  --mdc-chip-elevated-container-color: rgba(35, 201, 198, 0.825);
+}
+
+/* Separator */
+.separator {
+  border-top: 1px solid lightgray;
+  margin: 10px 0;
+}
+
+/* Content */
+.idea-card-content {
+  padding: 1ex 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Statistics */
+.idea-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1rem;
+}
+
+.stat mat-icon {
+  font-size: 20px;
+  color: #007bff;
+}
+
+/* Footer */
 .idea-card-footer {
   color: lightgray;
   display: flex;
   justify-content: flex-end;
+  margin-top: 10px;
 }
 
-.separator {
-  border-top-color: lightgray;
+/* Comment Section */
+.comment-section-container {
+  width: 100%;
+  max-width: 800px;
 }
 
-.card {
-  padding: 2ex;
+.toggle-comments-button {
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.chipset {
-  padding-bottom: 0.5ex;
+.toggle-comments-button:hover {
+  background: #0056b3;
 }
 
-.idea-card-content {
-  padding: 1ex 1ex 1ex 0ex;
+.comment-section {
+  margin-top: 10px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-mat-card-title {
-  font-size: 2rem;
-  font-weight: 500;
+.comment-input {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.comment-textarea {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid lightgray;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: none;
+  margin-right: 10px;
+}
+
+.comment-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+
+.comment-actions mat-slide-toggle {
+  font-size: 1rem;
+}
+
+.comment-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+}
+
+.comment-actions button:hover {
+  background-color: #0056b3;
+}
+
+
+.comments {
+  margin-top: 20px;
+}
+
+.comment {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.reply-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.reply-button mat-icon {
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+.reply-button:hover {
+  text-decoration: underline;
+}
+
+.reply-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.reply-textarea {
+  flex-grow: 1;
+  margin: 0;
+}
+
+.reply-input-container button {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.reply-input-container button:hover {
+  background-color: #0056b3;
+}
+
+.favourite-icon {
+  cursor: pointer;
+  font-size: 24px;
+  transition: color 0.3s ease;
+  position: absolute;
+  right: 30px;
+}
+
+.favourite {
+  color: red;
 }

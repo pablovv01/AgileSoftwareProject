@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
@@ -16,6 +16,11 @@ import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
 import { MatTooltip } from '@angular/material/tooltip';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
+import { filter } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import {ProfileUseCase} from '../../core/usecases/profile.usecase';
+
 
 
 
@@ -34,12 +39,12 @@ import { MatOption, MatSelect } from '@angular/material/select';
     MatPaginatorModule,
     MatTooltip,
     MatProgressSpinnerModule,
-    MatSelect,
-  MatOption],
+    MatMenuModule,
+    FormsModule],
   templateUrl: './explore-page.component.html',
   styleUrl: './explore-page.component.css'
 })
-export class ExplorePageComponent {
+export class ExplorePageComponent implements AfterViewInit{
   userId = sessionStorage.getItem('userId')!;
   userIdeas: Idea[] = [];
   categories = CATEGORIES;
@@ -53,71 +58,135 @@ export class ExplorePageComponent {
   selectedOrder: string = ''; // Valor predeterminado
   selectedCategory: string = '';
   userName: string | null = null;
+  selectedCategoriesFilter: string[] = [];
+  selectedOrderFilter: string = ''
+  isMenuOpen = false; // Variable que controla el estado del menú
+  selectedSortOption: string = '';
+  searchTitle:string = '';
+  notFound: boolean = false;
+  accountType: string | null = null;
+  favouriteIdeas: Set<string> = new Set();  // Para trackear los ids de las ideas favoritas
 
+  @ViewChild('filtersChips', { static: false }) chipsContainer!: ElementRef;
+  showArrows: boolean = false;
+  showClear: boolean = false;
 
-  constructor(private router: Router, private ideaUseCase: IdeaUseCase) { }
-
-  ngOnInit() {
+  constructor(
+    private router: Router,
+    private ideaUseCase: IdeaUseCase,
+    private profileUseCase: ProfileUseCase
+  ) {
+  }
+  async ngOnInit() {
     this.getUserName()
-    this.loadPage(this.currentPage, this.pageSize)
+    this.getAccountType()
+    await this.loadFavorites();  // Carga los favoritos al iniciar para que salgan los corazones ya puestos.
+    await this.loadPage()
+  }
+
+  ngAfterViewInit(): void {
+    this.checkOverflow(); // Verificar en la carga inicial
+  }
+
+  loadBySortOption(option: string) {
+    this.selectedSortOption = option;
+    this.showClear = true;
+    if(option === ""){
+      this.showClear = false;
+    }
+    this.checkOverflow();
+    this.reloadPage();
+  }
+
+  scrollLeft(): void {
+    const container = this.chipsContainer.nativeElement;
+    container.scrollLeft -= 100;
+  }
+
+  clearFilters(){
+    this.selectedCategoriesFilter = [];
+    this.loadBySortOption("");
+    this.checkOverflow();
+  }
+
+  scrollRight(): void {
+    const container = this.chipsContainer.nativeElement;
+    container.scrollLeft += 100;
+  }
+
+  checkOverflow(): void {
+    const container = document.querySelector('.filters-chips') as HTMLElement;
+
+    if (container) {
+      const isOverflowing = container.scrollWidth > container.clientWidth;
+      this.showArrows = (isOverflowing && this.selectedCategoriesFilter.length > 0) || this.selectedSortOption != "";
+    }
+  }
+
+  closeMenu(){
+    this.isMenuOpen = false;
+  }
+
+  openMenu(){
+    this.isMenuOpen = true;
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  toggleCategorySelection(category: any) {
+    const index = this.selectedCategoriesFilter.indexOf(category.category);
+    if (index === -1) {
+      this.selectedCategoriesFilter.push(category.category);
+    }else {
+      this.selectedCategoriesFilter.splice(index, 1);
+    }
+    this.reloadPage()
+    this.checkOverflow();
+    this.showClear = true;
+  }
+
+  removeCategory(category: any) {
+    this.categories = this.categories.filter(cat => cat !== category);
+    this.selectedCategoriesFilter = this.selectedCategoriesFilter.filter(cat => cat !== category);
+  }
+
+  trackByCategory(index: number, category: any): string {
+    return category.category;
   }
 
   getUserName(){
     this.userName = JSON.parse(sessionStorage.getItem('user') ?? '{}').name || null;
   }
 
+  getAccountType() {
+    this.accountType = JSON.parse(sessionStorage.getItem('user') ?? '{}').role || null;
+    console.log(this.accountType)
+  }
+
+
   isCreatedByMe(authorName: string, userID: string): boolean {
     return this.userName === authorName && this.userId === userID;
   }
+
+  refreshButton(){
+    this.clearFilters();
+    this.searchTitle = ''
+    this.loadPage();
+  }
+
   reloadPage(){
-    this.loadPage(this.currentPage, this.pageSize)
+    this.loadPage()
   }
 
-  onPageChange(event: PageEvent): void {
-    const { pageIndex, pageSize } = event;
-    this.pageSize = pageSize;
-    this.currentPage = pageIndex;
-    this.loadPage(pageIndex, pageSize);
-  }
-
-  private async loadPage(pageIndex: number, pageSize: number): Promise<void> {
-    try {
-      this.isLoading = true; 
-      let startAfterKey: string | undefined;
-  
-      if (pageIndex > 0) {
-        startAfterKey = this.pageKeys[pageIndex - 1]; // Usar la clave de la página anterior
-      }
-      const response = await this.ideaUseCase.getAllIdeas(pageSize, startAfterKey);
-  
-      // Si es una nueva página, guarda la clave
-      if (pageIndex === this.pageKeys.length) {
-        this.pageKeys.push(response.lastKey!);
-      }
-  
-      // Obtener nombres de autores para cada idea
-    this.ideas = await Promise.all(
-      response.ideas.map(async (idea) => {
-        const user = await this.getAuthorIdeaName(idea.userId); // Obtener el nombre del autor
-        return { ...idea, authorName: user.name, authorPhoto: user.photo }; // Añadir `authorName` a cada idea
-      })
-    );
-      this.totalItems = response.totalCount;
-      this.currentPage = pageIndex;
-    } catch (error) {
-      console.error('Error fetching paginated ideas:', error);
-    }finally {
-      this.isLoading = false; // Desactivar el estado de carga
-    }
-  }
-
-  // Función para obtener el color y clase según el tag
+  // Get color and tag for chips
   getCategoryColor(tag: string): string {
     const category = this.categories.find(c => c.category === tag);
     return category ? category.colorClass : ''; // Retorna la clase de color correspondiente
   }
 
-  // Función para obtener el icono correspondiente según el tag
+  // Get icon for tag
   getCategoryIcon(tag: string): string {
     const category = this.categories.find(c => c.category === tag);
     return category ? category.icon : ''; // Retorna el icono correspondiente
@@ -127,7 +196,7 @@ export class ExplorePageComponent {
     let authorName = userID
     let authorPhoto = "assets/userProfile_img.png"
     try {
-      // Llama al caso de uso para obtener el nombre del autor
+      // Get author name of idea
       const user = await this.ideaUseCase.getUserIdeaName(userID);
       if (user.name) {
         authorName = user.name;
@@ -140,53 +209,89 @@ export class ExplorePageComponent {
     }
     return {name: authorName, photo: authorPhoto};
   }
+  searchByTitle() {
+    //Clear other filters
+    this.clearFilters();
+    //Check empty input
+    if (this.searchTitle === ""){
+      Swal.fire({
+        title: 'Search idea',
+        text: 'Please enter a title to perform the search.',
+        icon: 'warning',
+        allowOutsideClick: false
+      });
+    }else{
+      this.reloadPage()
+    }
+  }
 
-  deleteIdea(ideaId: string) {
-    Swal.fire({
-      title: 'Delete idea',
-      text: 'Are you sure you want to delete this idea? This action cannot be undone.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: 'No',
-      reverseButtons: true,
-      allowOutsideClick: false
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await this.ideaUseCase.deleteIdea(ideaId);
-          Swal.fire({
-            title: 'Deleted!',
-            text: 'The idea has been successfully deleted.',
-            icon: 'success',
-            confirmButtonText: 'Ok',
-            allowOutsideClick: false
-          });
-          console.log(`Idea with ID ${ideaId} deleted successfully.`);
-          this.userIdeas = this.userIdeas.filter(idea => idea.id !== ideaId);
-        } catch (error) {
-          console.error('Error deleting idea:', error);
-          Swal.fire({
-            title: 'Delete error',
-            text: 'There was an issue deleting the idea. Please try again.',
-            icon: 'error',
-            confirmButtonText: 'Ok',
-            allowOutsideClick: false
-          });
-        }
+  goToDetailIdea(idea: Idea) {
+    //Add visualization
+    idea.visualizations += 1;
+    try{
+      //Update field in data base
+      this.ideaUseCase.updateIdeaVisualizations(idea);
+    } catch (error) {
+      console.error('Error updating visualizations:', error);
+    }
+    this.router.navigate(['/detail', idea.id]);
+  }
+
+
+  async favouriteIdea(ideaId: string): Promise<void> {
+    try {
+      if (this.favouriteIdeas.has(ideaId)) {
+        // If already favorited, remove it
+        await this.profileUseCase.removeFavorite(ideaId);
+        await this.ideaUseCase.unlikeIdea(ideaId);
+        this.favouriteIdeas.delete(ideaId);  // Remove from the set
+      } else {
+        // If not favorited, add it
+        await this.profileUseCase.addFavorite(ideaId);
+        await this.ideaUseCase.likeIdea(ideaId);
+        this.favouriteIdeas.add(ideaId);  // Add to the set
       }
-    });
+
+      console.log(`Idea with ID ${ideaId} marked as favourite: ${this.favouriteIdeas.has(ideaId)}`);
+    } catch (error) {
+      console.error('Error handling favourite idea:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'There was an issue with favouriting the idea. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        allowOutsideClick: false
+      });
+    }
   }
 
-  goToAddPost() {
-    this.router.navigate(['/add-idea']);
+  private async loadFavorites() {
+    try {
+      const favorites = await this.profileUseCase.getFavorites(this.userId);
+      this.favouriteIdeas = new Set(favorites);
+      sessionStorage.setItem('favouriteIdeas', JSON.stringify(Array.from(this.favouriteIdeas)));  // Persist to sessionStorage
+      console.log('Favorites loaded:', this.favouriteIdeas);
+    } catch (error) {
+      console.error('Error loading favorites:', error);
+    }
   }
 
-  goToEditIdea(ideaId: any) {
-    this.router.navigate(['/edit-idea', ideaId]);
-  }
+  private async loadPage() {
+    try {
+      this.isLoading = true;
+      const response = await this.ideaUseCase.getIdeas(this.selectedCategoriesFilter, this.selectedSortOption, this.searchTitle);
 
-  goToDetailIdea(ideaId: any) {
-    this.router.navigate(['/detail', ideaId]);
+      this.ideas = await Promise.all(
+        response.ideas.map(async (idea) => {
+          const user = await this.getAuthorIdeaName(idea.userId);
+          return {...idea, authorName: user.name, authorPhoto: user.photo};
+        })
+      );
+      this.notFound = (this.ideas.length === 0) ? true : false;
+    } catch (error) {
+      console.error('Error fetching paginated ideas:', error);
+    } finally {
+      this.isLoading = false;
+    }
   }
 }
