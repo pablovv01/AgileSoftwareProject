@@ -9,7 +9,7 @@ import { ExplorePageComponent } from './presentation/explore-page/explore-page.c
 import { MyIdeasPageComponent } from './presentation/my-ideas-page/my-ideas-page.component';
 import { ProfileComponent } from './presentation/profile/profile.component';
 
-import {FavoriteIdeasPageComponent} from './presentation/favorite-ideas-page/favorite-ideas-page.component';
+
 
 export const routes: Routes = [
     { path: 'register', component: RegisterComponent }, // Route for register component
@@ -22,5 +22,4 @@ export const routes: Routes = [
     { path: 'myIdeasPage', component: MyIdeasPageComponent },
     { path: 'profile', component: ProfileComponent }, // Route for profile component
     { path: '', redirectTo: '/login', pathMatch: 'full' }, // Default route
-    { path: 'favorite-ideas-page', component: FavoriteIdeasPageComponent },  
 ]

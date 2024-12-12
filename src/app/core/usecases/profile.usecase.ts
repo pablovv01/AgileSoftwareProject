@@ -20,6 +20,7 @@ export class ProfileUseCase {
 
   async loadUserInfo(email: string, uid: string): Promise<User> {
     try {
+      //const userAuth = this.firebaseAuthService.getCurrentUser();
       const userDb = await this.firebaseDb.getUserById(uid);
       const user = new User(
         userDb.name || "Unknown",
@@ -31,8 +32,7 @@ export class ProfileUseCase {
         userDb.degree,
         userDb.company,
         userDb.position,
-        userDb.description,
-        userDb.favorites || []
+        userDb.description
       );
 
       return user;
@@ -53,50 +53,16 @@ export class ProfileUseCase {
 
   async updateEmail(user: User): Promise<void> {
     try {
+      // Update email
       await this.firebaseAuthService.updateEmail(user.email);
+
+      // Send email verification
       await this.firebaseAuthService.sendEmailVerification();
+
+      // Update profile
       await this.updateProfile(user)
     } catch (error) {
       console.error("Error updating email in ProfileService:", error);
-      throw error;
-    }
-  }
-
-  async addFavorite(ideaId: string): Promise<void> {
-    try {
-      const currentUserId = this.firebaseAuthService.getCurrentUser().uid;
-
-      const user = await this.firebaseDb.getUserById(currentUserId);
-
-      await this.firebaseDb.addFavorite(currentUserId, ideaId);
-
-    } catch (error) {
-      console.error('Error adding favorite:', error);
-      throw error;
-    }
-  }
-
-  async removeFavorite(ideaId: string): Promise<void> {
-    try {
-      const currentUserId = this.firebaseAuthService.getCurrentUser().uid;
-
-      const user = await this.firebaseDb.getUserById(currentUserId);
-
-      await this.firebaseDb.removeFavorite(currentUserId, ideaId);
-
-    } catch (error) {
-      console.error('Error removing favorite:', error);
-      throw error;
-    }
-  }
-
-  async getFavorites(uid: string): Promise<string[]> {
-    try {
-      const userDb = await this.firebaseDb.getUserById(uid);
-
-      return userDb.favorites || [];
-    } catch (error) {
-      console.error('Error getting favorites:', error);
       throw error;
     }
   }

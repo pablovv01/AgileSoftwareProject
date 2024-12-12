@@ -9,7 +9,6 @@ export class User {
     public degree?: string,
     public company?: string,
     public position?: string,
-    public description?: string,
-    public favorites?: string[]
+    public description?: string
   ) { }
 }

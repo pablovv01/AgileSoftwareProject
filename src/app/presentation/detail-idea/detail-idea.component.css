@@ -207,12 +207,13 @@
 .comment-input {
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .comment-textarea {
   width: 100%;
-  padding: 5px;
+  padding: 10px;
   border: 1px solid lightgray;
   border-radius: 8px;
   font-size: 1rem;
@@ -220,35 +221,27 @@
   margin-right: 10px;
 }
 
-.comment-actions {
+.privacy-toggle {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   font-size: 1rem;
 }
 
-.comment-actions mat-slide-toggle {
-  font-size: 1rem;
-}
-
-.comment-actions button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
+.comment-button {
+  align-self: flex-end;
+  padding: 10px 20px;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 50%;
+  border-radius: 8px;
+  font-size: 1rem;
   cursor: pointer;
-  width: 48px;
-  height: 48px;
 }
 
-.comment-actions button:hover {
+.comment-button:hover {
   background-color: #0056b3;
 }
-
 
 .comments {
   margin-top: 20px;
@@ -293,32 +286,3 @@
 .reply-button:hover {
   text-decoration: underline;
 }
-
-.reply-input-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.reply-textarea {
-  flex-grow: 1;
-  margin: 0;
-}
-
-.reply-input-container button {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-}
-
-.reply-input-container button:hover {
-  background-color: #0056b3;
-}
-
