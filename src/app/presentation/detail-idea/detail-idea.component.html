@@ -20,6 +20,13 @@
       </div>
     </div>
 
+    <mat-icon class="favourite-icon" *ngIf="isInvestor()"
+              [ngClass]="{'favourite': favouriteIdeas.has(idea.id)}"
+              (click)="favouriteIdea(idea.id)"
+              matTooltip="Favourite Idea">
+      favorite
+    </mat-icon>
+
     <div class="chips-container">
       @for (tag of idea.tags; track tag; let index = $index) {
         <mat-chip-set aria-label="Category selection">

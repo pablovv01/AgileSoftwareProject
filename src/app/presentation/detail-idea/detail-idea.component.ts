@@ -21,6 +21,7 @@ import {ProfileUseCase} from '../../core/usecases/profile.usecase';
 import {Comment} from '../../core/entities/comment';
 import {CommentUseCase} from '../../core/usecases/comment.usecase';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatTooltip} from '@angular/material/tooltip';
 
 
 @Component({
@@ -39,7 +40,8 @@ import {MatMenuModule} from '@angular/material/menu';
     MatDivider,
     MatIconModule,
     MatSlideToggleModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTooltip
   ],
   templateUrl: './detail-idea.component.html',
   styleUrl: './detail-idea.component.css'
@@ -58,12 +60,15 @@ export class DetailIdeaComponent implements OnInit {
   investorRole: string = 'investor'
   newCommentContent: string = "";
   isPrivate: boolean = false;
+  favouriteIdeas: Set<string> = new Set();  // Para trackear los ids de las ideas favoritas
+
 
   constructor(private router: Router, private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase, private profile: ProfileUseCase, private commentUseCase: CommentUseCase) {
   }
 
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
+
     if (id) {
       this.ideaUseCase.getDetails(id).then(async (ideaData) => {
         this.idea = ideaData;
@@ -72,6 +77,7 @@ export class DetailIdeaComponent implements OnInit {
           console.error('Comments are not an array:', this.idea.comments);
           this.idea.comments = [];
         }
+        await this.loadFavorites()
         await this.fetchUserData();
       }).catch(error => {
         console.error('Error fetching idea:', error);
@@ -94,7 +100,7 @@ export class DetailIdeaComponent implements OnInit {
   }
 
   isInvestor() {
-    return this.user?.type !== this.investorRole
+    return this.user?.type === this.investorRole
   }
 
   isMyIdea() {
@@ -233,6 +239,44 @@ export class DetailIdeaComponent implements OnInit {
       comment.showReplyInput = false;
     } catch (error) {
       console.error('Error sending reply:', error);
+    }
+  }
+
+  async favouriteIdea(ideaId: string): Promise<void> {
+    try {
+      if (this.favouriteIdeas.has(ideaId)) {
+        // If already favorited, remove it
+        await this.profile.removeFavorite(ideaId);
+        await this.ideaUseCase.unlikeIdea(ideaId);
+        this.favouriteIdeas.delete(ideaId);  // Remove from the set
+      } else {
+        // If not favorited, add it
+        await this.profile.addFavorite(ideaId);
+        await this.ideaUseCase.likeIdea(ideaId);
+        this.favouriteIdeas.add(ideaId);  // Add to the set
+      }
+
+      console.log(`Idea with ID ${ideaId} marked as favourite: ${this.favouriteIdeas.has(ideaId)}`);
+    } catch (error) {
+      console.error('Error handling favourite idea:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'There was an issue with favouriting the idea. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        allowOutsideClick: false
+      });
+    }
+  }
+
+  private async loadFavorites() {
+    try {
+      const favorites = await this.profile.getFavorites(this.uid!);
+      this.favouriteIdeas = new Set(favorites);
+      sessionStorage.setItem('favouriteIdeas', JSON.stringify(Array.from(this.favouriteIdeas)));  // Persist to sessionStorage
+      console.log('Favorites loaded:', this.favouriteIdeas);
+    } catch (error) {
+      console.error('Error loading favorites:', error);
     }
   }
 }

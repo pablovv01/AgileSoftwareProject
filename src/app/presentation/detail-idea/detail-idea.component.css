@@ -322,3 +322,14 @@
   background-color: #0056b3;
 }
 
+.favourite-icon {
+  cursor: pointer;
+  font-size: 24px;
+  transition: color 0.3s ease;
+  position: absolute;
+  right: 30px;
+}
+
+.favourite {
+  color: red;
+}

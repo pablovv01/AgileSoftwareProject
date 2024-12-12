@@ -97,6 +97,14 @@
                 </mat-chip-set>
             }
             </div>
+
+          <mat-icon class="favourite-icon" *ngIf="accountType === 'investor'"
+                    [ngClass]="{'favourite': favouriteIdeas.has(idea.id)}"
+                    (click)="favouriteIdea(idea.id)"
+                    matTooltip="Favourite Idea">
+            favorite
+          </mat-icon>
+
           <mat-card-actions class="mat-card-actions">
             <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea)"><mat-icon
                 class="icon-details">visibility</mat-icon>Show more</button>
