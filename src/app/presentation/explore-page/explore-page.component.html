@@ -11,14 +11,15 @@
         <input matInput type="search" class="input-search" placeholder="Search" [(ngModel)]="searchTitle">
       </mat-form-field>
 
-            <button mat-fab class="button-search" (click)="searchByTitle()" matTooltip="Search"><mat-icon>search</mat-icon></button>
-        </div>
-        <div *ngIf="!notFound" class="filters-container">
-          
-          <button mat-mini-fab class="arrow-button"   (click)="scrollLeft()" *ngIf="showArrows">
-            <mat-icon>arrow_back</mat-icon>
-          </button>
-          
+      <button mat-fab class="button-search" (click)="searchByTitle()" matTooltip="Search">
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+    <div *ngIf="ideas.length > 0" class="filters-container">
+      <button mat-mini-fab class="arrow-button" (click)="scrollLeft()" *ngIf="showArrows">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
       <div class="filters-chips" #filtersChips>
         @for (category of categories; track category) {
           <mat-chip-set aria-label="Category selection">
@@ -34,21 +35,6 @@
         <mat-icon>arrow_forward</mat-icon>
       </button>
 
-            <button mat-mini-fab class="removeFilter-button" matTooltip="Remove Filters" (click)="clearFilters()" *ngIf="showClear">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          <button mat-icon-button class="refresh-button" matTooltip="Refresh Ideas" aria-label="Refresh" (click)="reloadPage()">
-              <mat-icon>refresh</mat-icon>
-          </button>
-      </div>
-      <div *ngIf="!isLoading && ideas.length === 0 && !notFound" class="notFound-container">
-        <p class="notFound-text">Not found ideas...</p>
-        <mat-icon class="notFound-sadIcon">sentiment_dissatisfied</mat-icon>
-      </div>
-        <div *ngIf="isLoading" class="loading-container">
-          <mat-spinner color="primary"></mat-spinner>
-          <p class="loading-text">Loading ideas...</p>
-        </div>
       <button mat-button class="sortby-button" [matMenuTriggerFor]="menu" (onMenuOpen)="toggleMenu()">
         Sort by: {{ selectedSortOption }}
         <mat-icon [ngClass]="{ 'rotated': isMenuOpen }">{{ isMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
@@ -73,7 +59,6 @@
       <mat-spinner color="primary"></mat-spinner>
       <p class="loading-text">Loading ideas...</p>
     </div>
-
 
     <!-- Mensaje si no se encuentran ideas -->
     <div *ngIf="!isLoading && notFound" class="notFound-container">
@@ -141,7 +126,9 @@
           </mat-card>
         }
       </ng-container>
-      </div>
     </div>
+
+    <!-- <mat-paginator class="paginator" [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[6, 10, 20]" (page)="onPageChange($event)" aria-label="Select page">
+  </mat-paginator> -->
   </div>
 </div>
