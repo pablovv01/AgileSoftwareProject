@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Idea } from '../entities/idea';
 import { FirebaseDbService } from '../../data/firebase_db_service';
-import { get, getDatabase, push, ref, remove, set, update, query, orderByKey, startAfter, limitToFirst, child } from "firebase/database";
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +71,11 @@ export class IdeaUseCase {
         userId: data[key].userId || '',
         createdAt: data[key].createdAt || '',
         visualizations: data[key].visualizations || 0,
+        comments: data[key].comments ? Object.keys(data[key].comments).map(commentKey => ({
+          ...data[key].comments[commentKey],
+          id: commentKey
+        })) : [],
+        likes: data[key].likes || 0
       }))
       //Order by Tag
       .filter((idea) =>
@@ -164,7 +168,35 @@ private getSortFunction(filterOrder: string): (a: Idea, b: Idea) => number {
         tags: data.tags ? data.tags.split(',').map((tag: string) => tag.trim()) : [],
         userId: data.userId || '',
         createdAt: data.createdAt || '',
-        visualizations: data.visualizations || 0
+        visualizations: data.visualizations || 0,
+        comments: data.comments
+          ? Object.keys(data.comments).map(key => {
+            const comment = data.comments[key];
+            return {
+              id: key,
+              userId: comment.userId || '',
+              authorName: comment.authorName || '',
+              publishedDate: comment.publishedDate || '',
+              content: comment.content || '',
+              private: !!comment.private,
+              reply: comment.reply
+                ? Object.keys(comment.reply).map(replyKey => {
+                  const reply = comment.reply[replyKey];
+                  return {
+                    id: replyKey,
+                    userId: reply.userId || '',
+                    authorName: reply.authorName || '',
+                    publishedDate: reply.publishedDate || '',
+                    content: reply.content || '',
+                    private: !!reply.private,
+                    reply: [],
+                  };
+                })
+                : [],
+            };
+          })
+          : [],
+        likes: data.likes || 0,
       };
     } catch (error) {
       console.error('Error fetching idea in service:', error);
@@ -182,13 +214,44 @@ private getSortFunction(filterOrder: string): (a: Idea, b: Idea) => number {
         tags: tags.join(','),
         createdAt: new Date().toISOString(),
         visualizations: 0,
-        userId: sessionStorage.getItem('userId')!  // ID del usuario actual
+        likes: 0, // Initialize likes to 0
+        userId: sessionStorage.getItem('userId')!
       };
-
+  
       await this.firebaseDb.addIdea(newIdea);
     } catch (error) {
       console.error('Error adding idea in service:', error);
       throw error;
     }
   }
+
+  // Increment likes
+  async likeIdea(ideaId: string): Promise<void> {
+    try {
+      const idea = await this.getDetails(ideaId); // Fetch the idea details
+      if (idea) {
+        const updatedField = { likes: idea.likes + 1 };
+        await this.firebaseDb.updateIdea(ideaId, updatedField);
+        console.log(`Idea with ID ${ideaId} liked successfully.`);
+      }
+    } catch (error) {
+      console.error('Error liking idea:', error);
+      throw error;
+    }
+  }
+
+  // Remove Likes
+  async unlikeIdea(ideaId: string): Promise<void> {
+    try {
+      const idea = await this.getDetails(ideaId); // Fetch the idea details
+      if (idea) {
+        const updatedField = { likes: idea.likes > 0 ? idea.likes - 1 : 0 };
+        await this.firebaseDb.updateIdea(ideaId, updatedField);
+        console.log(`Idea with ID ${ideaId} unliked successfully.`);
+      }
+    } catch (error) {
+      console.error('Error unliking idea:', error);
+      throw error;
+    }
+  }  
 }

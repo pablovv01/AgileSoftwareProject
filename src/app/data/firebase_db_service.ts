@@ -2,6 +2,7 @@ import { get, getDatabase, push, ref, remove, set, update, query, orderByKey, st
 import { User } from "../core/entities/user";
 import { Injectable } from "@angular/core";
 import { Idea } from "../core/entities/idea";
+import {Comment} from '../core/entities/comment';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,7 @@ export class FirebaseDbService {
   async getUserSession(uid: string) {
     const dbRef = this.getDatabaseRef(`users/${uid}`);
     const snapshot = await get(dbRef);
-    return snapshot
+    return snapshot;
   }
 
   // Get the ideas from Firebase Database
@@ -36,6 +37,7 @@ export class FirebaseDbService {
     const snapshot = await get(dbRef);
     return snapshot;
   }
+
 
   // Get the ideas from Firebase Database
   async getOrderIdeas(filterOrder?: string) {
@@ -63,15 +65,12 @@ export class FirebaseDbService {
     const dbRef = this.getDatabaseRef('ideas');
     let ideasQuery = query(dbRef, orderByKey(), limitToFirst(limit) );
 
-    // Si se proporciona `startAfterKey`, ajusta la consulta
     if (startAfterKey) {
       ideasQuery = query(dbRef, orderByKey(), startAfter(startAfterKey), limitToFirst(limit));
     }
     const snapshot = await get(ideasQuery);
     return snapshot;
   }
-
-
 
   // Delete idea from Firebase Database
   async deleteIdea(ideaID: string) {
@@ -136,6 +135,7 @@ export class FirebaseDbService {
     }
   }
 
+  // Update user data in Firebase Database
   async updateUser(uid: string, user: User) {
     try {
       const userRef = ref(this.db, `users/${uid}`);
@@ -145,4 +145,83 @@ export class FirebaseDbService {
       throw error;
     }
   }
+
+  async addComment(ideaId: string, comment: Comment): Promise<void> {
+    try {
+      const ideaRef = ref(this.db, `ideas/${ideaId}/comments`);
+      const newCommentRef = push(ideaRef);
+      await set(newCommentRef, comment);
+    } catch (error) {
+      console.error('Error adding comment to Firebase:', error);
+      throw error;
+    }
+  }
+
+      async addReplyToComment(ideaId: string, commentId: string, reply: Comment) {
+        try {
+          const commentRef = ref(this.db, `ideas/${ideaId}/comments/${commentId}/reply`);
+          const newReplyRef = push(commentRef);
+          await set(newReplyRef, reply);
+        } catch (error) {
+          console.error('Error adding comment to Firebase:', error);
+          throw error;
+        }
+      }
+// Add idea to user's favorites
+  async addFavorite(userId: string, ideaId: string): Promise<void> {
+    try {
+      const favoritesRef = ref(this.db, `users/${userId}/favorites`);
+      const snapshot = await get(favoritesRef);
+
+      // If the user already has favorites, push the new favorite idea
+      if (snapshot.exists()) {
+        const favorites = snapshot.val();
+        if (!favorites.includes(ideaId)) {
+          favorites.push(ideaId);
+          await set(favoritesRef, favorites);
+        }
+      } else {
+        // If no favorites yet, initialize the list with the new favorite
+        await set(favoritesRef, [ideaId]);
+      }
+    } catch (error) {
+      console.error('Error adding favorite:', error);
+    }
+  }
+  // Remove idea from user's favorites
+  async removeFavorite(userId: string, ideaId: string): Promise<void> {
+    try {
+      const favoritesRef = ref(this.db, `users/${userId}/favorites`);
+      const snapshot = await get(favoritesRef);
+
+      // If favorites exist, filter out the specified idea
+      if (snapshot.exists()) {
+        const favorites = snapshot.val();
+        const updatedFavorites = favorites.filter((id: string) => id !== ideaId);
+        await set(favoritesRef, updatedFavorites);
+      }
+    } catch (error) {
+      console.error('Error removing favorite:', error);
+      throw error;
+    }
+  }
+
+  // Get user's favorite ideas
+  async getUserFavorites(userId: string): Promise<string[]> {
+    try {
+      const favoritesRef = ref(this.db, `users/${userId}/favorites`);
+      const snapshot = await get(favoritesRef);
+      if (snapshot.exists()) {
+        return snapshot.val();
+      } else {
+        return []; // Return empty array if no favorites exist
+      }
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+      throw error;
+    }
+  }
+
+
 }
+

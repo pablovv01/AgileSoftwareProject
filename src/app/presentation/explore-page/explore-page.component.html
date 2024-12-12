@@ -1,15 +1,15 @@
 <div class="principal-container">
-    <div class="explore-container">
-        <div class="header-container">
-            <h1 class="title-container">
-                Explore
-            </h1>
-            <mat-form-field appearance="outline"  class="search-container">
-                <button matPrefix mat-icon-button aria-label="Search" disabled>
-                    <mat-icon>search</mat-icon>
-                  </button>
-                <input matInput type="search" class="input-search" placeholder="Search" [(ngModel)]="searchTitle">   
-              </mat-form-field>
+  <div class="explore-container">
+    <div class="header-container">
+      <h1 class="title-container">
+        Explore
+      </h1>
+      <mat-form-field appearance="outline" class="search-container">
+        <button matPrefix mat-icon-button aria-label="Search" disabled>
+          <mat-icon>search</mat-icon>
+        </button>
+        <input matInput type="search" class="input-search" placeholder="Search" [(ngModel)]="searchTitle">
+      </mat-form-field>
 
             <button mat-fab class="button-search" (click)="searchByTitle()" matTooltip="Search"><mat-icon>search</mat-icon></button>
         </div>
@@ -18,30 +18,21 @@
           <button mat-mini-fab class="arrow-button"   (click)="scrollLeft()" *ngIf="showArrows">
             <mat-icon>arrow_back</mat-icon>
           </button>
+          
+      <div class="filters-chips" #filtersChips>
+        @for (category of categories; track category) {
+          <mat-chip-set aria-label="Category selection">
+            <mat-chip-option [selected]="selectedCategoriesFilter.includes(category.category)"
+                             (click)="toggleCategorySelection(category)">
+              {{ category.category }}
+            </mat-chip-option>
+          </mat-chip-set>
+        }
+      </div>
 
-          <div class="filters-chips" #filtersChips>
-            @for (category of categories; track category) {
-                <mat-chip-set aria-label="Category selection">
-                     <mat-chip-option [selected] = "selectedCategoriesFilter.includes(category.category)"
-                    (click)="toggleCategorySelection(category)">
-                    {{category.category}}</mat-chip-option>
-                </mat-chip-set>
-            }
-            </div>
-            
-            <button mat-mini-fab class="arrow-button" (click)="scrollRight()" *ngIf="showArrows">
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-
-            <button mat-button class="sortby-button" [matMenuTriggerFor]="menu" (onMenuOpen)="toggleMenu()">
-              Sort by: {{ selectedSortOption }}
-              <mat-icon [ngClass]="{ 'rotated': isMenuOpen }">{{ isMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon></button>
-            <mat-menu #menu="matMenu" class="mat-menu-draft" (close)="toggleMenu()">
-              <button mat-menu-item (click)="loadBySortOption('Newest')">Newest</button>
-              <button mat-menu-item (click)="loadBySortOption('Oldest')">Oldest</button>
-              <button mat-menu-item (click)="loadBySortOption('Alphabetical')">Alphabetical</button>
-              <button mat-menu-item (click)="loadBySortOption('Popularity')">Popularity</button>
-            </mat-menu>
+      <button mat-mini-fab class="arrow-button" (click)="scrollRight()" *ngIf="showArrows">
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
 
             <button mat-mini-fab class="removeFilter-button" matTooltip="Remove Filters" (click)="clearFilters()" *ngIf="showClear">
               <mat-icon>cancel</mat-icon>
@@ -58,54 +49,99 @@
           <mat-spinner color="primary"></mat-spinner>
           <p class="loading-text">Loading ideas...</p>
         </div>
+      <button mat-button class="sortby-button" [matMenuTriggerFor]="menu" (onMenuOpen)="toggleMenu()">
+        Sort by: {{ selectedSortOption }}
+        <mat-icon [ngClass]="{ 'rotated': isMenuOpen }">{{ isMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu" class="mat-menu-draft" (close)="toggleMenu()">
+        <button mat-menu-item (click)="loadBySortOption('Newest')">Newest</button>
+        <button mat-menu-item (click)="loadBySortOption('Oldest')">Oldest</button>
+        <button mat-menu-item (click)="loadBySortOption('Alphabetical')">Alphabetical</button>
+        <button mat-menu-item (click)="loadBySortOption('Popularity')">Popularity</button>
+      </mat-menu>
 
-        <!-- Mensaje si no se encuentran ideas -->
+      <button mat-mini-fab class="removeFilter-button" matTooltip="Remove Filters" (click)="clearFilters()"
+              *ngIf="showClear">
+        <mat-icon>cancel</mat-icon>
+      </button>
+      <button mat-icon-button class="refresh-button" matTooltip="Refresh Ideas" aria-label="Refresh"
+              (click)="reloadPage()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner color="primary"></mat-spinner>
+      <p class="loading-text">Loading ideas...</p>
+    </div>
+
+
+    <!-- Mensaje si no se encuentran ideas -->
     <div *ngIf="!isLoading && notFound" class="notFound-container">
       <p class="notFound-text">Not found ideas...</p>
       <mat-icon class="notFound-sadIcon">sentiment_dissatisfied</mat-icon>
-      <button mat-fab extended class="notFound-button" (click)="refreshButton()"><mat-icon
-        class="icon-details">refresh</mat-icon>Refresh ideas</button>
+      <button mat-fab extended class="notFound-button" (click)="refreshButton()">
+        <mat-icon
+          class="icon-details">refresh
+        </mat-icon>
+        Refresh ideas
+      </button>
     </div>
-      <div class="idea-list">
-        <ng-container *ngIf="!isLoading && !notFound">
+
+    <div class="idea-list">
+      <ng-container *ngIf="!isLoading && !notFound">
         @for (idea of ideas; track idea.id) {
-        <mat-card color="primary" class="idea-card"
-        [ngClass]="{'my-card': isCreatedByMe(idea.authorName ?? '', idea.userId)}"
-        >
-        <img mat-card-avatar [src]="idea.authorPhoto" alt="" class="card-avatar-img"/>
-        <div class="right-column">
-        <mat-card-title class="idea-card-title">
-            {{ idea.title }}
-          </mat-card-title>
-          <mat-card-content class="idea-card-content">
-            {{ idea.description }}
-          </mat-card-content>
-          <div class="underline-content"></div>
-          <div class="created-by-content">
-            <p class="created-by-text">{{ isCreatedByMe(idea.authorName ?? '', idea.userId) ? 'Created by me' : 'Created by ' + idea.authorName }}</p>
-            <mat-icon class="icon-details">visibility</mat-icon>
-            {{ idea.visualizations }}
-          </div>
-           <div class="chips-container">
-            @for (tag of idea.tags; track tag; let index = $index) {
-                <mat-chip-set aria-label="Category selection">
+          <mat-card color="primary" class="idea-card"
+                    [ngClass]="{'my-card': isCreatedByMe(idea.authorName ?? '', idea.userId)}"
+          >
+
+            <img mat-card-avatar [src]="idea.authorPhoto" alt="" class="card-avatar-img"/>
+            <div class="right-column">
+              <mat-card-title class="idea-card-title">
+                {{ idea.title }}
+              </mat-card-title>
+              <mat-card-content class="idea-card-content">
+                {{ idea.description }}
+              </mat-card-content>
+              <div class="underline-content"></div>
+              <div class="created-by-content">
+                <p
+                  class="created-by-text">{{ isCreatedByMe(idea.authorName ?? '', idea.userId) ? 'Created by me' : 'Created by ' + idea.authorName }}</p>
+                <mat-icon class="icon-details">visibility</mat-icon>
+                {{ idea.visualizations }}
+              </div>
+              <div class="chips-container">
+                @for (tag of idea.tags; track tag; let index = $index) {
+                  <mat-chip-set aria-label="Category selection">
                     @if (index < 2) {
-                    <mat-chip [ngClass]="getCategoryColor(tag)">
-                       <img matChipAvatar [src]="getCategoryIcon(tag)" alt=""/> 
-                       {{ tag }}
-                    </mat-chip>
+                      <mat-chip [ngClass]="getCategoryColor(tag)">
+                        <img matChipAvatar [src]="getCategoryIcon(tag)" alt=""/>
+                        {{ tag }}
+                      </mat-chip>
+                    }
+                  </mat-chip-set>
                 }
-                </mat-chip-set>
-            }
-            </div> 
-          <mat-card-actions class="mat-card-actions">
-            <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea)"><mat-icon
-                class="icon-details">visibility</mat-icon>Show more</button>
-        </mat-card-actions>
-        </div>
-        </mat-card>
+              </div>
+
+              <mat-icon class="favourite-icon" *ngIf="accountType === 'investor'"
+                        [ngClass]="{'favourite': favouriteIdeas.has(idea.id)}"
+                        (click)="favouriteIdea(idea.id)"
+                        matTooltip="Favourite Idea">
+                favorite
+              </mat-icon>
+
+              <mat-card-actions class="mat-card-actions">
+                <button mat-fab extended class="button-details" (click)="goToDetailIdea(idea)">
+                  <mat-icon
+                    class="icon-details">visibility
+                  </mat-icon>
+                  Show more
+                </button>
+              </mat-card-actions>
+            </div>
+          </mat-card>
         }
       </ng-container>
       </div>
     </div>
   </div>
+</div>

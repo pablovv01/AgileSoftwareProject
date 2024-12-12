@@ -43,7 +43,9 @@ export class EditIdeaComponent implements OnInit {
     userId: '',
     createdAt: '',
     authorName: '',
-    visualizations: 0
+    visualizations: 0,
+    comments: [],
+    likes: 0
   };
   ideaId: string = ''
 
@@ -83,12 +85,14 @@ export class EditIdeaComponent implements OnInit {
             title: ideaData.title || '',
             description: ideaData.description || '',
             tags: ideaData.tags
-              ? (ideaData.tags as unknown as string).split(',').map((tag: string) => tag.trim())
+              ? ideaData.tags
               : [],
             userId: ideaData.userId || '',
             createdAt: ideaData.createdAt || '',
             authorName: ideaData.authorName || '',
             visualizations: ideaData.visualizations || 0,
+            comments: ideaData.comments || [],
+            likes: ideaData.likes || 0,
           };
         }
       }).catch(error => {
@@ -102,7 +106,7 @@ export class EditIdeaComponent implements OnInit {
     }
   }
   discardChanges() {
-    this.router.navigate(['/myIdeasPage']);
+    window.history.back();
   }
 
   updateIdea(){

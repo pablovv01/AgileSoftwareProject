@@ -8,10 +8,16 @@
       <mat-card-title class="idea-card-title">
         {{ idea.title }}
       </mat-card-title>
+      <div *ngIf="isMyIdea()">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
 
-      <button class="menu-btn mat-icon-button">
-        <mat-icon>more_vert</mat-icon>
-      </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="goToEditIdea(this.idea.id)">Edit</button>
+          <button mat-menu-item (click)="deleteIdea(this.idea.id)">Delete</button>
+        </mat-menu>
+      </div>
     </div>
 
     <div class="chips-container">
@@ -39,18 +45,15 @@
     <div class="idea-stats">
       <div class="stat">
         <mat-icon class="material-icon">chat</mat-icon>
-        <span>100</span>
+        <span>{{ idea.comments.length }}</span>
       </div>
       <div class="stat">
         <mat-icon class="material-icon">favorite</mat-icon>
-        <span>100</span>
+        <span>{{ idea.likes }}</span>
       </div>
       <div class="stat">
         <mat-icon class="material-icon">visibility</mat-icon>
-        <span>{{idea.visualizations}}</span>
-      </div>
-      <div class="visibility-icon">
-        <mat-icon class="material-icon">public</mat-icon>
+        <span>{{ idea.visualizations }}</span>
       </div>
     </div>
 
@@ -69,26 +72,46 @@
       <h2>Comment Section</h2>
 
       <div class="comment-input">
-        <textarea placeholder="Add a comment..." class="comment-textarea"></textarea>
+        <mat-form-field appearance="fill" class="comment-input">
+          <textarea matInput [(ngModel)]="newCommentContent" placeholder="Add a comment..."></textarea>
+        </mat-form-field>
 
-        <div class="privacy-toggle">
-          <mat-slide-toggle color="primary" id="private-comment">Private</mat-slide-toggle>
+        <div class="comment-actions">
+          <mat-slide-toggle color="primary" id="private-comment" [(ngModel)]="isPrivate">Private</mat-slide-toggle>
+          <button mat-icon-button color="primary"  (click)="addNewComment()" aria-label="Send comment">
+            <mat-icon>send</mat-icon>
+          </button>
         </div>
-
-        <button class="comment-button mat-icon-button">
-          <mat-icon>send</mat-icon>
-        </button>
       </div>
 
       <div class="comments">
-        <div class="comment">
-          <div class="avatar">A</div>
+        <div *ngFor="let comment of idea.comments; let index = index" class="comment">
+          <div class="avatar">{{ comment.authorName.charAt(0) }}</div> <!-- Mostrar la primera letra del autor -->
           <div class="comment-content">
-            <p><strong>user1234</strong> 1 day ago</p>
-            <p>This is the description example...</p>
-            <button class="reply-button mat-icon-button">
-              <mat-icon>reply</mat-icon> Reply
+            <p><strong>{{ comment.authorName }}</strong> {{ comment.publishedDate | date:'short' }}</p> <!-- Formateo de fecha -->
+            <p>{{ comment.content }}</p>
+            <button class="reply-button mat-icon-button" (click)="toggleReplyInput(comment)">
+              <mat-icon>reply</mat-icon>
+              Reply
             </button>
+            <div *ngIf="comment.showReplyInput" class="reply-input-container">
+              <mat-form-field appearance="fill" class="reply-textarea">
+                <textarea matInput [(ngModel)]="comment.replyContent" placeholder="Write your reply..."></textarea>
+              </mat-form-field>
+              <button mat-icon-button color="primary" (click)="sendReply(comment, index)" aria-label="Send reply">
+                <mat-icon>send</mat-icon>
+              </button>
+            </div>
+
+            <div *ngFor="let commentReply of comment.reply; let replyIndex = index">
+              <div class="comment reply">
+                <div class="avatar">{{ commentReply.authorName.charAt(0) }}</div>
+                <div class="comment-content">
+                  <p><strong>{{ commentReply.authorName }}</strong> {{ commentReply.publishedDate | date:'short' }}</p> <!-- Formateo de fecha -->
+                  <p>{{ commentReply.content }}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

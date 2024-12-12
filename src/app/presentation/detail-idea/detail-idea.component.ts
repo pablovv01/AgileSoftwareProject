@@ -8,17 +8,20 @@ import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {MatChip, MatChipSet, MatChipsModule} from '@angular/material/chips';
+import {MatChipsModule} from '@angular/material/chips';
 import { MatDivider } from '@angular/material/divider';
 import { IdeaUseCase } from '../../core/usecases/idea.usecase';
-import { getAuth, signOut } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
-import {MatIcon, MatIconModule} from '@angular/material/icon';
-import {MatSlideToggle, MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {CATEGORIES} from '../../core/entities/categoriesTag';
 import Swal from 'sweetalert2';
 import {User} from '../../core/entities/user';
 import {ProfileUseCase} from '../../core/usecases/profile.usecase';
+import {Comment} from '../../core/entities/comment';
+import {CommentUseCase} from '../../core/usecases/comment.usecase';
+import {MatMenuModule} from '@angular/material/menu';
+
 
 @Component({
   selector: 'detail-idea',
@@ -35,7 +38,8 @@ import {ProfileUseCase} from '../../core/usecases/profile.usecase';
     MatChipsModule,
     MatDivider,
     MatIconModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatMenuModule
   ],
   templateUrl: './detail-idea.component.html',
   styleUrl: './detail-idea.component.css'
@@ -49,11 +53,14 @@ export class DetailIdeaComponent implements OnInit {
   surname: string | null = null
   uid: string | null = null
   categories = CATEGORIES
-  showComments = false
+  showComments = true
   user: User | null = null
-  investorRole : string = 'investor'
+  investorRole: string = 'investor'
+  newCommentContent: string = "";
+  isPrivate: boolean = false;
 
-  constructor(private router:Router,private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase, private profile:ProfileUseCase) { }
+  constructor(private router: Router, private snackBar: MatSnackBar, private route: ActivatedRoute, private ideaUseCase: IdeaUseCase, private profile: ProfileUseCase, private commentUseCase: CommentUseCase) {
+  }
 
   async ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -61,6 +68,10 @@ export class DetailIdeaComponent implements OnInit {
       this.ideaUseCase.getDetails(id).then(async (ideaData) => {
         this.idea = ideaData;
         this.date = new Date(this.idea.createdAt);
+        if (!Array.isArray(this.idea.comments)) {
+          console.error('Comments are not an array:', this.idea.comments);
+          this.idea.comments = [];
+        }
         await this.fetchUserData();
       }).catch(error => {
         console.error('Error fetching idea:', error);
@@ -82,30 +93,26 @@ export class DetailIdeaComponent implements OnInit {
     }
   }
 
-  isInvestor(){
+  isInvestor() {
     return this.user?.type !== this.investorRole
   }
 
-  isMyIdea(){
+  isMyIdea() {
     return this.uid == this.idea.userId
   }
 
-  async fetchUserData(): Promise<void>
-  {
+  async fetchUserData(): Promise<void> {
     const db = getDatabase();
     const userRef = ref(db, `users/${this.idea.userId}`);
 
     console.log(this.id);
     const snapshot = await get(userRef);
-    if (snapshot.exists())
-    {
+    if (snapshot.exists()) {
       const userData = snapshot.val();
       this.name = userData.name;
       this.surname = userData.surname;
       console.log(this.name);
-    }
-    else
-    {
+    } else {
       console.error('No user data found.');
     }
   }
@@ -167,5 +174,65 @@ export class DetailIdeaComponent implements OnInit {
 
   goToEditIdea(ideaId: any) {
     this.router.navigate(['/edit-idea', ideaId]);
+  }
+
+  async addNewComment() {
+    if (!this.newCommentContent.trim()) {
+      console.error('Comment content cannot be empty.');
+      return;
+    }
+
+    const comment: Comment = {
+      authorName: `${this.user?.name} ${this.user?.surname}`,
+      reply: [],
+      userId: this.uid!!,
+      content: this.newCommentContent.trim(),
+      publishedDate: new Date().toISOString(),
+      private: this.isPrivate,
+    };
+
+    try {
+      await this.commentUseCase.addComment(this.idea.id, comment);
+      console.log('Comment added successfully');
+      this.idea.comments.push(comment);
+      this.newCommentContent = '';
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    }
+  }
+
+  toggleReplyInput(comment: any) {
+    comment.showReplyInput = !comment.showReplyInput;  // Alternar la visibilidad del cuadro de respuesta
+  }
+
+  async sendReply(comment: any, index: number) {
+    try {
+      if (!comment.replyContent) {
+        console.error('Reply content cannot be empty.');
+        return;
+      }
+
+      const reply: Comment = {
+        authorName: `${this.user?.name} ${this.user?.surname}`,
+        reply: [],
+        userId: this.uid!!,
+        content: comment.replyContent,
+        publishedDate: new Date().toISOString(),
+        private: comment.private,
+      };
+
+      await this.commentUseCase.addReplyToComment(
+        this.idea.id,
+        comment.id,
+        reply
+      );
+
+      console.log('Reply added successfully');
+      comment.replyContent = '';
+      this.idea.comments[index].reply.push(reply);
+      comment.showReplyInput = false;
+    } catch (error) {
+      console.error('Error sending reply:', error);
+    }
   }
 }
